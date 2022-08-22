@@ -9,7 +9,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class UInteractionComponent final : public UActorComponent
+class FPSCORE_API UInteractionComponent final : public UActorComponent
 {
 	GENERATED_BODY()
 

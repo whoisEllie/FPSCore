@@ -4,7 +4,7 @@
 	"VersionName": "1.0",
 	"FriendlyName": "FPSCore",
 	"Description": "",
-	"Category": "Other",
+	"Category": "Gameplay",
 	"CreatedBy": "Ellie Kelemen",
 	"CreatedByURL": "",
 	"DocsURL": "https://emmadocs.dev",
@@ -13,7 +13,7 @@
 	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
-	"Installed": false,
+	"Installed": true,
 	"Modules": [
 		{
 			"Name": "FPSCore",

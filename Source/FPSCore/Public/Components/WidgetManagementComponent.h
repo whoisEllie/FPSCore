@@ -9,7 +9,7 @@
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class UWidgetManagementComponent final : public UActorComponent
+class FPSCORE_API UWidgetManagementComponent final : public UActorComponent
 {
 	GENERATED_BODY()
 

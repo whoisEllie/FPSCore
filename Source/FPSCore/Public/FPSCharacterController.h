@@ -7,7 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "FPSCharacterController.generated.h"
 
-class AWeaponBase; 
+class FPSCORE_API AWeaponBase; 
 
 UCLASS()
 class AFPSCharacterController : public APlayerController

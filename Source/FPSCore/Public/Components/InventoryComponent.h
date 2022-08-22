@@ -12,7 +12,7 @@
 class UCameraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class UInventoryComponent final : public UActorComponent
+class FPSCORE_API UInventoryComponent final : public UActorComponent
 {
 	GENERATED_BODY()
 

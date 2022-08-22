@@ -11,7 +11,7 @@ class AInteractedActor;
 class UStaticMeshComponent;
 
 UCLASS()
-class AInteractionActor : public AActor, public IInteractInterface
+class FPSCORE_API AInteractionActor : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	

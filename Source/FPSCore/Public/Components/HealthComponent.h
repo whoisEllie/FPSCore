@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UHealthC
                                              class AController*, InstigatedBy, AActor*, DamageCauser);
 
 UCLASS( ClassGroup=(Isolation), meta=(BlueprintSpawnableComponent) )
-class UHealthComponent : public UActorComponent
+class FPSCORE_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 

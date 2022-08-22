@@ -7,7 +7,7 @@
 /**
  * 
  */
-class FInputHelper
+class FPSCORE_API FInputHelper
 {
 public:
 	FInputHelper();

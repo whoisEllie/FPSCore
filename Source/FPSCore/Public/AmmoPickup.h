@@ -39,7 +39,7 @@ struct FAmmoTypeData
 };
 
 UCLASS()
-class AAmmoPickup : public AActor, public IInteractInterface
+class FPSCORE_API AAmmoPickup : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 

@@ -8,7 +8,7 @@
 /**
  * 
  */
-class FWidgetHelpers
+class FPSCORE_API FWidgetHelpers
 {
 public:
 	FWidgetHelpers();

@@ -7,7 +7,7 @@
 #include "InteractedActor.generated.h"
 
 UCLASS()
-class AInteractedActor : public AActor
+class FPSCORE_API AInteractedActor : public AActor
 {
 	GENERATED_BODY()
 	

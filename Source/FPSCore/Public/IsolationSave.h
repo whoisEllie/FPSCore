@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class UIsolationSave : public USaveGame
+class FPSCORE_API UIsolationSave : public USaveGame
 {
 	GENERATED_BODY()
 

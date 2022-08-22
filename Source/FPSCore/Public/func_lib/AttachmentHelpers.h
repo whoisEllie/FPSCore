@@ -6,7 +6,7 @@
 #include "WeaponBase.h"
 
 /** Class for modifying arrays of weapon attachments */
-class FAttachmentHelpers
+class FPSCORE_API FAttachmentHelpers
 {
 public:
 	/**

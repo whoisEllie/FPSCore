@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FFPSCoreModule : public IModuleInterface
+class FPSCORE_API FFPSCoreModule : public IModuleInterface
 {
 public:
 

@@ -504,7 +504,7 @@ struct FStaticWeaponData : public FTableRowBase
 };
 
 UCLASS()
-class AWeaponBase : public AActor
+class FPSCORE_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
 

@@ -13,7 +13,7 @@ class AWeaponBase;
 class AFPSCharacter;
 
 UCLASS()
-class AWeaponPickup : public AActor, public IInteractInterface
+class FPSCORE_API AWeaponPickup : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 

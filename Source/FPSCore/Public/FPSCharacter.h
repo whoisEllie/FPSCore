@@ -55,7 +55,7 @@ struct FMovementVariables
 };
 
 UCLASS()
-class AFPSCharacter : public ACharacter
+class FPSCORE_API AFPSCharacter : public ACharacter
 {
 	GENERATED_BODY()
 

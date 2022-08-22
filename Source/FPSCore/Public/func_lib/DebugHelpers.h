@@ -8,7 +8,7 @@
 /**
  * 
  */
-class FDebugHelpers
+class FPSCORE_API FDebugHelpers
 {
 public:
 
