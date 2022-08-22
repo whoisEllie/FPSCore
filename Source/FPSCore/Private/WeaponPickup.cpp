@@ -12,33 +12,21 @@ AWeaponPickup::AWeaponPickup()
 {
 	// Creating all of our meshes, and drawing them to the custom stencil for use with the outline shader 
 	MainMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MainMesh"));
-	MainMesh->SetRenderCustomDepth(true);
-	MainMesh->SetCustomDepthStencilValue(2);
 	MainMesh->SetupAttachment(RootComponent);
 
 	BarrelAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrelAttachment"));
-	BarrelAttachment->SetRenderCustomDepth(true);
-	BarrelAttachment->SetCustomDepthStencilValue(2);
 	BarrelAttachment->SetupAttachment(MainMesh);
 
 	MagazineAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MagazineAttachment"));
-	MagazineAttachment->SetRenderCustomDepth(true);
-	MagazineAttachment->SetCustomDepthStencilValue(2);
 	MagazineAttachment->SetupAttachment(MainMesh);
 	
 	SightsAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SightsAttachment"));
-	SightsAttachment->SetRenderCustomDepth(true);
-	SightsAttachment->SetCustomDepthStencilValue(2);
 	SightsAttachment->SetupAttachment(MainMesh);
 
 	StockAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StockAttachment"));
-	StockAttachment->SetRenderCustomDepth(true);
-	StockAttachment->SetCustomDepthStencilValue(2);
 	StockAttachment->SetupAttachment(MainMesh);
 	
 	GripAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GripAttachment"));
-	GripAttachment->SetRenderCustomDepth(true);
-	GripAttachment->SetCustomDepthStencilValue(2);
 	GripAttachment->SetupAttachment(MainMesh);
 }
 

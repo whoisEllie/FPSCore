@@ -5,19 +5,19 @@
 	"FriendlyName": "FPSCore",
 	"Description": "",
 	"Category": "Other",
-	"CreatedBy": "",
+	"CreatedBy": "Ellie Kelemen",
 	"CreatedByURL": "",
-	"DocsURL": "",
+	"DocsURL": "https://emmadocs.dev",
 	"MarketplaceURL": "",
-	"SupportURL": "",
-	"CanContainContent": true,
+	"SupportURL": "https://emmadocs.dev",
+	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
 	"Installed": false,
 	"Modules": [
 		{
 			"Name": "FPSCore",
-			"Type": "Runtime",
+			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
 	]

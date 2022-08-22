@@ -38,19 +38,19 @@ struct FMovementVariables
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	bool bCanFire;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	float MaxAcceleration;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	float BreakingDecelerationWalking;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	float GroundFriction;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	float MaxWalkSpeed;
 };
 
@@ -62,47 +62,47 @@ class AFPSCharacter : public ACharacter
 public:
 
 	/** Plays footstep sounds, called from animations with anim notify. */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void FootstepSounds();
 
 	/** Returns the character's forward movement (from 0 to 1) */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetForwardMovement() const { return ForwardMovement; }
 
 	/** Returns the character's sideways movement (from 0 to 1) */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetRightMovement() const { return RightMovement; }
 
 	/** Returns the character's vertical mouse position (from 0 to 1) */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetMouseY() const { return MouseY; }
 
 	/** Returns the character's horizontal mouse position (from 0 to 1) */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetMouseX() const { return MouseX; }
 
 	/** Update the base FOV
 	 * @param NewFOV The FOV to use as a new BaseFOV
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void SetBaseFOV(const float NewFOV) { BaseFOV = NewFOV; }
 
 	/** Returns the current visibility of the crosshair */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	bool IsCrosshairVisible() const { return bShowCrosshair; }
 
 	/** Update the visibility of the crosshair in HUD UI component
 	 * @param bVisible The new visibility of the crosshair
 	 */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void SetCrosshairVisibility(const bool bVisible) { bShowCrosshair = bVisible; }
 
 	/** Returns whether the player is currently aiming or not */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	bool IsPlayerAiming() const { return bIsAiming; }
 
 	/** Returns whether the player is sprinting or not */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	bool IsPlayerSprinting() const { return bIsSprinting; }
 
 	/** Returns whether the player is crouching or not */
@@ -118,27 +118,27 @@ public:
 	UCameraComponent* GetCameraComponent() const { return CameraComp; }
 
 	/** Returns the character's empty-handed walking blend space */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UBlendSpace* GetWalkBlendSpace() const { return BS_Walk; }
 
 	/** Returns the character's empty-handed walking blend space for use in the aiming state */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UBlendSpace* GetWalkAdsBlendSpace() const { return BS_Ads_Walk; }
 
 	/** Returns the character's empty-handed idle animation */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UAnimSequence* GetIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's empty handed idle animation for use in the aiming state */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UAnimSequence* GetAdsIdleAnim() const { return Anim_Ads_Idle; }
 
 	/** Returns the character's empty handed sprinting animation */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UAnimSequence* GetSprintAnim() const { return Anim_Sprint; }
 
 	/** Returns the character's current input mapping context */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	UInputMappingContext* GetBaseMappingContext() const { return BaseMappingContext; }
 
 	/** Returns the Inventory Component */

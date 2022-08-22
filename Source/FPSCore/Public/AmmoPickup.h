@@ -27,13 +27,13 @@ struct FAmmoTypeData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo Pickup")
 	TMap<EAmmoAmount, UStaticMesh*> FullAmmoBoxes;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo Pickup")
 	TMap<EAmmoAmount, UStaticMesh*> EmptyAmmoBoxes;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Ammo Pickup")
 	TMap<EAmmoAmount, int32> AmmoCounts;
 	
 };

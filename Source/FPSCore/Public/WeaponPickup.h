@@ -39,7 +39,7 @@ public:
 	FText GetWeaponName() const { return WeaponName; } 
 	
 	/** Spawns attachment meshes from data table */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Pickup")
 	void SpawnAttachmentMesh();
 	
 	/** The array of attachments to spawn (usually inherited, can be set by instance) */

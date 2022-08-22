@@ -28,38 +28,23 @@ AWeaponBase::AWeaponBase()
 
     BarrelAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BarrelAttachment"));
     BarrelAttachment->CastShadow = false;
-    BarrelAttachment->SetRenderCustomDepth(true);
-    BarrelAttachment->SetCustomDepthStencilValue(2);
     BarrelAttachment->SetupAttachment(RootComponent);
 
     MagazineAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MagazineAttachment"));
     MagazineAttachment->CastShadow = false;
-    MagazineAttachment->SetRenderCustomDepth(true);
-    MagazineAttachment->SetCustomDepthStencilValue(2);
     MagazineAttachment->SetupAttachment(RootComponent);
 
     SightsAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SightsAttachment"));
     SightsAttachment->CastShadow = false;
-    SightsAttachment->SetRenderCustomDepth(true);
-    SightsAttachment->SetCustomDepthStencilValue(2);
     SightsAttachment->SetupAttachment(RootComponent);
 
     StockAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("StockAttachment"));
     StockAttachment->CastShadow = false;
-    StockAttachment->SetRenderCustomDepth(true);
-    StockAttachment->SetCustomDepthStencilValue(2);
     StockAttachment->SetupAttachment(RootComponent);
 
     GripAttachment = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GripAttachment"));
     GripAttachment->CastShadow = false;
-    GripAttachment->SetRenderCustomDepth(true);
-    GripAttachment->SetCustomDepthStencilValue(2);
     GripAttachment->SetupAttachment(RootComponent);
-
-    ScopeCaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ScopeCaptureComponent"));
-    ScopeCaptureComponent->SetupAttachment(RootComponent);
-    ScopeCaptureComponent->bCaptureEveryFrame = false;
-    ScopeCaptureComponent->bCaptureOnMovement = false;
 }
 
 
@@ -67,9 +52,6 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-    // Making sure you can't see barrel tips in the scope
-    ScopeCaptureComponent->HiddenActors.Add(this);
     
     //Sets the default values for our trace query
 	QueryParams.AddIgnoredActor(this);
@@ -78,23 +60,6 @@ void AWeaponBase::BeginPlay()
 
     // Getting a reference to the relevant row in the WeaponData DataTable
     WeaponData = *WeaponDataTable->FindRow<FStaticWeaponData>(FName(DataTableNameRef), FString(DataTableNameRef), true);
-
-    // if we don't have attachments then we can check to render the scope here
-    if (!WeaponData.bHasAttachments)
-    {
-        if (WeaponData.bIsScope)
-        {
-            if (bShowDebug)
-            {
-                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(FOVFromMagnification()));
-            }
-            ScopeCaptureComponent->FOVAngle = FOVFromMagnification();
-        }
-        if (WeaponData.bIsScope)
-        {
-            GetWorldTimerManager().SetTimer(ScopeRenderTimer, this, &AWeaponBase::RenderScope, 1.0f/ScopeFrameRate, true, 0.0f);
-        }
-    }
     
     // Setting our default animation values
     // We set these here, but they can be overriden later by variables from applied attachments.
@@ -201,21 +166,8 @@ void AWeaponBase::SpawnAttachments()
                     VerticalCameraOffset = AttachmentData->VerticalCameraOffset;
                     WeaponData.bAimingFOV = AttachmentData->bAimingFOV;
                     WeaponData.AimingFOVChange = AttachmentData->AimingFOVChange;
-                    WeaponData.bIsScope = AttachmentData->bIsScope;
                     WeaponData.ScopeMagnification = AttachmentData->ScopeMagnification;
                     WeaponData.UnmagnifiedLFoV = AttachmentData->UnmagnifiedLFoV;
-                    if (WeaponData.bIsScope)
-                    {
-                        if (bShowDebug)
-                        {
-                            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(FOVFromMagnification()));
-                        }
-                        ScopeCaptureComponent->FOVAngle = FOVFromMagnification();
-                    }
-                    if (WeaponData.bIsScope)
-                    {
-                        GetWorldTimerManager().SetTimer(ScopeRenderTimer, this, &AWeaponBase::RenderScope, 1.0f/ScopeFrameRate, true, 0.0f);
-                    }
                 }
                 else if (AttachmentData->AttachmentType == EAttachmentType::Stock)
                 {
@@ -683,19 +635,4 @@ void AWeaponBase::HandleRecoveryProgress(float Value) const
     const FRotator NewControlRotation = FMath::Lerp(CharacterController->GetControlRotation(), ControlRotation, Value);
     
     CharacterController->SetControlRotation(NewControlRotation);
-}
-
-// Converts an unmagnified linear FoV and magnification value into a magnified FoV
-float AWeaponBase::FOVFromMagnification() const
-{
-    return (FMath::RadiansToDegrees(2*(FMath::Atan(((WeaponData.UnmagnifiedLFoV/WeaponData.ScopeMagnification)/2)/100.0f))));
-}
-
-void AWeaponBase::RenderScope() const
-{
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (PlayerCharacter->IsPlayerAiming())
-    {
-        ScopeCaptureComponent->CaptureScene();
-    }
 }

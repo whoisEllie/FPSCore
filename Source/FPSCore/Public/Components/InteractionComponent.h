@@ -18,12 +18,12 @@ public:
 	UInteractionComponent();
 
 	/** Returns the display text of the current interactable object that the player is looking at */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Interaction Component")
 	FText& GetInteractText() { return InteractText; }
 
 	/** Returns the result of the interaction trace, which is true if the object that we are looking at is able to be
 		interacted with */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Interaction Component")
 	bool CanInteract() const { return bCanInteract; }
 
 	/** Returns true if the interaction trace is hitting a weapon pickup */

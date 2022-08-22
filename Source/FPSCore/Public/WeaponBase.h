@@ -191,10 +191,6 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Sights")
 	float AimingFOVChange;
 
-	/** Whether this weapon has a scope and we need to render a SceneCaptureComponent2D */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	bool bIsScope = false;
-
 	/** The Magnification of the scope */
 	UPROPERTY(EditDefaultsOnly, Category = "Sights")
 	float ScopeMagnification = 1.0f;
@@ -387,10 +383,6 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float AimingFOVChange;
 
-	/** Whether this weapon has a scope and we need to render a SceneCaptureComponent2D */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	bool bIsScope = false;
-
 	/** The Magnification of the scope */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float ScopeMagnification = 1.0f;
@@ -568,34 +560,34 @@ public:
 	/** A reference to the key name of the Weapon Data datatable */
 	FString GetDataTableNameRef() const { return DataTableNameRef; }
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	void SetShowDebug(const bool IsVisible)
 	{
 		bShowDebug = IsVisible;
 	};
 	
 	/** Returns the character's empty-handed walking blend space */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	UBlendSpace* GetWalkBlendSpace() const { return WalkBlendSpace; }
 
 	/** Returns the character's empty-handed walking blend space for use in the aiming state */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	UBlendSpace* GetWalkAdsBlendSpace() const { return ADSWalkBlendSpace; }
 
 	/** Returns the character's empty-handed idle animation */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	UAnimSequence* GetIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's empty handed idle animation for use in the aiming state */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	UAnimSequence* GetAdsIdleAnim() const { return Anim_ADS_Idle; }
 
 	/** Returns the character's empty handed sprinting animation */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	UAnimSequence* GetSprintAnim() const { return Anim_Sprint; }
 
 	/** Returns the vertical camera offset for this weapon instance */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	float GetVerticalCameraOffset() const { return VerticalCameraOffset; }
 	
 private:
@@ -626,12 +618,6 @@ private:
 	/** Interpolates the player back to their initial view vector */
 	UFUNCTION()
 	void HandleRecoveryProgress(float Value) const;
-
-	/** Converts an unmagnified linear FOV and a magnification constant into a magnified FOV */
-	float FOVFromMagnification() const;
-
-	/** Renders the scope widget to it's virtual texture */
-	void RenderScope() const;
 	
 	/** Called when the game starts or when spawned */
 	virtual void BeginPlay() override;
@@ -659,9 +645,6 @@ private:
 	/** Debug boolean, toggle for debug strings and line traces to be shown */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bShowDebug = false;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	USceneCaptureComponent2D* ScopeCaptureComponent;
 	
 	/** The main skeletal mesh - holds the weapon model */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

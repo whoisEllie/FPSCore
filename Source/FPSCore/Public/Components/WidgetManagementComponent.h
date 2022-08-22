@@ -21,7 +21,7 @@ public:
 	UUserWidget* GetPlayerHud() const { return PlayerHudWidget; }
 
 	/** Draws the settings menu to the screen */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Widget Management")
 	void CreateSettingsMenu();
 
 	/** The input action for pausing the game */

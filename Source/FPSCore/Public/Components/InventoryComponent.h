@@ -50,11 +50,11 @@ public:
 	AWeaponBase* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
 
 	/** Returns the current weapon equipped by the player */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	AWeaponBase* GetCurrentWeapon() const {return CurrentWeapon; }
 
 	/**  Returns the amount of ammunition currently loaded into the weapon */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	FText GetCurrentWeaponLoadedAmmo() const
 	{
 		if (CurrentWeapon != nullptr)
@@ -66,7 +66,7 @@ public:
 	} 
 
 	/** Returns the amount of ammunition remaining for the current weapon */
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	FText GetCurrentWeaponRemainingAmmo() const;
 
 	/** The input actions implemented by this component */

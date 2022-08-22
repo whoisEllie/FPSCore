@@ -17,7 +17,6 @@ public class FPSCore : ModuleRules
 		
 		PrivateIncludePaths.AddRange(
 			new string[] {
-				"Niagara",
 				// ... add other private include paths required here ...
 			}
 			);
@@ -27,13 +26,12 @@ public class FPSCore : ModuleRules
 			new string[]
 			{
 				"Core",
-				"EnhancedInput",
-				"Niagara",
-				"UnrealEd",
-                "Kismet",
                 "UMG",
                 "PhysicsCore",
-				// ... add other public dependencies that you statically link with here ...
+                "Kismet",
+                "Niagara",
+                "EnhancedInput"
+                // ... add other public dependencies that you statically link with here ...
 			}
 			);
 			
@@ -46,8 +44,6 @@ public class FPSCore : ModuleRules
 				"Slate",
 				"SlateCore",
 				"Niagara",
-				"UnrealEd",
-				"Kismet",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
