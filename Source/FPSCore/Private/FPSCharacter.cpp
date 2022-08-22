@@ -44,11 +44,6 @@ AFPSCharacter::AFPSCharacter()
     // Spawning the camera atop the FPS hands mesh
     CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
     CameraComp->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
-
-    // Spawning the footstep sound component
-    FootstepAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("FootstepAudioComp"));
-    FootstepAudioComp->SetupAttachment(RootComponent);
-    FootstepAudioComp->bAutoActivate = false;
     
     DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
@@ -96,35 +91,6 @@ void AFPSCharacter::PawnClientRestart()
     }
 }
 
-// Playing footstep sounds on FootstepAudioComp, called from animnotifies
-void AFPSCharacter::FootstepSounds()
-{
-    // Calculating the line trace start and end locations
-    const FVector TraceStart = GetActorLocation();
-    FVector TraceEnd = TraceStart;
-    TraceEnd.Z -= 100.0f;
-
-    // Query parameters for the interaction line trace
-    FCollisionQueryParams QueryParams;
-    QueryParams.bReturnPhysicalMaterial = true;
-
-    FootstepAudioComp->SetIntParameter(FName("floor"), 0);
-    if(GetWorld()->LineTraceSingleByChannel(FootstepHit, TraceStart, TraceEnd, ECC_GameTraceChannel3, QueryParams))
-    {
-        // Updating the relevant parameter in the footstep audio component if we hit something with our line trace
-        FootstepAudioComp->SetIntParameter(FName("floor"), SurfaceMaterialArray.Find(FootstepHit.PhysMaterial.Get()));
-        if (bDrawDebug)
-        {
-            DrawDebugLine(GetWorld(), TraceStart, FootstepHit.Location, FColor::Red, false, 10.0f, 0.0f, 2.0f);
-        }
-    }
-    else if (bDrawDebug)
-    {
-        DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 10.0f, 0.0f, 2.0f);
-    }
-
-    FootstepAudioComp->Play();
-}
 
 void AFPSCharacter::Move(const FInputActionValue& Value)
 {
@@ -619,26 +585,6 @@ void AFPSCharacter::Tick(const float DeltaTime)
                     GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
                 }
                 GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
-            }
-        }
-    }
-
-    //Updating the scope's material parameter collection
-    if (InventoryComponent)
-    {
-        if (InventoryComponent->GetCurrentWeapon())
-        {
-            if (bIsAiming)
-            {
-                ScopeBlend = FMath::FInterpConstantTo(ScopeBlend, 1, DeltaTime, 8.0f);
-                UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), ScopeOpacityParameterCollection,
-                                                                OpacityParameterName, ScopeBlend);
-            }
-            else
-            {
-                ScopeBlend = FMath::FInterpConstantTo(ScopeBlend, 0, DeltaTime, 8.0f);
-                UKismetMaterialLibrary::SetScalarParameterValue(GetWorld(), ScopeOpacityParameterCollection,
-                                                                OpacityParameterName, ScopeBlend);
             }
         }
     }

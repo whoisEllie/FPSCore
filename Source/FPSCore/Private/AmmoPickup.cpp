@@ -14,7 +14,7 @@ AAmmoPickup::AAmmoPickup()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PreviewMeshComp"));
 	RootComponent = MeshComp;
 
-	// True by default
+	// False by default
 	bIsEmpty = false;
 }
 

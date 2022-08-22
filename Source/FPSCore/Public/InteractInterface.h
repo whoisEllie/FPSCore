@@ -8,7 +8,7 @@
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class FPSCORE_API UInteractInterface : public UInterface
+class UInteractInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class FPSCORE_API UInteractInterface : public UInterface
 /**
  * 
  */
-class IInteractInterface
+class FPSCORE_API IInteractInterface
 {
 	GENERATED_BODY()
 

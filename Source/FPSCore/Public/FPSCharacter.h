@@ -61,10 +61,6 @@ class FPSCORE_API AFPSCharacter : public ACharacter
 
 public:
 
-	/** Plays footstep sounds, called from animations with anim notify. */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
-	void FootstepSounds();
-
 	/** Returns the character's forward movement (from 0 to 1) */
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	float GetForwardMovement() const { return ForwardMovement; }
@@ -158,10 +154,6 @@ protected:
 	/** The spring arm component, which is required to enable 'use control rotation' */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
 	USpringArmComponent* SpringArmComp;
-
-	/** The component used to play audio for footsteps */
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	UAudioComponent* FootstepAudioComp;
 	
 	/** Hand animation blend space for when the player has no weapon  */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Blend Spaces")
@@ -178,7 +170,19 @@ protected:
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Ads_Idle;
+	
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Jump_Start;
 
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Jump_End;
+
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Fall;
+	
 	/** Hand animation for when the player has no weapon and is sprinting */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Sprint;
@@ -186,7 +190,6 @@ protected:
 	/** Hand montage, played during vault */
 	UPROPERTY(EditDefaultsOnly, Category = "Animations | Montages")
 	UAnimMontage* VaultMontage;
-
 
 private:
 
@@ -333,18 +336,6 @@ private:
 	/** Name of the socket we attach our camera to */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Socket")
 	FName CameraSocketName;
-	
-	/** The material parameter collection that stores the scope opacity parameter to be changed */
-	UPROPERTY(EditDefaultsOnly, Category = "Materials")
-	UMaterialParameterCollection* ScopeOpacityParameterCollection;
-
-	/** The name of the parameter to modify in the material parameter collection */
-	UPROPERTY(EditDefaultsOnly, Category = "Materials")
-	FName OpacityParameterName;
-
-	/** Array of physical materials for footsteps */
-	UPROPERTY(EditDefaultsOnly, Category = "Footsteps")
-	TArray<UPhysicalMaterial*> SurfaceMaterialArray;
 
 #pragma endregion 
 
@@ -398,9 +389,6 @@ private:
 	
 	/** Whether the character is crouching */
 	bool bIsCrouching;
-	
-	/** Keeps track of the opacity of scopes */
-	float ScopeBlend;
 	
 	/** The start location of a vaulting or mantle */
 	FTransform VaultStartLocation;

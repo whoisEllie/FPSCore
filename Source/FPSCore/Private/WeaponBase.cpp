@@ -200,6 +200,18 @@ void AWeaponBase::SpawnAttachments()
                     {
                         Anim_ADS_Idle = AttachmentData->Anim_Ads_Idle;
                     }
+                    if (AttachmentData->Anim_Jump_Start)
+                    {
+                        Anim_Jump_Start = AttachmentData->Anim_Jump_Start;
+                    }
+                    if (AttachmentData->Anim_Jump_End)
+                    {
+                        Anim_Jump_End = AttachmentData->Anim_Jump_End;
+                    }
+                    if (AttachmentData->Anim_Fall)
+                    {
+                        Anim_Fall = AttachmentData->Anim_Fall;
+                    }
                 }
             }
         }
