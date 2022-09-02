@@ -1,7 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "FPSCharacter.h"
-#include "AmmoPickup.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -9,7 +8,6 @@
 #include "WeaponBase.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
-#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
@@ -22,7 +20,6 @@
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values

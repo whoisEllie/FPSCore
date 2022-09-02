@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "Components/InteractionComponent.h"
 #include "AmmoPickup.h"

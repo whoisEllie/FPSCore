@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "FPSCore.h"
 
