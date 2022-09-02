@@ -32,18 +32,18 @@ AFPSCharacter::AFPSCharacter()
 	PrimaryActorTick.bCanEverTick = true;
     
     // Spawning the spring arm component
-    SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-    SpringArmComp->bUsePawnControlRotation = true;
-    SpringArmComp->SetupAttachment(RootComponent);
+    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+    SpringArmComponent->bUsePawnControlRotation = true;
+    SpringArmComponent->SetupAttachment(RootComponent);
     
     // Spawning the FPS hands mesh component and attaching it to the spring arm component
     HandsMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
     HandsMeshComp->CastShadow = false;
-    HandsMeshComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+    HandsMeshComp->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
     
     // Spawning the camera atop the FPS hands mesh
-    CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-    CameraComp->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
+    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+    CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
     
     DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
@@ -54,7 +54,7 @@ void AFPSCharacter::BeginPlay()
     Super::BeginPlay();
         
     GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed;
-    DefaultSpringArmOffset = SpringArmComp->GetRelativeLocation().Z; // Setting the default location of the spring arm
+    DefaultSpringArmOffset = SpringArmComponent->GetRelativeLocation().Z; // Setting the default location of the spring arm
 
     // Binding a timeline to our vaulting curve
     if (VaultTimelineCurve)
@@ -70,6 +70,9 @@ void AFPSCharacter::BeginPlay()
         InventoryComponent = InventoryComp;
         InventoryComponent->GetEquippedWeapons().Reserve(InventoryComponent->GetNumberOfWeaponSlots());
     }
+
+    // Updating the crouched spring arm height based on the crouched capsule half height
+    CrouchedSpringArmHeightDelta = CrouchedCapsuleHalfHeight - DefaultCapsuleHalfHeight;
 }
 
 void AFPSCharacter::PawnClientRestart()
@@ -450,7 +453,6 @@ bool AFPSCharacter::HasSpaceToStandUp()
         if (bDrawDebug)
         {
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Stand up trace returned hit", true);
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, StandUpHit.Actor->GetName());
         }
         return false;
     }
@@ -520,9 +522,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
     CurrentSpringArmOffset = NewLocation;
 	// Sets the half height of the capsule component to the new interpolated half height
 	GetCapsuleComponent()->SetCapsuleHalfHeight(NewHalfHeight);
-    FVector NewSpringArmLocation = SpringArmComp->GetRelativeLocation();
+    FVector NewSpringArmLocation = SpringArmComponent->GetRelativeLocation();
     NewSpringArmLocation.Z = NewLocation;
-    SpringArmComp->SetRelativeLocation(NewSpringArmLocation);
+    SpringArmComponent->SetRelativeLocation(NewSpringArmLocation);
     
     // FOV adjustments
     float TargetFOV = ((MovementState == EMovementState::State_Sprint || MovementState == EMovementState::State_Slide) && GetVelocity().Size() > MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed)? BaseFOV + SpeedFOVChange : BaseFOV;
@@ -538,9 +540,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
         }
     }
     //Interpolates between current fov and target fov
-    const float InFieldOfView = FMath::FInterpTo(CameraComp->FieldOfView, TargetFOV, DeltaTime, FOVChangeSpeed);
+    const float InFieldOfView = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVChangeSpeed);
     // Sets the new camera FOV
-    CameraComp->SetFieldOfView(InFieldOfView);
+    CameraComponent->SetFieldOfView(InFieldOfView);
 
     // Continuous aiming check (so that you don't have to re-press the ADS button every time you jump/sprint/reload/etc)
     if (bWantsToAim == true && MovementState != EMovementState::State_Sprint && MovementState != EMovementState::State_Slide)

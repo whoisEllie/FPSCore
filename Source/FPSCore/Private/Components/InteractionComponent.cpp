@@ -92,21 +92,11 @@ void UInteractionComponent::InteractionIndicator()
             bCanInteract = true;
 
             // Checking between classes that derive from ASInteract and updating variables accordingly
-            const AInteractionActor* InteractionActor = Cast<AInteractionActor>(InteractionHit.GetActor());
-            const AWeaponPickup* InteractedPickup = Cast<AWeaponPickup>(InteractionHit.GetActor());
-            AAmmoPickup* AmmoPickup = Cast<AAmmoPickup>(InteractionHit.GetActor());
+            const AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
+
             if (InteractionActor)
             {
-                InteractText = InteractionActor->PopupDescription;
-            }
-            else if (AmmoPickup)
-            {
-                InteractText = AmmoPickup->GetPickupName();
-            }
-            else if (InteractedPickup)
-            {
-                bInteractionIsWeapon = true;
-                InteractText = InteractedPickup->GetWeaponName();
+                InteractText = InteractionActor->InteractionText;
             }
             else
             {

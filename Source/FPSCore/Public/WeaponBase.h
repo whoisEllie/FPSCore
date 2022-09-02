@@ -99,27 +99,7 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
 	TArray<FName> IncompatibleAttachments;
 
-	/** The name of the socket on the muzzle attachment's skeletal mesh with which to override the muzzle */ 
-	UPROPERTY(EditDefaultsOnly, Category = "Barrel")
-	FName MuzzleLocationOverride;
-
-	/** The name of the socket at which to spawn particles for muzzle flash */
-	UPROPERTY(EditDefaultsOnly, Category = "Barrel")
-	FName ParticleSpawnLocationOverride;
-
-	/** Whether the current barrel attachment is silenced or not */
-	UPROPERTY(EditDefaultsOnly, Category = "Barrel")
-	bool bSilenced;
-
-	/** The firing sound to use instead of the default for this particular magazine attachment */ 
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	USoundBase* FiringSoundOverride;
-
-	/** The silenced firing sound to use instead of the default for this particular magazine attachment */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	USoundBase* SilencedFiringSoundOverride;
-
-	/** The impact that this magazine has on the base damage of the weapon */
+	/** The impact that this attachment has on the base damage of the weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "General")
 	float BaseDamageImpact;
 
@@ -131,98 +111,6 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "General")
 	float WeaponYawVariationImpact;
 
-	/** An override for the default walk BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UBlendSpace* BS_Walk;
-
-	/** An override for the default ADS walk BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UBlendSpace* BS_Ads_Walk;
-
-	/** An override for the default idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UAnimSequence* Anim_Idle;
-
-	/** An override for the default ADS idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UAnimSequence* Anim_Ads_Idle;
-	
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_Start;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_End;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Fall;
-
-	/** An override for the default sprint animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UAnimSequence* Anim_Sprint;
-
-	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Gun_Shot;
-
-	/** The ammunition type to be used (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
-	EAmmoType AmmoToUse;
-
-	/** The clip capacity of the weapon (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
-	int ClipCapacity;
-
-	/** The clip size of the weapon (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
-	int ClipSize;
-
-	/** The default health of the weapon (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
-	float WeaponHealth = 100.0f;
-
-	/** The rate of fire of this magazine attachment */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	float FireRate;
-
-	/** Whether this magazine supports automatic fire */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	bool AutomaticFire;
-
-	/** The offset applied to the camera to align with the sights */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	float VerticalCameraOffset;
-
-	/** Whether the player's FOV should change when aiming with this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	bool bAimingFOV = false;
-
-	/** The decrease in FOV of the camera to when aim down sights */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	float AimingFOVChange;
-
-	/** The Magnification of the scope */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	float ScopeMagnification = 1.0f;
-
-	/** The linear FOV at a magnification of 1x */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights")
-	float UnmagnifiedLFoV = 200.0f;
-	
-	/** The vertical recoil curve to be used with this magazine */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	UCurveFloat* VerticalRecoilCurve;
-
-	/** The horizontal recoil curve to be used with this magazine */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	UCurveFloat* HorizontalRecoilCurve;
-
-	/** The camera shake to be applied to the recoil from this magazine */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
-	TSubclassOf<UCameraShakeBase> RecoilCameraShake;
-
 	/** How much this attachment multiplies the vertical recoil of the weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "General")
 	float VerticalRecoilMultiplier;
@@ -231,41 +119,157 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "General")
 	float HorizontalRecoilMultiplier;
 
+	/** The name of the socket on the muzzle attachment's skeletal mesh with which to override the muzzle */ 
+	UPROPERTY(EditDefaultsOnly, Category = "Barrel", meta=(EditCondition="AttachmentType == EAttachmentType::Barrel"))
+	FName MuzzleLocationOverride;
+
+	/** The name of the socket at which to spawn particles for muzzle flash */
+	UPROPERTY(EditDefaultsOnly, Category = "Barrel", meta=(EditCondition="AttachmentType == EAttachmentType::Barrel"))
+	FName ParticleSpawnLocationOverride;
+
+	/** Whether the current barrel attachment is silenced or not */
+	UPROPERTY(EditDefaultsOnly, Category = "Barrel", meta=(EditCondition="AttachmentType == EAttachmentType::Barrel"))
+	bool bSilenced;
+
+	/** The firing sound to use instead of the default for this particular magazine attachment */ 
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	USoundBase* FiringSoundOverride;
+
+	/** The silenced firing sound to use instead of the default for this particular magazine attachment */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	USoundBase* SilencedFiringSoundOverride;
+
+	/** An override for the default walk BlendSpace */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UBlendSpace* BS_Walk;
+
+	/** An override for the default ADS walk BlendSpace */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UBlendSpace* BS_Ads_Walk;
+
+	/** An override for the default idle animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Idle;
+
+	/** An override for the default ADS idle animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Ads_Idle;
+	
+	/** An override for the default jump start animation sequence  */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Jump_Start;
+
+	/** An override for the default jump end animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Jump_End;
+
+	/** An override for the default fall animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Fall;
+
+	/** An override for the default sprint animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Anim_Sprint;
+
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* Gun_Shot;
+
+	/** Unequip animation for the current weapon */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* WeaponEquip;
+
+	/** The ammunition type to be used (Spawned on the pickup) */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	EAmmoType AmmoToUse;
+
+	/** The clip capacity of the weapon (Spawned on the pickup) */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	int ClipCapacity;
+
+	/** The clip size of the weapon (Spawned on the pickup) */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	int ClipSize;
+
+	/** The default health of the weapon (Spawned on the pickup) */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	float WeaponHealth = 100.0f;
+
+	/** The rate of fire of this magazine attachment */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	float FireRate;
+
+	/** Whether this magazine supports automatic fire */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool AutomaticFire;
+	
+	/** The vertical recoil curve to be used with this magazine */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	UCurveFloat* VerticalRecoilCurve;
+
+	/** The horizontal recoil curve to be used with this magazine */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	UCurveFloat* HorizontalRecoilCurve;
+
+	/** The camera shake to be applied to the recoil from this magazine */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	TSubclassOf<UCameraShakeBase> RecoilCameraShake;
+
 	/** Whether this magazine fires shotgun shells (should we fire lots of pellets or just one bullet?) */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	bool bIsShotgun = false;
 
 	/** The range of the shotgun shells in this magazine */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	float ShotgunRange;
 
 	/** The amount of pellets fired */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	int ShotgunPellets;
 
 	/** The increase in shot variation when the player is not aiming down the sights */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	float AccuracyDebuff = 1.25f;
 
 	/** An override for the weapon's empty reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimationAsset* EmptyWeaponReload;
 
 	/** An override for the weapon's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimationAsset* WeaponReload;
 
 	/** An override for the player's empty reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimMontage* EmptyPlayerReload;
 
 	/** An override for the player's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimMontage* PlayerReload;
 
-	/** Unequip animation for the current weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip")
-	UAnimMontage* WeaponEquip;
+	/** The offset applied to the camera to align with the sights */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	float VerticalCameraOffset;
+
+	/** Whether the player's FOV should change when aiming with this weapon */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	bool bAimingFOV = false;
+
+	/** The decrease in FOV of the camera to when aim down sights */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	float AimingFOVChange;
+
+	/** Whether this weapon has a scope and we need to render a SceneCaptureComponent2D */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	bool bIsScope = false;
+
+	/** The Magnification of the scope */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	float ScopeMagnification = 1.0f;
+
+	/** The linear FOV at a magnification of 1x */
+	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
+	float UnmagnifiedLFoV = 200.0f;
 };
 
 /** Struct holding all required information about the weapon class. This data is set once at tbe beginning of this

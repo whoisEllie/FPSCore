@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "InteractInterface.h"
+#include "InteractionBase.h"
 #include "WeaponBase.h"
 #include "AmmoPickup.generated.h"
 
@@ -39,7 +38,7 @@ struct FAmmoTypeData
 };
 
 UCLASS()
-class FPSCORE_API AAmmoPickup : public AActor, public IInteractInterface
+class FPSCORE_API AAmmoPickup : public AInteractionBase
 {
 	GENERATED_BODY()
 
@@ -82,10 +81,6 @@ private:
 	/** Updates the pickup mesh from the full mesh to the empty one */
 	void SetEmptyMesh();
 	
-	/** Display mesh */
-	UPROPERTY()
-	UStaticMeshComponent* MeshComp;
-	
 	/** The amount of ammo (low/medium/high that this instance should have */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")
 	EAmmoAmount AmmoAmount;
@@ -94,7 +89,7 @@ private:
 	UPROPERTY(EditInstanceOnly, Category = "Properties")
 	EAmmoType AmmoType;
 
-	/** Whether this is an infinite ammo box or not (used for demo level) */
+	/** Whether this is an infinite ammo box or not */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")
 	bool bInfinite;
 	

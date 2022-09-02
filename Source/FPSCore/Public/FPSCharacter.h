@@ -111,7 +111,7 @@ public:
 	USkeletalMeshComponent* GetHandsMesh() const { return HandsMeshComp; }
 
 	/** Returns a reference to the player's camera component */
-	UCameraComponent* GetCameraComponent() const { return CameraComp; }
+	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
@@ -145,7 +145,7 @@ protected:
 
 	/** The character's FPS camera component */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
-	UCameraComponent* CameraComp;
+	UCameraComponent* CameraComponent;
 
 	/** The character's hands mesh component */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
@@ -153,7 +153,7 @@ protected:
 	
 	/** The spring arm component, which is required to enable 'use control rotation' */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	USpringArmComponent* SpringArmComp;
+	USpringArmComponent* SpringArmComponent;
 	
 	/** Hand animation blend space for when the player has no weapon  */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Blend Spaces")
@@ -171,15 +171,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Ads_Idle;
 	
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	/** Hand animation for when the player has no weapon and starts to jump */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_Start;
 
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	/** Hand animation for when the player has no weapon and stops jumping */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_End;
 
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	/** Hand animation for when the player has no weapon and is falling */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Fall;
 	
@@ -281,21 +281,6 @@ private:
 	/** Sets the height of the player's capsule component when crouched */	
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	float CrouchedCapsuleHalfHeight = 58.0f;
-	
-	/** The change in height of the spring arm that the camera + hands rest on when the player is crouched
-	 *
-	 *	In order to best line up with the crouched height, this should be equal to the
-	 *	CrouchedCapsuleHalfHeight minus the capsule's default height. For example, if the default capsule half height
-	 *	is 88.0f, and the crouched half height is 58.0f, then the crouched spring arm height delta should be -30
-	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
-	float CrouchedSpringArmHeightDelta = -30.0f;
-
-	/** The default offset of the spring arm from a Z position of 0, set automatically on BeginPlay */
-	float DefaultSpringArmOffset;
-	
-	/** The current offset of the spring arm */
-	float CurrentSpringArmOffset = 0.0f;
 	
 	/** The rate at which the character crouches */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch") 
@@ -413,6 +398,22 @@ private:
 
 	/** The right look value (used to drive procedural weapon sway) */
 	float MouseX;
+	
+	/** The change in height of the spring arm that the camera + hands rest on when the player is crouched. This
+	 *	is calculated automatically
+	 *
+	 *	In order to best line up with the crouched height, this should be equal to the
+	 *	CrouchedCapsuleHalfHeight minus the capsule's default height. For example, if the default capsule half height
+	 *	is 88.0f, and the crouched half height is 58.0f, then the crouched spring arm height delta should be -30
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
+	float CrouchedSpringArmHeightDelta;
+
+	/** The default offset of the spring arm from a Z position of 0, set automatically on BeginPlay */
+	float DefaultSpringArmOffset;
+	
+	/** The current offset of the spring arm */
+	float CurrentSpringArmOffset = 0.0f;
 	
 	/** The target location of a vault or mantle */
 	FTransform VaultTargetLocation;
