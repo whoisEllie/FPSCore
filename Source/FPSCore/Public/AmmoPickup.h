@@ -42,18 +42,6 @@ class FPSCORE_API AAmmoPickup : public AInteractionBase
 {
 	GENERATED_BODY()
 
-public:
-
-	/** Return the name of the current pickup based on the ammo type
-	 *	@return The pickup name to display on the HUD
-	 */
-	FText GetPickupName() { return PickupName[AmmoType]; }
-
-	/** Return the selected ammo type
-	 *	@return Selected ammo type
-	 */
-	EAmmoType GetAmmoType() const { return AmmoType; }
-
 protected:
 
 	/** Map to keep track of the name showed to the player for each ammo type */
