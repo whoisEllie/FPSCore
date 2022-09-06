@@ -25,7 +25,7 @@ void AAmmoPickup::BeginPlay()
 	// Updating MeshComp with the desired mesh if it exists
     if (AmmoData.Contains(AmmoType))
     {
-        if (AmmoData[AmmoType].FullAmmoBoxes.Find(AmmoAmount) != nullptr)
+        if (AmmoData[AmmoType].FullAmmoBoxes.Contains(AmmoAmount))
         {
             MeshComp->SetStaticMesh(AmmoData[AmmoType].FullAmmoBoxes[AmmoAmount]);
             InteractionText = PickupName[AmmoType];
@@ -92,7 +92,7 @@ void AAmmoPickup::SetEmptyMesh()
 	// Updating MeshComp with the desired empty mesh if it exists
 	if (AmmoData.Contains(AmmoType))
 	{
-		if (AmmoData[AmmoType].EmptyAmmoBoxes.Find(AmmoAmount) != nullptr)
+		if (AmmoData[AmmoType].EmptyAmmoBoxes.Contains(AmmoAmount))
 		{
 			MeshComp->SetStaticMesh(AmmoData[AmmoType].EmptyAmmoBoxes[AmmoAmount]);
 		}
