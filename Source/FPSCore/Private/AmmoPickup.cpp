@@ -97,7 +97,8 @@ void AAmmoPickup::SetEmptyMesh()
 			MeshComp->SetStaticMesh(AmmoData[AmmoType].EmptyAmmoBoxes[AmmoAmount]);
 		}
 	}
-		
+
+	InteractionText = FText::FromString(PickupName[AmmoType].ToString() + " [Empty]");
 	bIsEmpty = true;
 }
 
