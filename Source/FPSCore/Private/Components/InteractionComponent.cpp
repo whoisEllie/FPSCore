@@ -44,11 +44,15 @@ void UInteractionComponent::WorldInteract()
     // Checking if we hit something with our line trace
     if (GetWorld()->LineTraceSingleByChannel(InteractionHit, CameraLocation, TraceEndLocation, ECC_WorldStatic, TraceParams))
     {
-        // Checking if the actor we hit implements the interaction interface
-        if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+        // Making sure we don't crash the engine when we hit an object that doesn't implement a public GetClass() (such as bsp)
+        if (Cast<UObject>(InteractionHit.GetActor()))
         {
-            // Calling the Interact function within our hit actor via the interface
-            Cast<IInteractInterface>(InteractionHit.GetActor())->Interact();
+            // Checking if the actor we hit implements the interaction interface
+            if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+            {
+                // Calling the Interact function within our hit actor via the interface
+                Cast<IInteractInterface>(InteractionHit.GetActor())->Interact();
+            }
         }
     }
 }
@@ -85,21 +89,25 @@ void UInteractionComponent::InteractionIndicator()
     // Checking if we hit something with our line trace
     if (GetWorld()->LineTraceSingleByChannel(InteractionHit, CameraLocation, TraceEndLocation, ECC_WorldStatic, TraceParams))
     {
-        // Checking if the actor we hit implements the interaction interface
-        if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
+        // Making sure we don't crash the engine when we hit an object that doesn't implement a public GetClass() (such as bsp)
+        if (Cast<UObject>(InteractionHit.GetActor()))
         {
-            bCanInteract = true;
-
-            // Checking between classes that derive from ASInteract and updating variables accordingly
-            const AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
-
-            if (InteractionActor)
+            // Checking if the actor we hit implements the interaction interface
+            if(InteractionHit.GetActor()->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
             {
-                InteractText = InteractionActor->InteractionText;
-            }
-            else
-            {
-                InteractText = FText::GetEmpty();
+                bCanInteract = true;
+    
+                // Checking between classes that derive from ASInteract and updating variables accordingly
+                const AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
+    
+                if (InteractionActor)
+                {
+                    InteractText = InteractionActor->InteractionText;
+                }
+                else
+                {
+                    InteractText = FText::GetEmpty();
+                }
             }
         }
     }
