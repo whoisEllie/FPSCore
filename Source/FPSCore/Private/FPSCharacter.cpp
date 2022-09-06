@@ -49,8 +49,16 @@ AFPSCharacter::AFPSCharacter()
 void AFPSCharacter::BeginPlay()
 {
     Super::BeginPlay();
-        
-    GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed;
+
+    if (MovementDataMap.Contains(EMovementState::State_Walk))
+    {
+        GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed;
+    }
+    else
+    {
+        UE_LOG(LogProfilingDebugging, Error, TEXT("Set up data in MovementDataMap!"))
+    }
+    
     DefaultSpringArmOffset = SpringArmComponent->GetRelativeLocation().Z; // Setting the default location of the spring arm
 
     // Binding a timeline to our vaulting curve
@@ -443,8 +451,11 @@ bool AFPSCharacter::HasSpaceToStandUp()
     {
         DrawDebugCapsule(GetWorld(), CenterVector, CollisionCapsuleHeight, 30.0f, FQuat::Identity, FColor::Red, false, 5.0f, 0, 3);
     }
-            
-    if (GetWorld()->SweepSingleByChannel(StandUpHit, CenterVector, CenterVector, FQuat::Identity, ECC_GameTraceChannel4, CollisionCapsule))
+
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    
+    if (GetWorld()->SweepSingleByChannel(StandUpHit, CenterVector, CenterVector, FQuat::Identity, ECC_GameTraceChannel4, CollisionCapsule, QueryParams))
     {
         /* confetti or smth idk */
         if (bDrawDebug)
@@ -477,18 +488,25 @@ void AFPSCharacter::UpdateMovementValues(const EMovementState NewMovementState)
     // Updating the movement state
     MovementState = NewMovementState;
 
-    // Updating CharacterMovementComponent variables based on movement state
-    if (InventoryComponent)
+    if (MovementDataMap.Contains(EMovementState::State_Walk))
     {
-        if (InventoryComponent->GetCurrentWeapon())
+        // Updating CharacterMovementComponent variables based on movement state
+        if (InventoryComponent)
         {
-            InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+            if (InventoryComponent->GetCurrentWeapon())
+            {
+                InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+            }
         }
+        GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
+        GetCharacterMovement()->BrakingDecelerationWalking = MovementDataMap[MovementState].BreakingDecelerationWalking;
+        GetCharacterMovement()->GroundFriction = MovementDataMap[MovementState].GroundFriction;
+        GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[MovementState].MaxWalkSpeed;
     }
-    GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
-    GetCharacterMovement()->BrakingDecelerationWalking = MovementDataMap[MovementState].BreakingDecelerationWalking;
-    GetCharacterMovement()->GroundFriction = MovementDataMap[MovementState].GroundFriction;
-    GetCharacterMovement()->MaxWalkSpeed = MovementDataMap[MovementState].MaxWalkSpeed;
+    else
+    {
+        UE_LOG(LogProfilingDebugging, Error, TEXT("Set up data in MovementDataMap!"))
+    }
 
     // Updating sprinting and crouching flags
     if (MovementState == EMovementState::State_Crouch)
@@ -524,22 +542,30 @@ void AFPSCharacter::Tick(const float DeltaTime)
     SpringArmComponent->SetRelativeLocation(NewSpringArmLocation);
     
     // FOV adjustments
-    float TargetFOV = ((MovementState == EMovementState::State_Sprint || MovementState == EMovementState::State_Slide) && GetVelocity().Size() > MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed)? BaseFOV + SpeedFOVChange : BaseFOV;
-    if (InventoryComponent)
+    if (MovementDataMap.Contains(EMovementState::State_Walk))
     {
-        if (InventoryComponent->GetCurrentWeapon())
+        float TargetFOV = ((MovementState == EMovementState::State_Sprint || MovementState == EMovementState::State_Slide) && GetVelocity().Size() > MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed)? BaseFOV + SpeedFOVChange : BaseFOV;
+        if (InventoryComponent)
         {
-            if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
+            if (InventoryComponent->GetCurrentWeapon())
             {
-                TargetFOV = BaseFOV - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
-                FOVChangeSpeed = 6;
+                if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
+                {
+                    TargetFOV = BaseFOV - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
+                    FOVChangeSpeed = 6;
+                }
             }
         }
+        
+        //Interpolates between current fov and target fov
+        const float InFieldOfView = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVChangeSpeed);
+        // Sets the new camera FOV
+        CameraComponent->SetFieldOfView(InFieldOfView);
     }
-    //Interpolates between current fov and target fov
-    const float InFieldOfView = FMath::FInterpTo(CameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVChangeSpeed);
-    // Sets the new camera FOV
-    CameraComponent->SetFieldOfView(InFieldOfView);
+    else
+    {
+        UE_LOG(LogProfilingDebugging, Error, TEXT("Set up data in MovementDataMap!"))
+    }
 
     // Continuous aiming check (so that you don't have to re-press the ADS button every time you jump/sprint/reload/etc)
     if (bWantsToAim == true && MovementState != EMovementState::State_Sprint && MovementState != EMovementState::State_Slide)
