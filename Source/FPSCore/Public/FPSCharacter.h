@@ -406,7 +406,6 @@ private:
 	 *	CrouchedCapsuleHalfHeight minus the capsule's default height. For example, if the default capsule half height
 	 *	is 88.0f, and the crouched half height is 58.0f, then the crouched spring arm height delta should be -30
 	 */
-	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	float CrouchedSpringArmHeightDelta;
 
 	/** The default offset of the spring arm from a Z position of 0, set automatically on BeginPlay */
