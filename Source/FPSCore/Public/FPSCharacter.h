@@ -94,17 +94,11 @@ public:
 	void SetCrosshairVisibility(const bool bVisible) { bShowCrosshair = bVisible; }
 
 	/** Returns whether the player is currently aiming or not */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	bool IsPlayerAiming() const { return bIsAiming; }
-
-	/** Returns whether the player is sprinting or not */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
-	bool IsPlayerSprinting() const { return bIsSprinting; }
-
-	/** Returns whether the player is crouching or not */
-	bool IsPlayerCrouching() const { return bIsCrouching; }
 	
 	/** Returns the character's current movement state */
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	EMovementState GetMovementState() const { return MovementState; }
 
 	/** Returns the character's hands mesh */
@@ -114,27 +108,27 @@ public:
 	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
 	/** Returns the character's empty-handed walking blend space */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UBlendSpace* GetWalkBlendSpace() const { return BS_Walk; }
 
 	/** Returns the character's empty-handed walking blend space for use in the aiming state */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UBlendSpace* GetWalkAdsBlendSpace() const { return BS_Ads_Walk; }
 
 	/** Returns the character's empty-handed idle animation */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UAnimSequence* GetIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's empty handed idle animation for use in the aiming state */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UAnimSequence* GetAdsIdleAnim() const { return Anim_Ads_Idle; }
 
 	/** Returns the character's empty handed sprinting animation */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UAnimSequence* GetSprintAnim() const { return Anim_Sprint; }
 
 	/** Returns the character's current input mapping context */
-	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UInputMappingContext* GetBaseMappingContext() const { return BaseMappingContext; }
 
 	/** Returns the Inventory Component */
@@ -317,10 +311,6 @@ private:
 	/** The increase in FOV during fast actions, such as sprinting and sliding */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | FOV")
 	float SpeedFOVChange = 5.0f;
-	
-	/** Name of the socket we attach our camera to */
-	UPROPERTY(EditDefaultsOnly, Category = "Camera | Socket")
-	FName CameraSocketName;
 
 #pragma endregion 
 
