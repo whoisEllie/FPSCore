@@ -51,35 +51,35 @@ struct FPlayerAnimSet
 	GENERATED_BODY()
 
 		/** The walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UBlendSpace* BS_Walk;
 
 	/** The ADS Walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UBlendSpace* BS_Ads_Walk;
 
 	/** The Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Idle;
 
 	/** The ADS Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Ads_Idle;
 	
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_Start;
 
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_End;
 
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Fall;
 
 	/** The sprinting animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Sprint;
 };
 
