@@ -1,6 +1,8 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "WeaponBase.h"
+#include "Animation/AnimationAsset.h"
+#include "Animation/AnimSequence.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
@@ -9,8 +11,6 @@
 #include "FPSCharacterController.h"
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "Components/SceneCaptureComponent2D.h"
-#include "Particles/ParticleSystem.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -51,11 +51,6 @@ AWeaponBase::AWeaponBase()
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-    
-    //Sets the default values for our trace query
-	QueryParams.AddIgnoredActor(this);
-	QueryParams.bTraceComplex = true;
-	QueryParams.bReturnPhysicalMaterial = true;
 
     // Getting a reference to the relevant row in the WeaponData DataTable
     WeaponData = *WeaponDataTable->FindRow<FStaticWeaponData>(FName(DataTableNameRef), FString(DataTableNameRef), true);
@@ -322,6 +317,15 @@ void AWeaponBase::Fire()
             }
 
             FVector EndPoint = TraceEnd;
+
+            	
+            /** collision parameters for spawning the line trace */
+            FCollisionQueryParams QueryParams;
+
+            //Sets the default values for our trace query
+            QueryParams.AddIgnoredActor(this);
+            QueryParams.bTraceComplex = true;
+            QueryParams.bReturnPhysicalMaterial = true;
 
             // Drawing a line trace based on the parameters calculated previously 
             if(GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_GameTraceChannel1, QueryParams))

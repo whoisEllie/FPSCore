@@ -6,6 +6,7 @@
 #include "FPSCharacter.h"
 #include "InteractionActor.h"
 #include "WeaponPickup.h"
+#include "WeaponBase.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties

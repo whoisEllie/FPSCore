@@ -1,13 +1,8 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "0.1.2",
 	"EngineVersion": "5.0",
-	"WhitelistPlatforms": [
-		"Win64",
-		"Win32",
-		"Mac"
-	],
 	"FriendlyName": "FPS Core",
 	"Description": "Kickstart your development of first person shooters!",
 	"Category": "Gameplay",
@@ -35,7 +30,7 @@
 			"Name": "FPSCore",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [
+			"PlatformAllowList": [
 				"Win64",
 				"Mac"
 			]

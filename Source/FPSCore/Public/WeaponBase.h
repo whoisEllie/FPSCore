@@ -14,6 +14,8 @@ class USkeletalMeshComponent;
 class USkeletalMesh;
 class UStaticMesh;
 class UAnimMontage;
+class UAnimationAsset;
+class UAnimSequence;
 class UNiagaraSystem;
 class UBlendSpace;
 class USoundCue;
@@ -754,9 +756,6 @@ private:
 	
 	/** end point of the line trace */
 	FVector TraceEnd;
-	
-	/** collision parameters for spawning the line trace */
-	FCollisionQueryParams QueryParams;
 
 	/** hit result variable set when a line trace is spawned */
 	UPROPERTY()

@@ -6,20 +6,21 @@
 #include "EnhancedInputSubsystems.h"
 #include "FPSCharacterController.h"
 #include "WeaponBase.h"
-#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/TimelineComponent.h"
-#include "Components/WidgetManagementComponent.h"
 #include "Engine/Engine.h"
+#include "TimerManager.h"
+#include "Engine/LocalPlayer.h"
+// ReSharper disable once CppUnusedIncludeDirective
+#include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -628,12 +629,6 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         {
             InteractionComponent->InteractAction = InteractAction;
             InteractionComponent->SetupInputComponent(PlayerEnhancedInputComponent);
-        }
-
-        if (UWidgetManagementComponent* WidgetManagementComponent = FindComponentByClass<UWidgetManagementComponent>())
-        {
-            WidgetManagementComponent->PauseAction = PauseAction;
-            WidgetManagementComponent->SetupInputComponent(PlayerEnhancedInputComponent);
         }
 
         if (UInventoryComponent* InventoryComp = FindComponentByClass<UInventoryComponent>())

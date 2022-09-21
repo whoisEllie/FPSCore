@@ -13,8 +13,7 @@ public class FPSCore : ModuleRules
 				// ... add public include paths required here ...
 			}
 			);
-				
-		
+
 		PrivateIncludePaths.AddRange(
 			new string[] {
 				// ... add other private include paths required here ...
@@ -26,9 +25,7 @@ public class FPSCore : ModuleRules
 			new string[]
 			{
 				"Core",
-                "UMG",
                 "PhysicsCore",
-                "Kismet",
                 "Niagara",
                 "EnhancedInput"
                 // ... add other public dependencies that you statically link with here ...
