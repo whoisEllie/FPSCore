@@ -109,23 +109,27 @@ public:
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UBlendSpace* GetWalkBlendSpace() const { return BS_Walk; }
-
-	/** Returns the character's empty-handed walking blend space for use in the aiming state */
-	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UBlendSpace* GetWalkAdsBlendSpace() const { return BS_Ads_Walk; }
+	UBlendSpace* GetEmptyWalkBlendSpace() const { return BS_Walk; }
 
 	/** Returns the character's empty-handed idle animation */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UAnimSequence* GetIdleAnim() const { return Anim_Idle; }
+	UAnimSequence* GetEmptyIdleAnim() const { return Anim_Idle; }
 
-	/** Returns the character's empty handed idle animation for use in the aiming state */
-	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UAnimSequence* GetAdsIdleAnim() const { return Anim_Ads_Idle; }
-
-	/** Returns the character's empty handed sprinting animation */
-	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UAnimSequence* GetSprintAnim() const { return Anim_Sprint; }
+	/** Returns the character's set of animations */
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	FPlayerAnimSet GetWeaponAnimations() const
+	{
+		FPlayerAnimSet PlayerAnimSet;
+		PlayerAnimSet.BS_Walk = BS_Walk;
+		PlayerAnimSet.BS_Ads_Walk = BS_Walk;
+		PlayerAnimSet.Anim_Idle = Anim_Idle;
+		PlayerAnimSet.Anim_Ads_Idle = Anim_Idle;
+		PlayerAnimSet.Anim_Jump_Start = Anim_Jump_Start;
+		PlayerAnimSet.Anim_Jump_End = Anim_Jump_End;
+		PlayerAnimSet.Anim_Fall = Anim_Fall;
+		PlayerAnimSet.Anim_Sprint = Anim_Sprint;
+		return PlayerAnimSet;
+	}
 
 	/** Returns the character's current input mapping context */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
@@ -152,18 +156,10 @@ protected:
 	/** Hand animation blend space for when the player has no weapon  */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Blend Spaces")
 	UBlendSpace* BS_Walk;
-
-	/** Hand animation blend space for then the player has no weapon and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Blend Spaces")
-	UBlendSpace* BS_Ads_Walk;
-
+	
 	/** Hand animation for when the player has no weapon and is idle */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Idle;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Ads_Idle;
 	
 	/** Hand animation for when the player has no weapon and starts to jump */
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")

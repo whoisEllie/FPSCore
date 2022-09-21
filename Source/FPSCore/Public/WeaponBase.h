@@ -45,6 +45,44 @@ enum class EAttachmentType : uint8
 	Grip		UMETA(DispayName = "Grip Attachment"),
 };
 
+USTRUCT(BlueprintType)
+struct FPlayerAnimSet
+{
+	GENERATED_BODY()
+
+		/** The walking BlendSpace */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UBlendSpace* BS_Walk;
+
+	/** The ADS Walking BlendSpace */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UBlendSpace* BS_Ads_Walk;
+
+	/** The Idle animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* Anim_Idle;
+
+	/** The ADS Idle animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* Anim_Ads_Idle;
+	
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Jump_Start;
+
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Jump_End;
+
+	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UAnimSequence* Anim_Fall;
+
+	/** The sprinting animation sequence */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* Anim_Sprint;
+};
+
 /** Struct keeping track of important weapon variables modified at runtime. This structs contains data that is either
  *	modified at runtime, such as the amount of ammunition in the weapon, but also data required to spawn attachments
  *	and pickups
@@ -596,25 +634,21 @@ public:
 		bShowDebug = IsVisible;
 	};
 	
-	/** Returns the character's empty-handed walking blend space */
-	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
-	UBlendSpace* GetWalkBlendSpace() const { return WalkBlendSpace; }
-
-	/** Returns the character's empty-handed walking blend space for use in the aiming state */
-	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
-	UBlendSpace* GetWalkAdsBlendSpace() const { return ADSWalkBlendSpace; }
-
-	/** Returns the character's empty-handed idle animation */
-	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
-	UAnimSequence* GetIdleAnim() const { return Anim_Idle; }
-
-	/** Returns the character's empty handed idle animation for use in the aiming state */
-	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
-	UAnimSequence* GetAdsIdleAnim() const { return Anim_ADS_Idle; }
-
-	/** Returns the character's empty handed sprinting animation */
-	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
-	UAnimSequence* GetSprintAnim() const { return Anim_Sprint; }
+	/** Returns the character's set of animations */
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	FPlayerAnimSet GetWeaponAnimations() const
+	{
+		FPlayerAnimSet PlayerAnimSet;
+		PlayerAnimSet.BS_Walk = WeaponData.BS_Walk;
+		PlayerAnimSet.BS_Ads_Walk = WeaponData.BS_Ads_Walk;
+		PlayerAnimSet.Anim_Idle = WeaponData.Anim_Idle;
+		PlayerAnimSet.Anim_Ads_Idle = WeaponData.Anim_Ads_Idle;
+		PlayerAnimSet.Anim_Jump_Start = WeaponData.Anim_Jump_Start;
+		PlayerAnimSet.Anim_Jump_End = WeaponData.Anim_Jump_End;
+		PlayerAnimSet.Anim_Fall = WeaponData.Anim_Fall;
+		PlayerAnimSet.Anim_Sprint = WeaponData.Anim_Sprint;
+		return PlayerAnimSet;
+	}
 
 	/** Returns the vertical camera offset for this weapon instance */
 	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
