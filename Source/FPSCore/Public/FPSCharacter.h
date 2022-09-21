@@ -117,9 +117,9 @@ public:
 
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")
-	FPlayerAnimSet GetWeaponAnimations() const
+	FHandsAnimSet GetWeaponAnimations() const
 	{
-		FPlayerAnimSet PlayerAnimSet;
+		FHandsAnimSet PlayerAnimSet;
 		PlayerAnimSet.BS_Walk = BS_Walk;
 		PlayerAnimSet.BS_Ads_Walk = BS_Walk;
 		PlayerAnimSet.Anim_Idle = Anim_Idle;

@@ -46,7 +46,7 @@ enum class EAttachmentType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FPlayerAnimSet
+struct FHandsAnimSet
 {
 	GENERATED_BODY()
 
@@ -636,9 +636,9 @@ public:
 	
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")
-	FPlayerAnimSet GetWeaponAnimations() const
+	FHandsAnimSet GetWeaponAnimations() const
 	{
-		FPlayerAnimSet PlayerAnimSet;
+		FHandsAnimSet PlayerAnimSet;
 		PlayerAnimSet.BS_Walk = WeaponData.BS_Walk;
 		PlayerAnimSet.BS_Ads_Walk = WeaponData.BS_Ads_Walk;
 		PlayerAnimSet.Anim_Idle = WeaponData.Anim_Idle;
