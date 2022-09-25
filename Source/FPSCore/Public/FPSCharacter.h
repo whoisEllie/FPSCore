@@ -116,8 +116,16 @@ public:
 	UAnimSequence* GetEmptyIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's set of animations */
-	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	UFUNCTION(BlueprintPure, Category = "Weapon Base", meta=(DeprecatedFunction,
+		DeprecationMessage="Please switch to the more appropriately named GetPlayerAnimations instead."))
 	FHandsAnimSet GetWeaponAnimations() const
+	{
+		return GetPlayerAnimations();
+	}
+	
+	/** Returns the character's set of animations */
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	FHandsAnimSet GetPlayerAnimations() const
 	{
 		FHandsAnimSet PlayerAnimSet;
 		PlayerAnimSet.BS_Walk = BS_Walk;
@@ -154,27 +162,27 @@ protected:
 	USpringArmComponent* SpringArmComponent;
 	
 	/** Hand animation blend space for when the player has no weapon  */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Blend Spaces")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Blend Spaces")
 	UBlendSpace* BS_Walk;
 	
 	/** Hand animation for when the player has no weapon and is idle */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Idle;
 	
 	/** Hand animation for when the player has no weapon and starts to jump */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_Start;
 
 	/** Hand animation for when the player has no weapon and stops jumping */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Jump_End;
 
 	/** Hand animation for when the player has no weapon and is falling */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Fall;
 	
 	/** Hand animation for when the player has no weapon and is sprinting */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
 	UAnimSequence* Anim_Sprint;
 
 	/** Hand montage, played during vault */

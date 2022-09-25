@@ -45,12 +45,13 @@ enum class EAttachmentType : uint8
 	Grip		UMETA(DispayName = "Grip Attachment"),
 };
 
+/** A struct containing all the animations needed by FPS Core, in order to simplify blueprint operations */
 USTRUCT(BlueprintType)
 struct FHandsAnimSet
 {
 	GENERATED_BODY()
 
-		/** The walking BlendSpace */
+	/** The walking BlendSpace */
 	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UBlendSpace* BS_Walk;
 
