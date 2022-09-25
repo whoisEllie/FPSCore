@@ -53,7 +53,10 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
     // Getting a reference to the relevant row in the WeaponData DataTable
-    WeaponData = *WeaponDataTable->FindRow<FStaticWeaponData>(FName(DataTableNameRef), FString(DataTableNameRef), true);
+    if (WeaponDataTable)
+    {
+        WeaponData = *WeaponDataTable->FindRow<FStaticWeaponData>(FName(DataTableNameRef), FString(DataTableNameRef), true);
+    }
     
     // Setting our default animation values
     // We set these here, but they can be overriden later by variables from applied attachments.

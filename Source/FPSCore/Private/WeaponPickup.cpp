@@ -9,24 +9,21 @@
 // Sets default values
 AWeaponPickup::AWeaponPickup()
 {
-	// Creating all of our meshes, and drawing them to the custom stencil for use with the outline shader 
-	MainMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MainMesh"));
-	MainMesh->SetupAttachment(RootComponent);
-
+	// Creating all of our meshes
 	BarrelAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BarrelAttachment"));
-	BarrelAttachment->SetupAttachment(MainMesh);
+	BarrelAttachment->SetupAttachment(MeshComp);
 
 	MagazineAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MagazineAttachment"));
-	MagazineAttachment->SetupAttachment(MainMesh);
+	MagazineAttachment->SetupAttachment(MeshComp);
 	
 	SightsAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SightsAttachment"));
-	SightsAttachment->SetupAttachment(MainMesh);
+	SightsAttachment->SetupAttachment(MeshComp);
 
 	StockAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StockAttachment"));
-	StockAttachment->SetupAttachment(MainMesh);
+	StockAttachment->SetupAttachment(MeshComp);
 	
 	GripAttachment = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GripAttachment"));
-	GripAttachment->SetupAttachment(MainMesh);
+	GripAttachment->SetupAttachment(MeshComp);
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +42,7 @@ void AWeaponPickup::BeginPlay()
 	// Simulating physics if not bStatic
 	if (!bStatic)
 	{
-		MainMesh->SetSimulatePhysics(true);
+		MeshComp->SetSimulatePhysics(true);
 	}
 }
 
@@ -68,7 +65,7 @@ void AWeaponPickup::SpawnAttachmentMesh()
 {
 	// Getting a reference to our Weapon Data table in order to see if we have attachments
 	const AWeaponBase* WeaponBaseReference =  WeaponReference.GetDefaultObject();
-	if (WeaponDataTable)
+	if (WeaponDataTable && WeaponBaseReference)
 	{
 		if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
 		{
@@ -115,16 +112,16 @@ void AWeaponPickup::SpawnAttachmentMesh()
 					}
 				}
 			}
-		}
-		else
-		{
-			// Applying default values if the weapon doesn't use attachments
-			if (!bRuntimeSpawned)
+			else
 			{
-				DataStruct.AmmoType = WeaponData->AmmoToUse;
-				DataStruct.ClipCapacity = WeaponData->ClipCapacity;
-				DataStruct.ClipSize = WeaponData->ClipSize;
-				DataStruct.WeaponHealth = 100.0f;
+				// Applying default values if the weapon doesn't use attachments
+				if (!bRuntimeSpawned)
+				{
+					DataStruct.AmmoType = WeaponData->AmmoToUse;
+					DataStruct.ClipCapacity = WeaponData->ClipCapacity;
+					DataStruct.ClipSize = WeaponData->ClipSize;
+					DataStruct.WeaponHealth = 100.0f;
+				}
 			}
 		}
 	}
@@ -132,8 +129,6 @@ void AWeaponPickup::SpawnAttachmentMesh()
 
 void AWeaponPickup::Interact()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Testing!"));
-
 	// Getting a reference to the Character Controller
 	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 

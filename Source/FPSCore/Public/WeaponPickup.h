@@ -21,7 +21,7 @@ class FPSCORE_API AWeaponPickup : public AInteractionBase
 public:
 
 	/** Returns the main mesh component of the given pickup - useful for toggling setting such as physics simulation */
-	UMeshComponent* GetMainMesh() const { return MainMesh; }
+	UMeshComponent* GetMainMesh() const { return MeshComp; }
 
 	/** Set the static setting of the given pickup (whether it should simulate physics or not */
 	void SetStatic(const bool bNewStatic) { bStatic = bNewStatic; }
@@ -86,10 +86,6 @@ private:
 	/** Visualisation name */
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
 	FText WeaponName;
-
-	/** Main weapon mesh */
-	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
-	UStaticMeshComponent* MainMesh;
 
 	/** Called when the game starts or when spawned */
 	virtual void BeginPlay() override;
