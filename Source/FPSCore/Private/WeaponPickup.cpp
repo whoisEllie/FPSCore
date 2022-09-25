@@ -68,47 +68,50 @@ void AWeaponPickup::SpawnAttachmentMesh()
 {
 	// Getting a reference to our Weapon Data table in order to see if we have attachments
 	const AWeaponBase* WeaponBaseReference =  WeaponReference.GetDefaultObject();
-	if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
+	if (WeaponDataTable)
 	{
-		// Spawning attachments if the weapon has them and the attachments table exists
-		if (WeaponData->bHasAttachments && AttachmentsDataTable)
+		if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
 		{
-			// Iterating through all the attachments in AttachmentArray
-			for (FName RowName : DataStruct.WeaponAttachments)
+			// Spawning attachments if the weapon has them and the attachments table exists
+			if (WeaponData->bHasAttachments && AttachmentsDataTable)
 			{
-				// Searching the data table for the attachment
-				const FAttachmentData* AttachmentData = AttachmentsDataTable->FindRow<FAttachmentData>(RowName, RowName.ToString(), true);
-
-				// Applying the effects of the attachment
-				if (AttachmentData)
+				// Iterating through all the attachments in AttachmentArray
+				for (FName RowName : DataStruct.WeaponAttachments)
 				{
-					if (AttachmentData->AttachmentType == EAttachmentType::Barrel)
+					// Searching the data table for the attachment
+					const FAttachmentData* AttachmentData = AttachmentsDataTable->FindRow<FAttachmentData>(RowName, RowName.ToString(), true);
+
+					// Applying the effects of the attachment
+					if (AttachmentData)
 					{
-						BarrelAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-					}
-					else if (AttachmentData->AttachmentType == EAttachmentType::Magazine)
-					{
-						MagazineAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-						// Pulling default values from the Magazine attachment type
-						if (!bRuntimeSpawned)
+						if (AttachmentData->AttachmentType == EAttachmentType::Barrel)
 						{
-							DataStruct.AmmoType = AttachmentData->AmmoToUse;
-							DataStruct.ClipCapacity = AttachmentData->ClipCapacity;
-							DataStruct.ClipSize = AttachmentData->ClipSize;
-							DataStruct.WeaponHealth = 100.0f;
+							BarrelAttachment->SetStaticMesh(AttachmentData->PickupMesh);
 						}
-					}
-					else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
-					{
-						SightsAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-					}
-					else if (AttachmentData->AttachmentType == EAttachmentType::Stock)
-					{
-						StockAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-					}
-					else if (AttachmentData->AttachmentType == EAttachmentType::Grip)
-					{
-						GripAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+						else if (AttachmentData->AttachmentType == EAttachmentType::Magazine)
+						{
+							MagazineAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+							// Pulling default values from the Magazine attachment type
+							if (!bRuntimeSpawned)
+							{
+								DataStruct.AmmoType = AttachmentData->AmmoToUse;
+								DataStruct.ClipCapacity = AttachmentData->ClipCapacity;
+								DataStruct.ClipSize = AttachmentData->ClipSize;
+								DataStruct.WeaponHealth = 100.0f;
+							}
+						}
+						else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
+						{
+							SightsAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+						}
+						else if (AttachmentData->AttachmentType == EAttachmentType::Stock)
+						{
+							StockAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+						}
+						else if (AttachmentData->AttachmentType == EAttachmentType::Grip)
+						{
+							GripAttachment->SetStaticMesh(AttachmentData->PickupMesh);
+						}
 					}
 				}
 			}

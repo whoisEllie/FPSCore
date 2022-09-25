@@ -116,8 +116,7 @@ public:
 	UAnimSequence* GetEmptyIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's set of animations */
-	UFUNCTION(BlueprintPure, Category = "Weapon Base", meta=(DeprecatedFunction,
-		DeprecationMessage="Please switch to the more appropriately named GetPlayerAnimations instead."))
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
 	FHandsAnimSet GetWeaponAnimations() const
 	{
 		return GetPlayerAnimations();
