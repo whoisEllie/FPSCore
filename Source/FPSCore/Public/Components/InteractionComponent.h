@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
+#include "InteractionBase.h"
 #include "Components/ActorComponent.h"
 #include "InteractionComponent.generated.h"
 

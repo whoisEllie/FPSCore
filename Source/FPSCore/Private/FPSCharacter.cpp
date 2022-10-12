@@ -41,7 +41,10 @@ AFPSCharacter::AFPSCharacter()
     
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-    CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
+    if (HandsMeshComp)
+    {
+        CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
+    }
     
     DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
@@ -136,22 +139,36 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
     }
 }
 
-void AFPSCharacter::StartCrouch()
+void AFPSCharacter::ToggleCrouch()
 {
     bHoldingCrouch = true;
     if (GetCharacterMovement()->IsMovingOnGround())
     {
-        if (MovementState == EMovementState::State_Crouch)
+        if (bCrouchIsToggle)
         {
-            StopCrouch(false);
-        }
-        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
-        {
-            StartSlide();
+            if (MovementState == EMovementState::State_Crouch)
+            {
+                StopCrouch(false);
+            }
+            else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
+            {
+                StartSlide();
+            }
+            else
+            {
+                UpdateMovementValues(EMovementState::State_Crouch);
+            }
         }
         else
         {
-            UpdateMovementValues(EMovementState::State_Crouch);
+            if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
+            {
+                StartSlide();
+            }
+            else
+            {
+                UpdateMovementValues(EMovementState::State_Crouch);
+            }
         }
     }
     else if (!bPerformedSlide)
@@ -169,6 +186,11 @@ void AFPSCharacter::ReleaseCrouch()
     {
         StopSlide();
     }
+    else if (!bCrouchIsToggle && MovementState == EMovementState::State_Crouch)
+    {
+        UpdateMovementValues(EMovementState::State_Walk);
+    }
+
 }
 
 void AFPSCharacter::StopCrouch(const bool bToSprint)
@@ -221,7 +243,7 @@ void AFPSCharacter::StartSlide()
 
 void AFPSCharacter::StopSlide()
 {
-    if (MovementState == EMovementState::State_Slide && FloorAngle > -15.0f)
+    if (MovementState == EMovementState::State_Slide && FloorAngle > SlideContinueAngle)
     {
         if (!HasSpaceToStandUp())
         {
@@ -242,7 +264,7 @@ void AFPSCharacter::StopSlide()
         bPerformedSlide = false;
         GetWorldTimerManager().ClearTimer(SlideStop);
     }
-    else if (FloorAngle < -15.0f)
+    else if (FloorAngle < -SlideContinueAngle)
     {
         GetWorldTimerManager().SetTimer(SlideStop, this, &AFPSCharacter::ReleaseCrouch, 0.1f, false, 0.1f);
     }
@@ -475,7 +497,10 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     VaultStartLocation = GetActorTransform();
     VaultEndLocation = TargetTransform;
     UpdateMovementValues(EMovementState::State_Vault);
-    HandsMeshComp->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
+    if (VaultMontage)
+    {
+        HandsMeshComp->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
+    }
     VaultTimeline.PlayFromStart();
 }
 
@@ -677,7 +702,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         if (CrouchAction)
         {
             // Crouching
-            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AFPSCharacter::StartCrouch);
+            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AFPSCharacter::ToggleCrouch);
             PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AFPSCharacter::ReleaseCrouch);
         }
     }

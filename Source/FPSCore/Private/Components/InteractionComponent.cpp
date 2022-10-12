@@ -1,11 +1,9 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "Components/InteractionComponent.h"
-#include "AmmoPickup.h"
 #include "EnhancedInputComponent.h"
 #include "FPSCharacter.h"
 #include "InteractionActor.h"
-#include "WeaponPickup.h"
 #include "WeaponBase.h"
 #include "Camera/CameraComponent.h"
 
@@ -99,7 +97,7 @@ void UInteractionComponent::InteractionIndicator()
                 bCanInteract = true;
     
                 // Checking between classes that derive from ASInteract and updating variables accordingly
-                const AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
+                AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
     
                 if (InteractionActor)
                 {

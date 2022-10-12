@@ -482,7 +482,7 @@ void AWeaponBase::Recoil()
         CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue(VerticalRecoilTimeline.GetPlaybackPosition()) * VerticalRecoilModifier);
         CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue(HorizontalRecoilTimeline.GetPlaybackPosition()) * HorizontalRecoilModifier);
     }
-    else
+    else if (CharacterController && ShotsFired > 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
     {
         CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue(0) * VerticalRecoilModifier);
         CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue(0) * HorizontalRecoilModifier);
@@ -518,55 +518,57 @@ void AWeaponBase::Reload()
 
     // Checking if we are not reloading, if a reloading montage exists, and if there is any point in reloading
     // (current ammunition does not match maximum magazine capacity and there is spare ammunition to load into the gun)
-    if (!bIsReloading && CharacterController->AmmoMap[GeneralWeaponData.AmmoType] > 0 && (GeneralWeaponData.ClipSize !=
-        (GeneralWeaponData.ClipCapacity + Value)))
+    if (CharacterController->AmmoMap.Contains(GeneralWeaponData.AmmoType))
     {
-        // Differentiating between having no ammunition in the magazine (having to chamber a round after reloading)
-        // or not, and playing an animation relevant to that
-        if (GeneralWeaponData.ClipSize <= 0 && WeaponData.EmptyPlayerReload)
+        if (!bIsReloading && CharacterController->AmmoMap[GeneralWeaponData.AmmoType] > 0 && (GeneralWeaponData.ClipSize !=
+            (GeneralWeaponData.ClipCapacity + Value)))
         {
-            if (WeaponData.bHasAttachments)
+            // Differentiating between having no ammunition in the magazine (having to chamber a round after reloading)
+            // or not, and playing an animation relevant to that
+            if (GeneralWeaponData.ClipSize <= 0 && WeaponData.EmptyPlayerReload)
             {
-                MagazineAttachment->PlayAnimation(WeaponData.EmptyWeaponReload, false);
+                if (WeaponData.bHasAttachments)
+                {
+                    MagazineAttachment->PlayAnimation(WeaponData.EmptyWeaponReload, false);
+                }
+                else
+                {
+                    MeshComp->PlayAnimation(WeaponData.EmptyWeaponReload, false);
+                }
+                
+                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.EmptyPlayerReload, 1.0f);
+            }
+            else if (WeaponData.PlayerReload)
+            {
+                if (WeaponData.bHasAttachments)
+                {
+                    MagazineAttachment->PlayAnimation(WeaponData.WeaponReload, false);
+                }
+                else
+                {
+                    MeshComp->PlayAnimation(WeaponData.WeaponReload, false);
+                }
+                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.PlayerReload, 1.0f);
             }
             else
             {
-                MeshComp->PlayAnimation(WeaponData.EmptyWeaponReload, false);
+                AnimTime = 2.0f;
             }
             
-            AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.EmptyPlayerReload, 1.0f);
-        }
-        else if (WeaponData.PlayerReload)
-        {
-            if (WeaponData.bHasAttachments)
+            // Printing debug strings
+            if(bShowDebug)
             {
-                MagazineAttachment->PlayAnimation(WeaponData.WeaponReload, false);
+                GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Reload", true);
             }
-            else
-            {
-                MeshComp->PlayAnimation(WeaponData.WeaponReload, false);
-            }
-            AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.PlayerReload, 1.0f);
+            
+            // Setting variables to make sure that the player cannot fire or reload during the time that the weapon is in it's reloading animation
+            bCanFire = false;
+            bIsReloading = true;
+            
+            // Starting the timer alongside the animation of the weapon reloading, casting to UpdateAmmo when it finishes
+            GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
         }
-        else
-        {
-            AnimTime = 2.0f;
-        }
-        
-        // Printing debug strings
-        if(bShowDebug)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Reload", true);
-        }
-        
-        // Setting variables to make sure that the player cannot fire or reload during the time that the weapon is in it's reloading animation
-        bCanFire = false;
-        bIsReloading = true;
-        
-        // Starting the timer alongside the animation of the weapon reloading, casting to UpdateAmmo when it finishes
-        GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
     }
-    
 }
 
 void AWeaponBase::UpdateAmmo()

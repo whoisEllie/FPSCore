@@ -116,7 +116,7 @@ public:
 	UAnimSequence* GetEmptyIdleAnim() const { return Anim_Idle; }
 
 	/** Returns the character's set of animations */
-	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	UFUNCTION(BlueprintPure, Category = "Weapon Base", meta=(DeprecatedFunction))
 	FHandsAnimSet GetWeaponAnimations() const
 	{
 		return GetPlayerAnimations();
@@ -203,12 +203,15 @@ private:
 	/** Alternative to the built in Crouch function
 	 *  Handles crouch input and decides what action to perform based on the character's current state
 	 */
-	void StartCrouch();
+	void ToggleCrouch();
 	
 	/** Transitions the character out of the crouched state
 	 *	@param bToSprint Whether to transition into a sprint state
 	 */
 	void StopCrouch(bool bToSprint);
+
+	/** Toggle for crouching */
+	void StartCrouch();
 
 	/** Exits the character from the slide state if they are sliding and updates bHoldingCrouch */
 	void ReleaseCrouch();
@@ -282,10 +285,18 @@ private:
 	/** The rate at which the character crouches */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch") 
 	float CrouchSpeed = 10.0f;
+
+	/** Whether crouching has to be held or can be toggled */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
+	bool bCrouchIsToggle = false;
 	
 	/** The time in seconds between the beginning of a slide and when it is ended */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
 	float SlideTime = 1.0f;
+
+	/** The angle that the floor has to be at in order for sliding to not be cancelled after SlideTime has passed */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
+	float SlideContinueAngle = -15.0f;
 
 	/** The height of the highest surface that the player can mantle up onto */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")
