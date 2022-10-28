@@ -288,7 +288,7 @@ private:
 
 	/** Whether crouching has to be held or can be toggled */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
-	bool bCrouchIsToggle = false;
+	bool bCrouchIsToggle = true;
 	
 	/** The time in seconds between the beginning of a slide and when it is ended */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")

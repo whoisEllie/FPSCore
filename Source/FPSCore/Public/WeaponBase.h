@@ -236,7 +236,7 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	float WeaponHealth = 100.0f;
 
-	/** The rate of fire of this magazine attachment */
+	/** The rate of fire (In rounds per minute/RPM) of this magazine attachment */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	float FireRate;
 
@@ -480,7 +480,7 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	int ClipSize;
 
-	/** The rate of fire of the weapon */
+	/** The rate of fire (In rounds per minute/RPM) of the weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float RateOfFire;
 

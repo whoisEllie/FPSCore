@@ -180,17 +180,25 @@ void AFPSCharacter::ToggleCrouch()
 
 void AFPSCharacter::ReleaseCrouch()
 {
+    if (bCrouchIsToggle)
+    {
+        if (!bPerformedSlide)
+        {
+            StopSlide();
+        }
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, *UEnum::GetDisplayValueAsText(MovementState).ToString());
+    
     bHoldingCrouch = false;
     bPerformedSlide = false;
     if (MovementState == EMovementState::State_Slide)
     {
         StopSlide();
     }
-    else if (!bCrouchIsToggle && MovementState == EMovementState::State_Crouch)
+    else
     {
         UpdateMovementValues(EMovementState::State_Walk);
     }
-
 }
 
 void AFPSCharacter::StopCrouch(const bool bToSprint)

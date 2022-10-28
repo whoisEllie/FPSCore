@@ -220,7 +220,7 @@ void AWeaponBase::StartFire()
     if (bCanFire)
     {
         // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
-        GetWorldTimerManager().SetTimer(ShotDelay, this, &AWeaponBase::Fire, WeaponData.RateOfFire, WeaponData.bAutomaticFire, 0.0f);
+        GetWorldTimerManager().SetTimer(ShotDelay, this, &AWeaponBase::Fire, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
 
         if (bShowDebug)
         {
