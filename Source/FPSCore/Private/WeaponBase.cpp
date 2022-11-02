@@ -336,11 +336,21 @@ void AWeaponBase::Fire()
                 // Drawing debug line trace
                 if (bShowDebug)
                 {
+                    // Debug line from muzzle to hit location
                     DrawDebugLine(
                         GetWorld(), (WeaponData.bHasAttachments
                                          ? BarrelAttachment->GetSocketLocation(WeaponData.MuzzleLocation)
                                          : MeshComp->GetSocketLocation(WeaponData.MuzzleLocation)), Hit.Location,
-                        FColor::Red, false, 10.0f, 0.0f, 2.0f);
+                                         FColor::Red, false, 10.0f, 0.0f, 2.0f);
+
+                    if (bDrawObstructiveDebugs)
+                    {
+                        // Debug line from camera to hit location
+                        DrawDebugLine(GetWorld(), TraceStart, Hit.Location,FColor::Orange, false, 10.0f, 0.0f, 2.0f);
+
+                        // Debug line from camera to target location
+                        DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, 10.0f, 0.0f, 2.0f);
+                    }
                 }
                 
                 // Resetting finalDamage

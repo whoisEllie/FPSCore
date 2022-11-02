@@ -96,15 +96,17 @@ void UInteractionComponent::InteractionIndicator()
             {
                 bCanInteract = true;
     
-                // Checking between classes that derive from ASInteract and updating variables accordingly
+                // Checking between classes that derive from AInteractionBase and updating variables accordingly
                 AInteractionBase* InteractionActor = Cast<AInteractionBase>(InteractionHit.GetActor());
-    
+                
                 if (InteractionActor)
                 {
+                    GetCurrentHitActor.Broadcast(InteractionActor, true);
                     InteractText = InteractionActor->InteractionText;
                 }
                 else
                 {
+                    GetCurrentHitActor.Broadcast(nullptr, false);
                     InteractText = FText::GetEmpty();
                 }
             }

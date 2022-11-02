@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "InputAction.h"
+#include "InteractionBase.h"
 #include "Components/ActorComponent.h"
 #include "InteractionComponent.generated.h"
 
+class UInteractionComponent;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_TwoParams(FGetCurrentHitActorSignature, UInteractionComponent, GetCurrentHitActor, AInteractionBase*, HitInteractionBase, bool, bIsValid);
+
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent, Blueprintable) )
 class FPSCORE_API UInteractionComponent final : public UActorComponent
 {
 	GENERATED_BODY()
@@ -29,6 +34,12 @@ public:
 	/** Returns true if the interaction trace is hitting a weapon pickup */
 	bool InteractionIsWeapon() const { return bInteractionIsWeapon; }
 
+	/** Returns the current interaction actor, or, if no actor is hit, nullptr
+	 *	@warning this function is not guaranteed to return a value, make sure to check if the output is valid before performing logic on it
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "Interaction Component")
+	FGetCurrentHitActorSignature GetCurrentHitActor;
+	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

@@ -710,6 +710,10 @@ private:
 	/** Debug boolean, toggle for debug strings and line traces to be shown */
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bShowDebug = false;
+
+	/** Whether to draw debugs that obstruct the screen (such as more informative weapon tracing information) */
+	UPROPERTY(EditAnywhere, Category = "Debug")
+	bool bDrawObstructiveDebugs = false;
 	
 	/** The main skeletal mesh - holds the weapon model */
 	UPROPERTY(EditDefaultsOnly, Category = "Components")

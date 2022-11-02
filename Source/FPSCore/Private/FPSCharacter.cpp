@@ -578,7 +578,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // FOV adjustments
     if (MovementDataMap.Contains(EMovementState::State_Walk))
     {
-        float TargetFOV = ((MovementState == EMovementState::State_Sprint || MovementState == EMovementState::State_Slide) && GetVelocity().Size() > MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed)? BaseFOV + SpeedFOVChange : BaseFOV;
+        float TargetFOV = ((MovementState == EMovementState::State_Sprint || MovementState == EMovementState::State_Slide) && GetVelocity().Size() > MovementDataMap[EMovementState::State_Walk].MaxWalkSpeed)? BaseFOV + FOVOffset + SpeedFOVChange : BaseFOV + FOVOffset;
         if (InventoryComponent)
         {
             if (InventoryComponent->GetCurrentWeapon())
@@ -586,7 +586,6 @@ void AFPSCharacter::Tick(const float DeltaTime)
                 if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
                 {
                     TargetFOV = BaseFOV - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
-                    FOVChangeSpeed = 6;
                 }
             }
         }

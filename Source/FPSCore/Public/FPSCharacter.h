@@ -145,6 +145,9 @@ public:
 	/** Returns the Inventory Component */
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
 
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
+
 	
 protected:
 
@@ -320,7 +323,7 @@ private:
 	
 	/** The speed at which FOV changes occur */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | FOV")
-	float FOVChangeSpeed = 2.0f;
+	float FOVChangeSpeed = 6.0f;
 	
 	/** The increase in FOV during fast actions, such as sprinting and sliding */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | FOV")
@@ -417,6 +420,9 @@ private:
 	
 	/** The current offset of the spring arm */
 	float CurrentSpringArmOffset = 0.0f;
+
+	/** A user-driven FOV offset. This will apply an additional offset to the base FOV, whatever that may be. */
+	float FOVOffset; 
 	
 	/** The target location of a vault or mantle */
 	FTransform VaultTargetLocation;
