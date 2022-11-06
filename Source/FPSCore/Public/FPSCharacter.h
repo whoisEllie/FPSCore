@@ -312,6 +312,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")
 	int VaultTraceAmount = 25.0f;
 
+	/** The amount of unreal units that need to be free above an obstacle for the player to be able to vault over it */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")
+	float VaultSpaceHeight = 50.0f;
+
 	/** Curve that controls motion during vault */
 	UPROPERTY(EditAnywhere, Category = "Movement | Vault")
 	UCurveFloat* VaultTimelineCurve;
@@ -350,6 +354,8 @@ private:
 	FHitResult StandUpHit;
 	
 	FHitResult VaultHit;
+
+	FHitResult VaultHeightHit;
 
 	FHitResult MantleHit;
 

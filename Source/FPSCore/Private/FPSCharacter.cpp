@@ -315,6 +315,8 @@ void AFPSCharacter::CheckVault()
     SecondaryVaultStartLocation.Z += 5;
     FVector SecondaryVaultEndLocation = SecondaryVaultStartLocation;
     SecondaryVaultEndLocation.Z = 0;
+    FVector SecondaryVaultHeightCheckLocation = SecondaryVaultStartLocation;
+    SecondaryVaultHeightCheckLocation.Z += VaultSpaceHeight;
 
     if (bDrawDebug)
     {
@@ -338,6 +340,7 @@ void AFPSCharacter::CheckVault()
     {
         SecondaryVaultStartLocation += ForwardAddition;
         SecondaryVaultEndLocation += ForwardAddition;
+        SecondaryVaultHeightCheckLocation += ForwardAddition;
         bVaultFailed = true;
         if (!GetWorld()->LineTraceSingleByChannel(VaultHit, SecondaryVaultStartLocation, SecondaryVaultEndLocation, ECC_WorldStatic, TraceParams)) continue;
         if (bDrawDebug)
@@ -345,6 +348,13 @@ void AFPSCharacter::CheckVault()
             DrawDebugLine(GetWorld(), SecondaryVaultStartLocation, VaultHit.ImpactPoint, FColor::Red, false, 10.0f, 0.0f, 2.0f);
         }
 
+        
+        if (bDrawDebug)
+        {
+            DrawDebugLine(GetWorld(), SecondaryVaultStartLocation, SecondaryVaultHeightCheckLocation, FColor::Green, false, 10.0f, 0.0f, 2.0f);
+        }
+        if (GetWorld()->LineTraceSingleByChannel(VaultHeightHit, SecondaryVaultStartLocation, SecondaryVaultHeightCheckLocation, ECC_WorldStatic, TraceParams)) break;
+        
         float TraceLength = SecondaryVaultStartLocation.Z - VaultHit.ImpactPoint.Z;
         if (!bInitialSwitch)
         {
@@ -371,7 +381,7 @@ void AFPSCharacter::CheckVault()
 
         if (bDrawDebug)
         {
-            DrawDebugSphere(GetWorld(), StartLocation, GetCapsuleComponent()->GetUnscaledCapsuleRadius(), 32, FColor::Green);
+           DrawDebugCapsule(GetWorld(), StartLocation, GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), GetCapsuleComponent()->GetUnscaledCapsuleRadius(), FQuat::Identity , FColor::Green, false, 10.0f);
         }
         if (GetWorld()->SweepSingleByChannel(VaultHit, StartLocation, EndLocation, FQuat::Identity, ECC_WorldStatic, FCollisionShape::MakeSphere(GetCapsuleComponent()->GetUnscaledCapsuleRadius()), TraceParams)) continue;
 

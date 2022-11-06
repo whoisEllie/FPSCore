@@ -107,15 +107,16 @@ public:
 		return TEXT("Currentweapon is nullptr!");
 	}
 
-	// UImage* GetCurrentWeaponDisplayImage() const
-	// {
-	// 	if (CurrentWeapon != nullptr)
-	// 	{
-	// 		return CurrentWeapon->GetStaticWeaponData()->WeaponIcon;
-	// 	}
-	// 	UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
-	// 	return nullptr;
-	// }
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	UTexture2D* GetCurrentWeaponDisplayImage() const
+	{
+		if (CurrentWeapon != nullptr)
+		{
+			return CurrentWeapon->GetStaticWeaponData()->WeaponIcon;
+		}
+		UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
+		return nullptr;
+	}
 	
 	UPROPERTY(BlueprintAssignable, Category = "Inventory Component")
 	FHitActor EventHitActor;

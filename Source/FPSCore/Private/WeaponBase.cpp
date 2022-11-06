@@ -397,6 +397,12 @@ void AWeaponBase::Fire()
                                          ? BarrelAttachment->GetSocketLocation(WeaponData.MuzzleLocation)
                                          : MeshComp->GetSocketLocation(WeaponData.MuzzleLocation)), TraceEnd,
                         FColor::Red, false, 10.0f, 0.0f, 2.0f);
+
+                    if (bDrawObstructiveDebugs)
+                    {
+                        // Debug line from camera to target location
+                        DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Green, false, 10.0f, 0.0f, 2.0f);
+                    }
                 }
             }
 

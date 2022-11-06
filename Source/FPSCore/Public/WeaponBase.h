@@ -578,8 +578,8 @@ struct FStaticWeaponData : public FTableRowBase
 	FName WeaponName;
 
 	/** A display image associated with this weapon which can be used for UI */
-	//UPROPERTY(EditDefaultsOnly, Category = "Viewport")
-	//UImage* WeaponIcon;
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UTexture2D* WeaponIcon;
 };
 
 UCLASS()
