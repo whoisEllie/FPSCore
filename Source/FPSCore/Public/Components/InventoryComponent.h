@@ -17,10 +17,10 @@ DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FHitActor, UInventoryComponen
 USTRUCT()
 struct FStarterWeaponData
 {
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	TSubclassOf<AWeaponBase> WeaponClassRef;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTableRef;
 
 	/** Data table reference for attachments */
@@ -32,7 +32,7 @@ struct FStarterWeaponData
 	FRuntimeWeaponData DataStruct;
 
 	/** The array of attachments to spawn (usually inherited, can be set by instance) */
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	TArray<FName> AttachmentArrayOverrideRef;
 	
 	GENERATED_BODY()
