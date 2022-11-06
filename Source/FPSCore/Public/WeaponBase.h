@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Camera/CameraShakeBase.h"
+#include "Components/Image.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
@@ -550,11 +551,11 @@ struct FStaticWeaponData : public FTableRowBase
 
 	/** particle effect to be spawned at the muzzle when a shot is fired */
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	UParticleSystem* MuzzleFlash;
+	UNiagaraSystem* MuzzleFlash;
 
 	/** particle effect to be spawned at the muzzle that shows the path of the bullet */
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	UParticleSystem* BulletTrace;
+	UNiagaraSystem* BulletTrace;
 
 	/** Sound bases */
 
@@ -569,7 +570,16 @@ struct FStaticWeaponData : public FTableRowBase
 	/** Empty firing sound */
 	UPROPERTY(EditDefaultsOnly, Category = "Sound bases	")
 	USoundBase* EmptyFireSound;
-	
+
+	/** Viewport Appearance */
+
+	/** The name of this weapon, to be used for UI */
+	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	FName WeaponName;
+
+	/** A display image associated with this weapon which can be used for UI */
+	//UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	//UImage* WeaponIcon;
 };
 
 UCLASS()

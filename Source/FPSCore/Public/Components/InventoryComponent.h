@@ -10,6 +10,33 @@
 #include "InventoryComponent.generated.h"
 
 class UCameraComponent;
+class UInventoryComponent;
+
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FHitActor, UInventoryComponent, EventHitActor, FHitResult, HitResult);
+
+USTRUCT()
+struct FStarterWeaponData
+{
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AWeaponBase> WeaponClassRef;
+
+	UPROPERTY(EditDefaultsOnly)
+	UDataTable* WeaponDataTableRef;
+
+	/** Data table reference for attachments */
+	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
+	UDataTable* AttachmentsDataTable;
+
+	/** Local weapon data struct to keep track of ammo amounts and weapon health */
+	UPROPERTY()
+	FRuntimeWeaponData DataStruct;
+
+	/** The array of attachments to spawn (usually inherited, can be set by instance) */
+	UPROPERTY(EditDefaultsOnly)
+	TArray<FName> AttachmentArrayOverrideRef;
+	
+	GENERATED_BODY()
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FPSCORE_API UInventoryComponent final : public UActorComponent
@@ -69,6 +96,30 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	FText GetCurrentWeaponRemainingAmmo() const;
 
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	FName GetCurrentWeaponDisplayName() const
+	{
+		if (CurrentWeapon != nullptr)
+		{
+			return CurrentWeapon->GetStaticWeaponData()->WeaponName;
+		}
+		UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
+		return TEXT("Currentweapon is nullptr!");
+	}
+
+	// UImage* GetCurrentWeaponDisplayImage() const
+	// {
+	// 	if (CurrentWeapon != nullptr)
+	// 	{
+	// 		return CurrentWeapon->GetStaticWeaponData()->WeaponIcon;
+	// 	}
+	// 	UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
+	// 	return nullptr;
+	// }
+	
+	UPROPERTY(BlueprintAssignable, Category = "Inventory Component")
+	FHitActor EventHitActor;
+
 	/** The input actions implemented by this component */
 	UPROPERTY()
 	UInputAction* FiringAction;
@@ -86,6 +137,9 @@ public:
 	UInputAction* ScrollAction;
 
 private:
+
+	/** Spawns starter weapons */
+	virtual void BeginPlay() override;
 
 	/** Swap to a new weapon
 	 *	@param SlotId The ID of the slot which to swap to
@@ -108,6 +162,7 @@ private:
 	/** Reloads the weapon */
 	void Reload();
 
+
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
 	float WeaponSpawnDistance = 100.0f;
@@ -116,6 +171,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Inventory")
 	int NumberOfWeaponSlots = 2;
 
+	/** An array of starter weapons. Only weapons within the range of NumberOfWeaponSlots will be spawned */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Inventory")
+	TArray<FStarterWeaponData> StarterWeapons;
+	
 	/** The integer that keeps track of which weapon slot ID is currently active */
 	int CurrentWeaponSlot;
 

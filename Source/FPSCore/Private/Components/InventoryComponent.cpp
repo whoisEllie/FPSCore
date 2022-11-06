@@ -47,6 +47,64 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 	SwapWeapon(NewID);
 }
 
+void UInventoryComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (int i = 0; i < NumberOfWeaponSlots; ++i)
+	{
+		if (StarterWeapons.IsValidIndex(i))
+		{
+			if (StarterWeapons[i].WeaponClassRef != nullptr)
+			{
+				// Getting a reference to our Weapon Data table in order to see if we have attachments
+				const AWeaponBase* WeaponBaseReference = StarterWeapons[i].WeaponClassRef.GetDefaultObject();
+				if (StarterWeapons[i].WeaponDataTableRef && WeaponBaseReference)
+				{
+					if (const FStaticWeaponData* WeaponData = StarterWeapons[i].WeaponDataTableRef->FindRow<FStaticWeaponData>(
+						FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()),
+						true))
+					{
+						// Spawning attachments if the weapon has them and the attachments table exists
+						if (WeaponData->bHasAttachments && StarterWeapons[i].AttachmentsDataTable)
+						{
+							// Iterating through all the attachments in AttachmentArray
+							for (FName RowName : StarterWeapons[i].DataStruct.WeaponAttachments)
+							{
+								// Searching the data table for the attachment
+								const FAttachmentData* AttachmentData = StarterWeapons[i].AttachmentsDataTable->FindRow<
+									FAttachmentData>(
+									RowName, RowName.ToString(), true);
+
+								// Applying the effects of the attachment
+								if (AttachmentData)
+								{
+									if (AttachmentData->AttachmentType == EAttachmentType::Magazine)
+									{
+										// Pulling default values from the Magazine attachment type
+										StarterWeapons[i].DataStruct.AmmoType = AttachmentData->AmmoToUse;
+										StarterWeapons[i].DataStruct.ClipCapacity = AttachmentData->ClipCapacity;
+										StarterWeapons[i].DataStruct.ClipSize = AttachmentData->ClipSize;
+										StarterWeapons[i].DataStruct.WeaponHealth = 100.0f;
+									}
+								}
+							}
+						}
+						else
+						{
+							StarterWeapons[i].DataStruct.AmmoType = WeaponData->AmmoToUse;
+							StarterWeapons[i].DataStruct.ClipCapacity = WeaponData->ClipCapacity;
+							StarterWeapons[i].DataStruct.ClipSize = WeaponData->ClipSize;
+							StarterWeapons[i].DataStruct.WeaponHealth = 100.0f;
+						}
+					}
+				}
+				UpdateWeapon(StarterWeapons[i].WeaponClassRef, i, false, false, GetOwner()->GetActorTransform(), StarterWeapons[i].DataStruct);
+			}
+		}
+	}
+}
+
 void UInventoryComponent::SwapWeapon(const int SlotId)
 {
 	// Returning if the target weapon is already equipped or it does not exist

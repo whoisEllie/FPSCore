@@ -144,31 +144,17 @@ void AFPSCharacter::ToggleCrouch()
     bHoldingCrouch = true;
     if (GetCharacterMovement()->IsMovingOnGround())
     {
-        if (bCrouchIsToggle)
+        if (MovementState == EMovementState::State_Crouch)
         {
-            if (MovementState == EMovementState::State_Crouch)
-            {
-                StopCrouch(false);
-            }
-            else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
-            {
-                StartSlide();
-            }
-            else
-            {
-                UpdateMovementValues(EMovementState::State_Crouch);
-            }
+            StopCrouch(false);
+        }
+        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
+        {
+            StartSlide();
         }
         else
         {
-            if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
-            {
-                StartSlide();
-            }
-            else
-            {
-                UpdateMovementValues(EMovementState::State_Crouch);
-            }
+            UpdateMovementValues(EMovementState::State_Crouch);
         }
     }
     else if (!bPerformedSlide)
@@ -180,23 +166,18 @@ void AFPSCharacter::ToggleCrouch()
 
 void AFPSCharacter::ReleaseCrouch()
 {
-    if (bCrouchIsToggle)
-    {
-        if (!bPerformedSlide)
-        {
-            StopSlide();
-        }
-    }
-    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, *UEnum::GetDisplayValueAsText(MovementState).ToString());
-    
     bHoldingCrouch = false;
     bPerformedSlide = false;
     if (MovementState == EMovementState::State_Slide)
     {
         StopSlide();
     }
-    else
+    else if (!bCrouchIsToggle)
     {
+        if (MovementState == EMovementState::State_Sprint)
+        {
+            return;
+        }
         UpdateMovementValues(EMovementState::State_Walk);
     }
 }
@@ -214,6 +195,11 @@ void AFPSCharacter::StopCrouch(const bool bToSprint)
             UpdateMovementValues(EMovementState::State_Walk);
         }
     }
+}
+
+void AFPSCharacter::Slide()
+{
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Sliding"));
 }
 
 void AFPSCharacter::StartSprint()
@@ -486,7 +472,7 @@ bool AFPSCharacter::HasSpaceToStandUp()
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActor(this);
     
-    if (GetWorld()->SweepSingleByChannel(StandUpHit, CenterVector, CenterVector, FQuat::Identity, ECC_GameTraceChannel4, CollisionCapsule, QueryParams))
+    if (GetWorld()->SweepSingleByChannel(StandUpHit, CenterVector, CenterVector, FQuat::Identity, ECC_WorldStatic, CollisionCapsule, QueryParams))
     {
         /* confetti or smth idk */
         if (bDrawDebug)
@@ -585,7 +571,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
             {
                 if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
                 {
-                    TargetFOV = BaseFOV - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
+                    TargetFOV = BaseFOV + FOVOffset - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
                 }
             }
         }

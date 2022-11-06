@@ -28,7 +28,15 @@ void AAmmoPickup::BeginPlay()
         if (AmmoData[AmmoType].FullAmmoBoxes.Contains(AmmoAmount))
         {
             MeshComp->SetStaticMesh(AmmoData[AmmoType].FullAmmoBoxes[AmmoAmount]);
-            InteractionText = PickupName[AmmoType];
+        	if (AmmoData[AmmoType].PickupName.ToString() != TEXT(""))
+        	{
+        		InteractionText = AmmoData[AmmoType].PickupName;
+        	}
+            else
+            {
+        		InteractionText = PickupName[AmmoType];
+            	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("Please note that defining pickup names with the PickupName map is now deprecated, and will be removed soon. Please define pickup names inside the AmmoData data structure."));
+            }
         }
 	}
 	else
@@ -98,7 +106,14 @@ void AAmmoPickup::SetEmptyMesh()
 		}
 	}
 
-	InteractionText = FText::FromString(PickupName[AmmoType].ToString() + " [Empty]");
+	if (AmmoData[AmmoType].PickupName.ToString() != TEXT(""))
+	{
+		InteractionText = FText::FromString(AmmoData[AmmoType].PickupName.ToString() + " [Empty]");
+	}
+	else
+	{
+		InteractionText = FText::FromString(PickupName[AmmoType].ToString() + " [Empty]");
+	}
 	bIsEmpty = true;
 }
 

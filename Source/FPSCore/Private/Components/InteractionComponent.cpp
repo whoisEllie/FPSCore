@@ -101,13 +101,13 @@ void UInteractionComponent::InteractionIndicator()
                 
                 if (InteractionActor)
                 {
-                    GetCurrentHitActor.Broadcast(InteractionActor, true);
                     InteractText = InteractionActor->InteractionText;
+                    GetCurrentHitActor.Broadcast(InteractionActor, true);
                 }
                 else
                 {
+                    InteractText = FText::FromString(" "); 
                     GetCurrentHitActor.Broadcast(nullptr, false);
-                    InteractText = FText::GetEmpty();
                 }
             }
         }

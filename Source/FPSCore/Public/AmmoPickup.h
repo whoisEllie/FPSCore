@@ -34,6 +34,9 @@ struct FAmmoTypeData
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ammo Pickup")
 	TMap<EAmmoAmount, int32> AmmoCounts;
+
+	UPROPERTY(EditAnywhere, Category = "Ammo Pickup")
+	FText PickupName;
 	
 };
 
@@ -45,7 +48,7 @@ class FPSCORE_API AAmmoPickup : public AInteractionBase
 protected:
 
 	/** Map to keep track of the name showed to the player for each ammo type */
-	UPROPERTY(EditDefaultsOnly, Category = "Pickup")
+	UPROPERTY(EditDefaultsOnly, Category = "Pickup", meta=(DeprecatedProperty, DeprecationMessage="Please set pickup names in AmmoData instead."))
 	TMap<EAmmoType, FText> PickupName;
 
 	/** Map to keep track of all values for the meshes and ammo counts */

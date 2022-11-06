@@ -53,9 +53,13 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 
     // Getting a reference to the relevant row in the WeaponData DataTable
-    if (WeaponDataTable)
+    if (WeaponDataTable && (DataTableNameRef != ""))
     {
         WeaponData = *WeaponDataTable->FindRow<FStaticWeaponData>(FName(DataTableNameRef), FString(DataTableNameRef), true);
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("MISSING A WEAPON DATA TABLE NAME REFERENCE"));
     }
     
     // Setting our default animation values
@@ -371,6 +375,17 @@ void AWeaponBase::Fire()
                                                    GetInstigatorController(), this, DamageType);
 
                 EndPoint = Hit.Location;
+
+                // Passing hit delegate to InventoryComponent
+                AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+                if (PlayerRef)
+                {
+                    UInventoryComponent* PlayerInventoryComp = PlayerRef->FindComponentByClass<UInventoryComponent>();
+                    if (IsValid(PlayerInventoryComp))
+                    {
+                        PlayerInventoryComp->EventHitActor.Broadcast(Hit);
+                    }
+                }
             }
             else
             {
@@ -394,13 +409,13 @@ void AWeaponBase::Fire()
             // Spawning the bullet trace particle effect
             if (WeaponData.bHasAttachments)
             {
-                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponData.BulletTrace,
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponData.BulletTrace,
                                                          BarrelAttachment->GetSocketLocation(
                                                              WeaponData.ParticleSpawnLocation), ParticleRotation);
             }
             else
             {
-                UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponData.BulletTrace,
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponData.BulletTrace,
                                                          MeshComp->GetSocketLocation(WeaponData.ParticleSpawnLocation),
                                                          ParticleRotation);
             }
@@ -432,18 +447,15 @@ void AWeaponBase::Fire()
         // Spawning the muzzle flash particle
         if (WeaponData.bHasAttachments)
         {
-            UGameplayStatics::SpawnEmitterAttached(WeaponData.MuzzleFlash, BarrelAttachment,
-                                                   WeaponData.ParticleSpawnLocation, FVector::ZeroVector,
-                                                   BarrelAttachment->
-                                                   GetSocketRotation(WeaponData.ParticleSpawnLocation),
-                                                   FVector::OneVector);
+            UNiagaraFunctionLibrary::SpawnSystemAttached(WeaponData.MuzzleFlash, BarrelAttachment, WeaponData.ParticleSpawnLocation,
+                                                    FVector::ZeroVector,
+                                                    BarrelAttachment->GetSocketRotation(WeaponData.ParticleSpawnLocation), EAttachLocation::SnapToTarget, true);
         }
         else
         {
-            UGameplayStatics::SpawnEmitterAttached(WeaponData.MuzzleFlash, MeshComp, WeaponData.ParticleSpawnLocation,
+            UNiagaraFunctionLibrary::SpawnSystemAttached(WeaponData.MuzzleFlash, MeshComp, WeaponData.ParticleSpawnLocation,
                                                    FVector::ZeroVector,
-                                                   MeshComp->GetSocketRotation(WeaponData.ParticleSpawnLocation),
-                                                   FVector::OneVector);
+                                                   MeshComp->GetSocketRotation(WeaponData.ParticleSpawnLocation), EAttachLocation::SnapToTarget, true);
         }
 
         // Spawning the firing sound

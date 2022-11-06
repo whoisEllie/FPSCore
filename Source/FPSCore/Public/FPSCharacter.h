@@ -218,6 +218,9 @@ private:
 
 	/** Exits the character from the slide state if they are sliding and updates bHoldingCrouch */
 	void ReleaseCrouch();
+
+	/** Slides the character (used when bCrouchIsToggle is False)*/
+	void Slide();
 	
 	/** Starting to sprint */
 	void StartSprint();
@@ -454,7 +457,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* CrouchAction;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* FiringAction;
 
