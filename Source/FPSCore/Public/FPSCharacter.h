@@ -156,7 +156,7 @@ protected:
 	UCameraComponent* CameraComponent;
 
 	/** The character's hands mesh component */
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* HandsMeshComp;
 	
 	/** The spring arm component, which is required to enable 'use control rotation' */

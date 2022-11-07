@@ -663,6 +663,32 @@ public:
 	/** Returns the vertical camera offset for this weapon instance */
 	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	float GetVerticalCameraOffset() const { return VerticalCameraOffset; }
+
+protected:
+		
+	/** The main skeletal mesh - holds the weapon model */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* MeshComp;
+
+	/** The skeletal mesh used to hold the current barrel attachment */
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* BarrelAttachment;
+
+	/** The skeletal mesh used to hold the current magazine attachment */
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* MagazineAttachment;
+
+	/** The skeletal mesh used to hold the current sights attachment */
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* SightsAttachment;
+
+	/** The skeletal mesh used to hold the current stock attachment */
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* StockAttachment;
+
+	/** The skeletal mesh used to hold the current grip attachment */
+	UPROPERTY(BlueprintReadOnly, Category = "Components")
+	USkeletalMeshComponent* GripAttachment;
 	
 private:
 
@@ -724,10 +750,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Debug")
 	bool bDrawObstructiveDebugs = false;
 	
-	/** The main skeletal mesh - holds the weapon model */
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	USkeletalMeshComponent* MeshComp;
-	
 	/** damage type (set in blueprints) */
 	UPROPERTY(EditDefaultsOnly, Category = "Data | Damage")
 	TSubclassOf<UDamageType> DamageType;
@@ -745,26 +767,6 @@ private:
 #pragma region INTERNAL_VARIABLES
 	
 	FRuntimeWeaponData GeneralWeaponData;
-
-	/** The skeletal mesh used to hold the current barrel attachment */
-	UPROPERTY()
-	USkeletalMeshComponent* BarrelAttachment;
-
-	/** The skeletal mesh used to hold the current magazine attachment */
-	UPROPERTY()
-	USkeletalMeshComponent* MagazineAttachment;
-
-	/** The skeletal mesh used to hold the current sights attachment */
-	UPROPERTY()
-	USkeletalMeshComponent* SightsAttachment;
-
-	/** The skeletal mesh used to hold the current stock attachment */
-	UPROPERTY()
-	USkeletalMeshComponent* StockAttachment;
-
-	/** The skeletal mesh used to hold the current grip attachment */
-	UPROPERTY()
-	USkeletalMeshComponent* GripAttachment;
 
 	/** Determines if the player can fire */
 	bool bCanFire = true;
