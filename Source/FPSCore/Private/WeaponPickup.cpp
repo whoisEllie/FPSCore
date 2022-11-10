@@ -44,6 +44,8 @@ void AWeaponPickup::BeginPlay()
 	{
 		MeshComp->SetSimulatePhysics(true);
 	}
+
+	InteractionText = WeaponName;
 }
 
 // Updating the appearance of the pickup in the editor

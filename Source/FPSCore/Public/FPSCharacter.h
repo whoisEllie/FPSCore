@@ -211,10 +211,7 @@ private:
 	/** Transitions the character out of the crouched state
 	 *	@param bToSprint Whether to transition into a sprint state
 	 */
-	void StopCrouch(bool bToSprint);
-
-	/** Toggle for crouching */
-	void StartCrouch();
+	void StopCrouch(bool bToSprint);;
 
 	/** Exits the character from the slide state if they are sliding and updates bHoldingCrouch */
 	void ReleaseCrouch();
