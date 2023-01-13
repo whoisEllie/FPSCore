@@ -22,7 +22,7 @@ public:
 	virtual void Interact() override;
 
 	// The actors to which we cast upon receiving an interaction
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Interacted Actor")
+	UPROPERTY(BlueprintReadOnly, EditInstanceOnly, Category = "Interacted Actor")
 	TArray<AInteractedActor*> InteractedActors;
 	
 	// Called for every item interacted with

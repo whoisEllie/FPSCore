@@ -147,7 +147,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
-
 	
 protected:
 

@@ -271,12 +271,12 @@ void AWeaponBase::StopFire()
 
 void AWeaponBase::Fire()
 {    
-    // Casting to the game instance (which stores all the ammunition and health variables)
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    
     // Allowing the gun to fire if it has ammunition, is not reloading and the bCanFire variable is true
     if(bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
     {
+        // Casting to the player character
+        const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    
         // Printing debug strings
         if(bShowDebug)
         {
@@ -321,6 +321,12 @@ void AWeaponBase::Fire()
             if (WeaponData.Gun_Shot)
             {
                 MeshComp->PlayAnimation(WeaponData.Gun_Shot, false);
+                if (WeaponData.bWaitForAnim)
+                {
+                    const float AnimWaitTime = WeaponData.Gun_Shot->GetPlayLength();
+                    bCanFire = false;
+                    GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
+                }
             }
 
             FVector EndPoint = TraceEnd;
