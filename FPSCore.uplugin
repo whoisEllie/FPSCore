@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "0.1.4",
-	"EngineVersion": "5.0",
+	"EngineVersion": "5.1",
 	"FriendlyName": "FPS Core",
 	"Description": "Kickstart your development of first person shooters!",
 	"Category": "Gameplay",

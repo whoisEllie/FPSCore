@@ -21,7 +21,7 @@ class FPSCORE_API AWeaponPickup : public AInteractionBase
 public:
 
 	/** Returns the main mesh component of the given pickup - useful for toggling setting such as physics simulation */
-	UMeshComponent* GetMainMesh() const { return MeshComp; }
+	UStaticMeshComponent* GetMainMesh() const { return MeshComp; }
 
 	/** Set the static setting of the given pickup (whether it should simulate physics or not */
 	void SetStatic(const bool bNewStatic) { bStatic = bNewStatic; }
