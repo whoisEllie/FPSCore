@@ -624,6 +624,11 @@ public:
 	 */
 	void SetCanFire(const bool bNewFire) { bCanFire = bNewFire; }
 
+	/** Update the weapon's ability to reload 
+	 *	@param bNewReload The new state of the weapon's ability to reload
+	 */	
+	void SetCanReload(const bool bNewReload) { bCanReload = bNewReload; }
+
 	/** Whether the weapon is currently in it's reload state */
 	bool IsReloading() const { return bIsReloading; }
 
@@ -770,6 +775,9 @@ private:
 
 	/** Determines if the player can fire */
 	bool bCanFire = true;
+
+	/** Determines if the player can reload */
+	bool bCanReload = true;
 	
 	/** Keeps track of whether the weapon is being reloaded */
 	bool bIsReloading = false;

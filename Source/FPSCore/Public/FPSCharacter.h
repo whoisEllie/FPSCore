@@ -42,6 +42,9 @@ struct FMovementVariables
 	bool bCanFire;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	bool bCanReload = true;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
 	float MaxAcceleration;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")

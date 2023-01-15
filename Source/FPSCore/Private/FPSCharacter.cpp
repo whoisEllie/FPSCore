@@ -526,6 +526,7 @@ void AFPSCharacter::UpdateMovementValues(const EMovementState NewMovementState)
             if (InventoryComponent->GetCurrentWeapon())
             {
                 InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+                InventoryComponent->GetCurrentWeapon()->SetCanReload(MovementDataMap[MovementState].bCanReload);
             }
         }
         GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
