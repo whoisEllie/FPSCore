@@ -33,27 +33,27 @@ enum class EMovementState : uint8
 };
 
 /** Variables associated with each movement state */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FMovementVariables
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	bool bCanFire;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	bool bCanReload = true;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float MaxAcceleration;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float BreakingDecelerationWalking;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float GroundFriction;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float MaxWalkSpeed;
 };
 
@@ -150,6 +150,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
+
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	void UpdateMovementValues(const EMovementState MovementStateToUpdate, const FMovementVariables NewMovementVariables)
+	{
+		MovementDataMap[MovementStateToUpdate] = NewMovementVariables;
+	}
 	
 protected:
 
