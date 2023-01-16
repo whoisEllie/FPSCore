@@ -148,7 +148,7 @@ void AFPSCharacter::ToggleCrouch()
         {
             StopCrouch(false);
         }
-        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide)
+        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlide)
         {
             StartSlide();
         }
@@ -195,11 +195,6 @@ void AFPSCharacter::StopCrouch(const bool bToSprint)
             UpdateMovementValues(EMovementState::State_Walk);
         }
     }
-}
-
-void AFPSCharacter::Slide()
-{
-    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Sliding"));
 }
 
 void AFPSCharacter::StartSprint()
@@ -275,7 +270,9 @@ void AFPSCharacter::StopAds()
 }
 
 void AFPSCharacter::CheckVault()
-{    
+{
+    if (!bCanVault) return;
+    
     float ForwardVelocity = FVector::DotProduct(GetVelocity(), GetActorForwardVector());
     if (!(ForwardVelocity > 0 && !bIsVaulting && GetCharacterMovement()->IsFalling())) return;
 

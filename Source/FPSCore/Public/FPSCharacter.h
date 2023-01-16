@@ -6,6 +6,8 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
+#include <mach/boolean.h>
+
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
 #include "WeaponBase.h"
 #include "Components/InventoryComponent.h"
@@ -39,19 +41,19 @@ struct FMovementVariables
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
-	bool bCanFire;
+	bool bCanFire = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	bool bCanReload = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
-	float MaxAcceleration;
+	float MaxAcceleration = 2048.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
-	float BreakingDecelerationWalking;
+	float BreakingDecelerationWalking = 2048.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
-	float GroundFriction;
+	float GroundFriction = 8.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float MaxWalkSpeed;
@@ -224,9 +226,6 @@ private:
 	/** Exits the character from the slide state if they are sliding and updates bHoldingCrouch */
 	void ReleaseCrouch();
 
-	/** Slides the character (used when bCrouchIsToggle is False)*/
-	void Slide();
-	
 	/** Starting to sprint */
 	void StartSprint();
 
@@ -300,6 +299,10 @@ private:
 	/** Whether crouching has to be held or can be toggled */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
+
+	/** Whether the character is allowed to slide */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
+	bool bCanSlide = true;
 	
 	/** The time in seconds between the beginning of a slide and when it is ended */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
@@ -309,6 +312,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
 	float SlideContinueAngle = -15.0f;
 
+	/** Whether the character is allowed to vault */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")	
+	bool bCanVault = true;
+	
 	/** The height of the highest surface that the player can mantle up onto */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")
 	float MaxMantleHeight = 200.0f;
