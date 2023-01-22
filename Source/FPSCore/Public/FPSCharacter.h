@@ -232,12 +232,6 @@ private:
 	/** Stopping to sprint */
 	void StopSprint();
 
-	/** The player begins to hold the Sprint key */
-	void HoldSprint();
-
-	/** The player releases the sprint key */
-	void ReleaseSprint();
-
 	/** Starting to slide */
 	void StartSlide();
 

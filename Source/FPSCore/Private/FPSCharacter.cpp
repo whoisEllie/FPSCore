@@ -211,6 +211,7 @@ void AFPSCharacter::StartSprint()
     }
     bPerformedSlide = false;
     UpdateMovementState(EMovementState::State_Sprint);
+    bWantsToSprint = true;
 }
 
 void AFPSCharacter::StopSprint()
@@ -223,18 +224,7 @@ void AFPSCharacter::StopSprint()
     {
         UpdateMovementState(EMovementState::State_Walk);
     }
-}
-
-void AFPSCharacter::HoldSprint()
-{
-    bWantsToSprint = true;
-    StartSprint();
-}
-
-void AFPSCharacter::ReleaseSprint()
-{
     bWantsToSprint = false;
-    StopSprint();
 }
 
 void AFPSCharacter::StartSlide()
@@ -721,8 +711,8 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         if (SprintAction)
         {
             // Sprinting
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPSCharacter::HoldSprint);
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPSCharacter::ReleaseSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPSCharacter::StartSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopSprint);
         }
 
         if (MovementAction)
