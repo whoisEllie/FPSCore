@@ -160,6 +160,8 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.PlayerReload = AttachmentData->PlayerReload;
                     WeaponData.Gun_Shot = AttachmentData->Gun_Shot;
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
+                    WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
+                    WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
                 }
                 else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
                 {
@@ -267,6 +269,14 @@ void AWeaponBase::StopFire()
     VerticalRecoilTimeline.Stop();
     HorizontalRecoilTimeline.Stop();
     RecoilRecovery();
+
+    if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
+    {
+        bHasFiredRecently = false;
+        bCanFire = false;
+        GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
+        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::EnableFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+    }
 }
 
 void AWeaponBase::Fire()
@@ -323,6 +333,7 @@ void AWeaponBase::Fire()
                 MeshComp->PlayAnimation(WeaponData.Gun_Shot, false);
                 if (WeaponData.bWaitForAnim)
                 {
+                    // Preventing the player from firing the weapon until the animation finishes playing 
                     const float AnimWaitTime = WeaponData.Gun_Shot->GetPlayLength();
                     bCanFire = false;
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
@@ -493,6 +504,8 @@ void AWeaponBase::Fire()
             HorizontalRecoilTimeline.Stop();
             RecoilRecovery();
         }
+
+        bHasFiredRecently = true;
     }
     else if (bCanFire && !bIsReloading)
     {
