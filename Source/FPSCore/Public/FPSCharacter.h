@@ -154,7 +154,7 @@ public:
 	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
 
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
-	void UpdateMovementValues(const EMovementState MovementStateToUpdate, const FMovementVariables NewMovementVariables)
+	void RuntimeUpdateMovementValues(const EMovementState MovementStateToUpdate, const FMovementVariables NewMovementVariables)
 	{
 		MovementDataMap[MovementStateToUpdate] = NewMovementVariables;
 	}
@@ -232,6 +232,12 @@ private:
 	/** Stopping to sprint */
 	void StopSprint();
 
+	/** The player begins to hold the Sprint key */
+	void HoldSprint();
+
+	/** The player releases the sprint key */
+	void ReleaseSprint();
+
 	/** Starting to slide */
 	void StartSlide();
 
@@ -249,10 +255,13 @@ private:
 	/** A global system that handles updates to the movement state and changes relevant values accordingly
 	 *	@param NewMovementState The new movement state of the player
 	 */
-	void UpdateMovementValues(EMovementState NewMovementState);
+	void UpdateMovementState(EMovementState NewMovementState);
 
 	/** Checks the angle of the floor to determine slide behaviour */
-	void CheckAngle(float DeltaTime);
+	void CheckGroundAngle(float DeltaTime);
+
+	/** Checks the relative angle that the player is moving in (forwards/backwards/left/right) to determine if they can sprint */
+	float CheckRelativeMovementAngle(float DeltaTime) const;
 
 	/** Trace above the player to make sure we have enough space to stand up */
 	bool HasSpaceToStandUp();
@@ -299,6 +308,14 @@ private:
 	/** Whether crouching has to be held or can be toggled */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
+
+	/** Whether to prevent the user from sprinting past a specific angle */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
+	bool bRestrictSprintAngle;
+	
+	/** The maximum angle at which the player can sprint before returning to a walk */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
+	float SprintAngleLimit = 180;
 
 	/** Whether the character is allowed to slide */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
@@ -375,6 +392,11 @@ private:
 	
 	/** Whether the player is holding down the aim down sights button */
 	bool bWantsToAim;
+
+	/** Whether the player is holding down the sprint key */
+	bool bWantsToSprint;
+
+	bool bRestrictingSprint = false;
 	
 	/** Whether we should display a crosshair or not */
 	bool bShowCrosshair;
@@ -390,9 +412,6 @@ private:
 	
 	/** Whether the character has performed a slide yet? */
 	bool bPerformedSlide;
-	
-	/** Whether the player is holding the sprint key */
-	bool bHoldingSprint;
 	
 	/** Whether the player wants to slide (is holding the crouch/slide key, but not on the ground) */
 	bool bWantsToSlide;

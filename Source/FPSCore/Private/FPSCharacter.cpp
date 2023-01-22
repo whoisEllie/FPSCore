@@ -15,6 +15,7 @@
 #include "Engine/Engine.h"
 #include "TimerManager.h"
 #include "Engine/LocalPlayer.h"
+#include "Math/UnrealMathUtility.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
@@ -154,7 +155,11 @@ void AFPSCharacter::ToggleCrouch()
         }
         else
         {
-            UpdateMovementValues(EMovementState::State_Crouch);
+            UpdateMovementState(EMovementState::State_Crouch);
+            if (bWantsToSprint)
+            {
+                bWantsToSprint = false;
+            }
         }
     }
     else if (!bPerformedSlide)
@@ -178,7 +183,7 @@ void AFPSCharacter::ReleaseCrouch()
         {
             return;
         }
-        UpdateMovementValues(EMovementState::State_Walk);
+        UpdateMovementState(EMovementState::State_Walk);
     }
 }
 
@@ -188,11 +193,11 @@ void AFPSCharacter::StopCrouch(const bool bToSprint)
     {
         if (bToSprint)
         {
-            UpdateMovementValues(EMovementState::State_Sprint);
+            UpdateMovementState(EMovementState::State_Sprint);
         }
         else
         {
-            UpdateMovementValues(EMovementState::State_Walk);
+            UpdateMovementState(EMovementState::State_Walk);
         }
     }
 }
@@ -204,29 +209,38 @@ void AFPSCharacter::StartSprint()
     {
         return;
     }
-    bHoldingSprint = true;
     bPerformedSlide = false;
-    UpdateMovementValues(EMovementState::State_Sprint);
+    UpdateMovementState(EMovementState::State_Sprint);
 }
 
 void AFPSCharacter::StopSprint()
 {
     if (MovementState == EMovementState::State_Slide && bHoldingCrouch)
     {
-        UpdateMovementValues(EMovementState::State_Crouch);
+        UpdateMovementState(EMovementState::State_Crouch);
     }
     else if (MovementState == EMovementState::State_Sprint)
     {
-        UpdateMovementValues(EMovementState::State_Walk);
+        UpdateMovementState(EMovementState::State_Walk);
     }
-    
-    bHoldingSprint = false;
+}
+
+void AFPSCharacter::HoldSprint()
+{
+    bWantsToSprint = true;
+    StartSprint();
+}
+
+void AFPSCharacter::ReleaseSprint()
+{
+    bWantsToSprint = false;
+    StopSprint();
 }
 
 void AFPSCharacter::StartSlide()
 {
     bPerformedSlide = true;
-    UpdateMovementValues(EMovementState::State_Slide);
+    UpdateMovementState(EMovementState::State_Slide);
     GetWorldTimerManager().SetTimer(SlideStop, this, &AFPSCharacter::ReleaseCrouch, SlideTime, false, SlideTime);
 }
 
@@ -236,19 +250,19 @@ void AFPSCharacter::StopSlide()
     {
         if (!HasSpaceToStandUp())
         {
-            UpdateMovementValues(EMovementState::State_Crouch);
+            UpdateMovementState(EMovementState::State_Crouch);
         }
-        else if (bHoldingSprint)
+        else if (bWantsToSprint)
         {
             StopCrouch(true);
         }
         else if (bHoldingCrouch)
         {
-            UpdateMovementValues(EMovementState::State_Crouch);
+            UpdateMovementState(EMovementState::State_Crouch);
         }
         else
         {
-            UpdateMovementValues(EMovementState::State_Walk);
+            UpdateMovementState(EMovementState::State_Walk);
         }
         bPerformedSlide = false;
         GetWorldTimerManager().ClearTimer(SlideStop);
@@ -429,14 +443,14 @@ void AFPSCharacter::TimelineProgress(const float Value)
     if (Value == 1)
     {
         bIsVaulting = false;
-        if (bHoldingSprint)
+        if (bWantsToSprint)
         {
-            UpdateMovementValues(EMovementState::State_Sprint);
+            UpdateMovementState(EMovementState::State_Sprint);
         }
     }
 }
 
-void AFPSCharacter::CheckAngle(float DeltaTime)
+void AFPSCharacter::CheckGroundAngle(float DeltaTime)
 {
     FCollisionQueryParams TraceParams;
     TraceParams.bTraceComplex = true;
@@ -459,6 +473,20 @@ void AFPSCharacter::CheckAngle(float DeltaTime)
                                              FString::Printf(TEXT("Current floor angle = %f"), FloorAngle), true);
         }
     }
+}
+
+float AFPSCharacter::CheckRelativeMovementAngle(const float DeltaTime) const
+{
+    const FVector MovementVector = GetVelocity();
+    const FRotator MovementRotator = GetActorRotation();
+    const FVector RelativeMovementVector = MovementRotator.UnrotateVector(MovementVector);
+
+    if (bDrawDebug)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(FMath::Abs(RelativeMovementVector.HeadingAngle() * (180/PI))));    
+    }
+    
+    return FMath::Abs(RelativeMovementVector.HeadingAngle());
 }
 
 bool AFPSCharacter::HasSpaceToStandUp()
@@ -497,7 +525,7 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     // Updating our target location and playing the vault timeline from start
     VaultStartLocation = GetActorTransform();
     VaultEndLocation = TargetTransform;
-    UpdateMovementValues(EMovementState::State_Vault);
+    UpdateMovementState(EMovementState::State_Vault);
     if (VaultMontage)
     {
         HandsMeshComp->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
@@ -506,7 +534,7 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state
-void AFPSCharacter::UpdateMovementValues(const EMovementState NewMovementState)
+void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
 {
     // Clearing sprinting and crouching flags
     bIsSprinting = false;
@@ -568,6 +596,22 @@ void AFPSCharacter::Tick(const float DeltaTime)
     FVector NewSpringArmLocation = SpringArmComponent->GetRelativeLocation();
     NewSpringArmLocation.Z = NewLocation;
     SpringArmComponent->SetRelativeLocation(NewSpringArmLocation);
+
+    if (bRestrictSprintAngle)
+    {
+        // Sprinting
+        if (const float CurrentRelativeMovementAngle = CheckRelativeMovementAngle(DeltaTime); CurrentRelativeMovementAngle > (SprintAngleLimit * (PI/180)) && MovementState == EMovementState::State_Sprint)
+        {
+            UpdateMovementState(EMovementState::State_Walk);
+            bRestrictingSprint = true;
+        }
+        else if (CurrentRelativeMovementAngle < (SprintAngleLimit * (PI/180)) && bRestrictingSprint && bWantsToSprint && MovementState != EMovementState::State_Sprint)
+        {
+            UpdateMovementState(EMovementState::State_Sprint);
+            bRestrictingSprint = false;
+        }
+    }
+    
     
     // FOV adjustments
     if (MovementDataMap.Contains(EMovementState::State_Walk))
@@ -615,7 +659,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
     CheckVault();
 
     // Checks the floor angle to determine whether we should keep sliding or not
-    CheckAngle(DeltaTime);
+    CheckGroundAngle(DeltaTime);
 
 
     if (bDrawDebug)
@@ -677,8 +721,8 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         if (SprintAction)
         {
             // Sprinting
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPSCharacter::StartSprint);
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPSCharacter::HoldSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPSCharacter::ReleaseSprint);
         }
 
         if (MovementAction)
