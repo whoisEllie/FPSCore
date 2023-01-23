@@ -158,6 +158,11 @@ public:
 	{
 		MovementDataMap[MovementStateToUpdate] = NewMovementVariables;
 	}
+
+	/** A global system that handles updates to the movement state and changes relevant values accordingly
+	*	@param NewMovementState The new movement state of the player
+	*/
+	void UpdateMovementState(EMovementState NewMovementState);
 	
 protected:
 
@@ -246,11 +251,6 @@ private:
 	 */
 	void Vault(FTransform TargetTransform);
 	
-	/** A global system that handles updates to the movement state and changes relevant values accordingly
-	 *	@param NewMovementState The new movement state of the player
-	 */
-	void UpdateMovementState(EMovementState NewMovementState);
-
 	/** Checks the angle of the floor to determine slide behaviour */
 	void CheckGroundAngle(float DeltaTime);
 

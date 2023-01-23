@@ -686,6 +686,8 @@ void AWeaponBase::UpdateAmmo()
     {
         EnableFire();
     }
+
+    bIsWeaponReadyToFire = true;
 }
 
 

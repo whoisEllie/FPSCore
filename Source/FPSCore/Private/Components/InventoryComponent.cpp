@@ -129,9 +129,10 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         CurrentWeapon->SetActorHiddenInGame(false);
         if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
         {
-        	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+        	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
         	{
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+        		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
         	}
         }
     }
@@ -209,9 +210,10 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             CurrentWeapon->SetActorHiddenInGame(false);
             if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
             {
-            	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+            	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	            {
 		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+            		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
 	            }
             }
         }

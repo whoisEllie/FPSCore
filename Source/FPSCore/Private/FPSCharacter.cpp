@@ -533,7 +533,7 @@ void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
     // Updating the movement state
     MovementState = NewMovementState;
 
-    if (MovementDataMap.Contains(EMovementState::State_Walk))
+    if (MovementDataMap.Contains(MovementState))
     {
         // Updating CharacterMovementComponent variables based on movement state
         if (InventoryComponent)
