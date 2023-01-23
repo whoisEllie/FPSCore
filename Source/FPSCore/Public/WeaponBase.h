@@ -619,7 +619,7 @@ public:
 	void StopFire();
 	
 	/** Plays the reload animation and sets a timer based on the length of the reload montage */
-	void Reload();
+	bool Reload();
 
 	/** Spawns the weapons attachments and applies their data/modifications to the weapon's statistics */ 
 	void SpawnAttachments();

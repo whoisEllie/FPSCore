@@ -265,7 +265,39 @@ void UInventoryComponent::Reload()
 {
     if (CurrentWeapon)
     {
-        CurrentWeapon->Reload();
+        if (!CurrentWeapon->Reload())
+        {
+	        switch (ReloadFailedBehaviour)
+	        {
+	        case EReloadFailedBehaviour::Retry:
+	        	{
+	        		GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
+	        		break;
+	        	}
+
+	        case EReloadFailedBehaviour::ChangeState:
+	        	{
+	        		AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
+	        		FPSCharacter->UpdateMovementState(EMovementState::State_Walk);
+	        		Reload();
+	        		break;
+	        	}
+
+	        case EReloadFailedBehaviour::HandleInBP:
+	        	{
+	        		EventFailedToReload.Broadcast();	
+	        		break;
+	        	}
+
+	        case EReloadFailedBehaviour::Ignore:
+		        {
+			        // Ignoring it, obviously :)
+	        		break;
+		        }
+
+	        default: { break; }
+	        } 
+        }
     }
 }
 
