@@ -722,6 +722,9 @@ private:
 	/** Allows the player to fire again */
 	void EnableFire();
 
+	/** Sets the weapon to be allowed to fire */
+	void ReadyToFire();
+
 	/** Begins applying recoil to the weapon */
 	void StartRecoil();
 
@@ -792,6 +795,9 @@ private:
 
 	/** Keeps track of whether the weapon has been recently fired - used to prevent rapid manual fire */
 	bool bHasFiredRecently = false;
+
+	/** Keeps track of whether the weapon has cycled a shot and is ready to fire a new one */
+	bool bIsWeaponReadyToFire = true;
 
 	/** The sum of the modifications the attachments make to damage */
 	float DamageModifier;

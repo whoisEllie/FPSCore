@@ -262,10 +262,14 @@ void AWeaponBase::EnableFire()
     bCanFire = true;
 }
 
+void AWeaponBase::ReadyToFire()
+{
+    bIsWeaponReadyToFire = true;
+}
+
 void AWeaponBase::StopFire()
 {
     // Stops the gun firing (for automatic fire)
-    GetWorldTimerManager().ClearTimer(ShotDelay);
     VerticalRecoilTimeline.Stop();
     HorizontalRecoilTimeline.Stop();
     RecoilRecovery();
@@ -273,16 +277,18 @@ void AWeaponBase::StopFire()
     if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
     {
         bHasFiredRecently = false;
-        bCanFire = false;
+        bIsWeaponReadyToFire = false;
         GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
-        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::EnableFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(GetWorldTimerManager().GetTimerRemaining(ShotDelay)));
+        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
     }
+    GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
 void AWeaponBase::Fire()
 {    
     // Allowing the gun to fire if it has ammunition, is not reloading and the bCanFire variable is true
-    if(bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
+    if(bCanFire && bIsWeaponReadyToFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
     {
         // Casting to the player character
         const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -691,6 +697,10 @@ void AWeaponBase::Tick(float DeltaTime)
     VerticalRecoilTimeline.TickTimeline(DeltaTime);
     HorizontalRecoilTimeline.TickTimeline(DeltaTime);
     RecoilRecoveryTimeline.TickTimeline(DeltaTime);
+
+    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bHasFiredRecently? TEXT("Has fired recently") : TEXT("Has not fired recently"));
+    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bCanFire? TEXT("Can Fire") : TEXT("Can not Fire"));
+    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bIsWeaponReadyToFire? TEXT("Weapon is ready to fire") : TEXT("Weapon is not ready to fire"));
 }
 
 // Recovering the player's recoil to the pre-fired position
