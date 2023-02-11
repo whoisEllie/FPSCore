@@ -212,6 +212,14 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* WeaponEquip;
 
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* HandsInspect;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* WeaponInspect;
+
 	/** The ammunition type to be used (Spawned on the pickup) */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	EAmmoType AmmoToUse;
@@ -413,6 +421,14 @@ struct FStaticWeaponData : public FTableRowBase
 	/** The player's reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* PlayerReload;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* HandsInspect;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* WeaponInspect;
 
 	/** The sprinting animation sequence */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -671,6 +687,12 @@ public:
 		PlayerAnimSet.Anim_Fall = WeaponData.Anim_Fall;
 		PlayerAnimSet.Anim_Sprint = WeaponData.Anim_Sprint;
 		return PlayerAnimSet;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	USkeletalMeshComponent* GetMainMeshComp() const
+	{
+		return MeshComp;
 	}
 
 	/** Returns the vertical camera offset for this weapon instance */

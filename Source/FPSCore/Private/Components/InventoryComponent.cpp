@@ -301,6 +301,21 @@ void UInventoryComponent::Reload()
     }
 }
 
+void UInventoryComponent::Inspect()
+{
+	if (CurrentWeapon)
+	{
+		if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect && CurrentWeapon->GetStaticWeaponData()->HandsInspect)
+		{
+			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			{
+				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
+				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+			}
+		}
+	}
+}
+
 void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInputComponent)
 {
 	if (FiringAction)
@@ -332,5 +347,11 @@ void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInp
 	{
 		// Scrolling through weapons
 		PlayerInputComponent->BindAction(ScrollAction, ETriggerEvent::Started, this, &UInventoryComponent::ScrollWeapon);
+	}
+
+	if (InspectWeaponAction)
+	{
+		// Playing the inspect animation
+		PlayerInputComponent->BindAction(InspectWeaponAction, ETriggerEvent::Started, this, &UInventoryComponent::Inspect);
 	}
 }

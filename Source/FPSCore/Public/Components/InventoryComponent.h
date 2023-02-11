@@ -150,6 +150,9 @@ public:
 	UPROPERTY()
 	UInputAction* ScrollAction;
 
+	UPROPERTY()
+	UInputAction* InspectWeaponAction;
+
 private:
 
 	/** Spawns starter weapons */
@@ -175,6 +178,9 @@ private:
 
 	/** Reloads the weapon */
 	void Reload();
+
+	/** Plays an inspect animation on the weapon */
+	void Inspect();
 
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")

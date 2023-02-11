@@ -698,6 +698,7 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
             InventoryComp->SecondaryWeaponAction = SecondaryWeaponAction;
             InventoryComp->ReloadAction = ReloadAction;
             InventoryComp->ScrollAction = ScrollAction;
+            InventoryComp->InspectWeaponAction = InspectWeaponAction;
             
             InventoryComp->SetupInputComponent(PlayerEnhancedInputComponent);
         }
