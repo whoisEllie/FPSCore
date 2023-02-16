@@ -163,6 +163,9 @@ private:
 	 */
 	void SwapWeapon(int SlotId);
 
+	/** Swaps to the weapon in CurrentWeaponSlot */
+	void SwapWeapon();
+
 	/**	Template function for SwapWeapon (used with the enhanced input component) */
 	template <int SlotID>
 	void SwapWeapon() { SwapWeapon(SlotID); }
@@ -181,6 +184,8 @@ private:
 
 	/** Plays an inspect animation on the weapon */
 	void Inspect();
+
+	void HandleUnequip(); 
 
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
@@ -209,4 +214,6 @@ private:
 	AWeaponBase* CurrentWeapon;
 
 	FTimerHandle ReloadRetry;
+
+	FTimerHandle WeaponSwapDelegate;
 };

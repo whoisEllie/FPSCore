@@ -43,7 +43,9 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 			NewID = NumberOfWeaponSlots - 1;
 		}
 	}
-	
+
+	//TODO: Play unequip animation, then swap to new ID?
+	HandleUnequip();
 	SwapWeapon(NewID);
 }
 
@@ -131,6 +133,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
         	{
+        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages();
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
         		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
         	}
@@ -212,6 +215,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             {
             	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	            {
+            		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages();
 		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
             		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
 	            }
@@ -313,6 +317,21 @@ void UInventoryComponent::Inspect()
 				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
 			}
 		}
+	}
+}
+
+void UInventoryComponent::HandleUnequip()
+{
+	if (CurrentWeapon)
+	{
+		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+		{
+			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			{
+				float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
+				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::SwapWeapon, AnimTime, false, AnimTime);
+			}	
+		}	
 	}
 }
 
