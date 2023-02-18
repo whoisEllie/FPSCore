@@ -44,11 +44,11 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 		}
 	}
 
-	if (bPerformingWeaponSwap)
+	if (bPerformingWeaponSwap && WeaponSwapBehaviour == EWeaponSwapBehaviour::UseNewValue)
 	{
 		TargetWeaponSlot = NewID;	
 	}
-	else
+	else if (!bPerformingWeaponSwap)
 	{
 		SwapWeapon(NewID);
 	}

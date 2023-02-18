@@ -24,6 +24,13 @@ enum class EReloadFailedBehaviour : uint8
 	Ignore			UMETA(DisplayName = "Ignore unsuccessful reload")
 };
 
+UENUM(BlueprintType)
+enum class EWeaponSwapBehaviour : uint8
+{
+	UseNewValue		UMETA(DisplayName = "Swap to new value"),
+	Ignore			UMETA(DisplayName = "Ignore subsequent swaps")
+};
+
 USTRUCT()
 struct FStarterWeaponData
 {
@@ -202,6 +209,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
 	EReloadFailedBehaviour ReloadFailedBehaviour = EReloadFailedBehaviour::Ignore;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	EWeaponSwapBehaviour WeaponSwapBehaviour = EWeaponSwapBehaviour::UseNewValue;
 	
 	/** The integer that keeps track of which weapon slot ID is currently active */
 	int CurrentWeaponSlot;
