@@ -6,6 +6,8 @@
 #include "FPSCharacterController.h"
 #include "WeaponBase.h"
 #include "WeaponPickup.h"
+#include "GameFramework/Actor.h"
+#include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 
