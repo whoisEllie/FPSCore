@@ -164,7 +164,6 @@ private:
 	void SwapWeapon(int SlotId);
 
 	/** Swaps to the weapon in CurrentWeaponSlot */
-	void SwapWeapon();
 
 	/**	Template function for SwapWeapon (used with the enhanced input component) */
 	template <int SlotID>
@@ -185,7 +184,9 @@ private:
 	/** Plays an inspect animation on the weapon */
 	void Inspect();
 
-	void HandleUnequip(); 
+	void HandleUnequip();
+
+	void UnequipReturn();
 
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
@@ -204,6 +205,11 @@ private:
 	
 	/** The integer that keeps track of which weapon slot ID is currently active */
 	int CurrentWeaponSlot;
+
+	/** The integer that keeps track of which weapon slot ID we are aiming to switch to while waiting for the unequip animation to play */
+	int TargetWeaponSlot;
+
+	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	UPROPERTY()

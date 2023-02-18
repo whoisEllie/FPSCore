@@ -44,9 +44,14 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 		}
 	}
 
-	//TODO: Play unequip animation, then swap to new ID?
-	HandleUnequip();
-	SwapWeapon(NewID);
+	if (bPerformingWeaponSwap)
+	{
+		TargetWeaponSlot = NewID;	
+	}
+	else
+	{
+		SwapWeapon(NewID);
+	}
 }
 
 void UInventoryComponent::BeginPlay()
@@ -112,9 +117,17 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	// Returning if the target weapon is already equipped or it does not exist
     if (CurrentWeaponSlot == SlotId) { return; }
     if (!EquippedWeapons.Contains(SlotId)) { return; }
+	if (!bPerformingWeaponSwap)
+	{
+		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+		{
+			bPerformingWeaponSwap = true;
+			TargetWeaponSlot = SlotId;
+			HandleUnequip();
+			return;
+		}	
+	}
 	
-    CurrentWeaponSlot = SlotId;
-
 	// Disabling the currently equipped weapon, if it exists
     if (CurrentWeapon)
     {
@@ -133,19 +146,21 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
         	{
-        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages();
+        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
         		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
         	}
         }
     }
+	
+	bPerformingWeaponSwap = false;
 }
 
 // Spawns a new weapon (either from weapon swap or picking up a new weapon)
 void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon, const int InventoryPosition, const bool bSpawnPickup,
                                        const bool bStatic, const FTransform PickupTransform, const FRuntimeWeaponData DataStruct)
 {
-    // Determining spawn parameters (forcing the weapon to spawn at all times)
+    // Determining spawn parameters (forcing the weapon pickup to spawn at all times)
     FActorSpawnParameters SpawnParameters;
     SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
     if (InventoryPosition == CurrentWeaponSlot && EquippedWeapons.Contains(InventoryPosition))
@@ -215,7 +230,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             {
             	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 	            {
-            		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages();
+            		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
 		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
             		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
 	            }
@@ -329,10 +344,15 @@ void UInventoryComponent::HandleUnequip()
 			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 			{
 				float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
-				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::SwapWeapon, AnimTime, false, AnimTime);
+				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	
 	}
+}
+
+void UInventoryComponent::UnequipReturn()
+{
+	SwapWeapon(TargetWeaponSlot);
 }
 
 void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInputComponent)
