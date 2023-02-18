@@ -172,14 +172,6 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Barrel", meta=(EditCondition="AttachmentType == EAttachmentType::Barrel"))
 	bool bSilenced;
 
-	/** The firing sound to use instead of the default for this particular magazine attachment */ 
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
-	USoundBase* FiringSoundOverride;
-
-	/** The silenced firing sound to use instead of the default for this particular magazine attachment */
-	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
-	USoundBase* SilencedFiringSoundOverride;
-
 	/** An override for the default walk BlendSpace */
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UBlendSpace* BS_Walk;
@@ -219,6 +211,14 @@ struct FAttachmentData : public FTableRowBase
 	/** Unequip animation for the current weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* WeaponEquip;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* HandsInspect;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* WeaponInspect;
 
 	/** The ammunition type to be used (Spawned on the pickup) */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
@@ -272,6 +272,14 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	float AccuracyDebuff = 1.25f;
 
+	/** We wait for the animation to finish before the player is allowed to fire again (for weapons where the character has to perform an action before being able to fire again) Requires fireMontage to be set */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool bWaitForAnim;
+
+	/** Whether to prevent players from spam-firing this weapon faster than the assigned Rate of Fire */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool bPreventRapidManualFire;
+
 	/** An override for the weapon's empty reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimationAsset* EmptyWeaponReload;
@@ -287,6 +295,14 @@ struct FAttachmentData : public FTableRowBase
 	/** An override for the player's reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UAnimMontage* PlayerReload;
+	
+	/** The firing sound to use instead of the default for this particular magazine attachment */ 
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	USoundBase* FiringSoundOverride;
+
+	/** The silenced firing sound to use instead of the default for this particular magazine attachment */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	USoundBase* SilencedFiringSoundOverride;
 
 	/** The offset applied to the camera to align with the sights */
 	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
@@ -299,10 +315,6 @@ struct FAttachmentData : public FTableRowBase
 	/** The decrease in FOV of the camera to when aim down sights */
 	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
 	float AimingFOVChange;
-
-	/** Whether this weapon has a scope and we need to render a SceneCaptureComponent2D */
-	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
-	bool bIsScope = false;
 
 	/** The Magnification of the scope */
 	UPROPERTY(EditDefaultsOnly, Category = "Sights", meta=(EditCondition="AttachmentType == EAttachmentType::Sights"))
@@ -410,6 +422,14 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* PlayerReload;
 
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* HandsInspect;
+
+	/** The player's inspect animation */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* WeaponInspect;
+
 	/** The sprinting animation sequence */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Sprint;
@@ -439,6 +459,10 @@ struct FStaticWeaponData : public FTableRowBase
 	/** We wait for the animation to finish before the player is allowed to fire again (for weapons where the character has to perform an action before being able to fire again) Requires fireMontage to be set */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bWaitForAnim;
+
+	/** Whether to prevent players from spam-firing this weapon faster than the assigned Rate of Fire */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	bool bPreventRapidManualFire;
 
 	/** Whether this weapon is a shotgun or not */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -611,7 +635,7 @@ public:
 	void StopFire();
 	
 	/** Plays the reload animation and sets a timer based on the length of the reload montage */
-	void Reload();
+	bool Reload();
 
 	/** Spawns the weapons attachments and applies their data/modifications to the weapon's statistics */ 
 	void SpawnAttachments();
@@ -623,6 +647,11 @@ public:
 	 *	@param bNewFire The new state of the weapon's ability to fire
 	 */
 	void SetCanFire(const bool bNewFire) { bCanFire = bNewFire; }
+
+	/** Update the weapon's ability to reload 
+	 *	@param bNewReload The new state of the weapon's ability to reload
+	 */	
+	void SetCanReload(const bool bNewReload) { bCanReload = bNewReload; }
 
 	/** Whether the weapon is currently in it's reload state */
 	bool IsReloading() const { return bIsReloading; }
@@ -658,6 +687,12 @@ public:
 		PlayerAnimSet.Anim_Fall = WeaponData.Anim_Fall;
 		PlayerAnimSet.Anim_Sprint = WeaponData.Anim_Sprint;
 		return PlayerAnimSet;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "Weapon Base")
+	USkeletalMeshComponent* GetMainMeshComp() const
+	{
+		return MeshComp;
 	}
 
 	/** Returns the vertical camera offset for this weapon instance */
@@ -708,6 +743,9 @@ private:
 
 	/** Allows the player to fire again */
 	void EnableFire();
+
+	/** Sets the weapon to be allowed to fire */
+	void ReadyToFire();
 
 	/** Begins applying recoil to the weapon */
 	void StartRecoil();
@@ -770,9 +808,18 @@ private:
 
 	/** Determines if the player can fire */
 	bool bCanFire = true;
+
+	/** Determines if the player can reload */
+	bool bCanReload = true;
 	
 	/** Keeps track of whether the weapon is being reloaded */
 	bool bIsReloading = false;
+
+	/** Keeps track of whether the weapon has been recently fired - used to prevent rapid manual fire */
+	bool bHasFiredRecently = false;
+
+	/** Keeps track of whether the weapon has cycled a shot and is ready to fire a new one */
+	bool bIsWeaponReadyToFire = true;
 
 	/** The sum of the modifications the attachments make to damage */
 	float DamageModifier;
@@ -822,9 +869,9 @@ private:
 	
 	/** The timer used to keep track of how long a reloading animation takes and only assigning variables */ 
 	FTimerHandle ReloadingDelay;
-	
-	/** The timer used for rendering the scope image */
-	FTimerHandle ScopeRenderTimer;
+
+	/** The timer used to keep track of whether to  */
+	FTimerHandle SpamFirePreventionDelay;
 	
 	/** The curve for vertical recoil (set from WeaponData) */
 	UPROPERTY()

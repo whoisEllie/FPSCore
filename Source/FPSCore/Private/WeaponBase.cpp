@@ -160,6 +160,8 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.PlayerReload = AttachmentData->PlayerReload;
                     WeaponData.Gun_Shot = AttachmentData->Gun_Shot;
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
+                    WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
+                    WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
                 }
                 else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
                 {
@@ -241,8 +243,6 @@ void AWeaponBase::StartRecoil()
 {
     const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
-
-    ShotsFired = 0;
     
     if (bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading && CharacterController)
     {
@@ -260,19 +260,34 @@ void AWeaponBase::EnableFire()
     bCanFire = true;
 }
 
+void AWeaponBase::ReadyToFire()
+{
+    bIsWeaponReadyToFire = true;
+}
+
 void AWeaponBase::StopFire()
 {
     // Stops the gun firing (for automatic fire)
-    GetWorldTimerManager().ClearTimer(ShotDelay);
     VerticalRecoilTimeline.Stop();
     HorizontalRecoilTimeline.Stop();
     RecoilRecovery();
+    ShotsFired = 0;
+
+    if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
+    {
+        bHasFiredRecently = false;
+        bIsWeaponReadyToFire = false;
+        GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
+        //GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(GetWorldTimerManager().GetTimerRemaining(ShotDelay)));
+        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+    }
+    GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
 void AWeaponBase::Fire()
 {    
     // Allowing the gun to fire if it has ammunition, is not reloading and the bCanFire variable is true
-    if(bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
+    if(bCanFire && bIsWeaponReadyToFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
     {
         // Casting to the player character
         const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -323,6 +338,7 @@ void AWeaponBase::Fire()
                 MeshComp->PlayAnimation(WeaponData.Gun_Shot, false);
                 if (WeaponData.bWaitForAnim)
                 {
+                    // Preventing the player from firing the weapon until the animation finishes playing 
                     const float AnimWaitTime = WeaponData.Gun_Shot->GetPlayLength();
                     bCanFire = false;
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
@@ -493,6 +509,8 @@ void AWeaponBase::Fire()
             HorizontalRecoilTimeline.Stop();
             RecoilRecovery();
         }
+
+        bHasFiredRecently = true;
     }
     else if (bCanFire && !bIsReloading)
     {
@@ -511,12 +529,12 @@ void AWeaponBase::Recoil()
     AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
     // Apply recoil by adding a pitch and yaw input to the character controller
-    if (WeaponData.bAutomaticFire && CharacterController && ShotsFired > 0 && IsValid(VerticalRecoilCurve) && IsValid(HorizontalRecoilCurve))
+    if (WeaponData.bAutomaticFire && CharacterController && ShotsFired > 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
     {
         CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue(VerticalRecoilTimeline.GetPlaybackPosition()) * VerticalRecoilModifier);
         CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue(HorizontalRecoilTimeline.GetPlaybackPosition()) * HorizontalRecoilModifier);
     }
-    else if (CharacterController && ShotsFired > 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
+    else if (CharacterController && ShotsFired <= 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
     {
         CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue(0) * VerticalRecoilModifier);
         CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue(0) * HorizontalRecoilModifier);
@@ -536,16 +554,19 @@ void AWeaponBase::RecoilRecovery()
 }
 
 
-void AWeaponBase::Reload()
+bool AWeaponBase::Reload()
 {
-    
+    if (!bCanReload)
+    {
+        return false;
+    }
     // Casting to the character controller (which stores all the ammunition and health variables)
     const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
     // Changing the maximum ammunition based on if the weapon can hold a bullet in the chamber
     int Value = 0;
-    if(WeaponData.bCanBeChambered)
+    if (WeaponData.bCanBeChambered)
     {
         Value = 1;
     }
@@ -554,7 +575,8 @@ void AWeaponBase::Reload()
     // (current ammunition does not match maximum magazine capacity and there is spare ammunition to load into the gun)
     if (CharacterController->AmmoMap.Contains(GeneralWeaponData.AmmoType))
     {
-        if (!bIsReloading && CharacterController->AmmoMap[GeneralWeaponData.AmmoType] > 0 && (GeneralWeaponData.ClipSize !=
+        if (!bIsReloading && CharacterController->AmmoMap[GeneralWeaponData.AmmoType] > 0 && (GeneralWeaponData.ClipSize
+            !=
             (GeneralWeaponData.ClipCapacity + Value)))
         {
             // Differentiating between having no ammunition in the magazine (having to chamber a round after reloading)
@@ -569,8 +591,9 @@ void AWeaponBase::Reload()
                 {
                     MeshComp->PlayAnimation(WeaponData.EmptyWeaponReload, false);
                 }
-                
-                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.EmptyPlayerReload, 1.0f);
+
+                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
+                    WeaponData.EmptyPlayerReload, 1.0f);
             }
             else if (WeaponData.PlayerReload)
             {
@@ -582,27 +605,30 @@ void AWeaponBase::Reload()
                 {
                     MeshComp->PlayAnimation(WeaponData.WeaponReload, false);
                 }
-                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.PlayerReload, 1.0f);
+                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
+                    WeaponData.PlayerReload, 1.0f);
             }
             else
             {
                 AnimTime = 2.0f;
             }
-            
+
             // Printing debug strings
-            if(bShowDebug)
+            if (bShowDebug)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Reload", true);
             }
-            
+
             // Setting variables to make sure that the player cannot fire or reload during the time that the weapon is in it's reloading animation
             bCanFire = false;
             bIsReloading = true;
-            
+
             // Starting the timer alongside the animation of the weapon reloading, casting to UpdateAmmo when it finishes
             GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
         }
     }
+
+    return true;
 }
 
 void AWeaponBase::UpdateAmmo()
@@ -665,6 +691,8 @@ void AWeaponBase::UpdateAmmo()
     {
         EnableFire();
     }
+
+    bIsWeaponReadyToFire = true;
 }
 
 
@@ -676,6 +704,13 @@ void AWeaponBase::Tick(float DeltaTime)
     VerticalRecoilTimeline.TickTimeline(DeltaTime);
     HorizontalRecoilTimeline.TickTimeline(DeltaTime);
     RecoilRecoveryTimeline.TickTimeline(DeltaTime);
+
+    if (bShowDebug)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bHasFiredRecently? TEXT("Has fired recently") : TEXT("Has not fired recently"));
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bCanFire? TEXT("Can Fire") : TEXT("Can not Fire"));
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Green, bIsWeaponReadyToFire? TEXT("Weapon is ready to fire") : TEXT("Weapon is not ready to fire"));
+    }
 }
 
 // Recovering the player's recoil to the pre-fired position

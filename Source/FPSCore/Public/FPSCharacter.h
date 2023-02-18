@@ -6,6 +6,8 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
+#include <mach/boolean.h>
+
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
 #include "WeaponBase.h"
 #include "Components/InventoryComponent.h"
@@ -33,24 +35,27 @@ enum class EMovementState : uint8
 };
 
 /** Variables associated with each movement state */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FMovementVariables
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
-	bool bCanFire;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	bool bCanFire = true;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
-	float MaxAcceleration;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	bool bCanReload = true;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
-	float BreakingDecelerationWalking;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	float MaxAcceleration = 2048.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
-	float GroundFriction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	float BreakingDecelerationWalking = 2048.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement Variables")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	float GroundFriction = 8.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float MaxWalkSpeed;
 };
 
@@ -147,6 +152,17 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FPS Character")
 	void UpdateFOVOffset(const float NewOffset) { FOVOffset = NewOffset; }
+
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	void RuntimeUpdateMovementValues(const EMovementState MovementStateToUpdate, const FMovementVariables NewMovementVariables)
+	{
+		MovementDataMap[MovementStateToUpdate] = NewMovementVariables;
+	}
+
+	/** A global system that handles updates to the movement state and changes relevant values accordingly
+	*	@param NewMovementState The new movement state of the player
+	*/
+	void UpdateMovementState(EMovementState NewMovementState);
 	
 protected:
 
@@ -215,9 +231,6 @@ private:
 	/** Exits the character from the slide state if they are sliding and updates bHoldingCrouch */
 	void ReleaseCrouch();
 
-	/** Slides the character (used when bCrouchIsToggle is False)*/
-	void Slide();
-	
 	/** Starting to sprint */
 	void StartSprint();
 
@@ -238,13 +251,11 @@ private:
 	 */
 	void Vault(FTransform TargetTransform);
 	
-	/** A global system that handles updates to the movement state and changes relevant values accordingly
-	 *	@param NewMovementState The new movement state of the player
-	 */
-	void UpdateMovementValues(EMovementState NewMovementState);
-
 	/** Checks the angle of the floor to determine slide behaviour */
-	void CheckAngle(float DeltaTime);
+	void CheckGroundAngle(float DeltaTime);
+
+	/** Checks the relative angle that the player is moving in (forwards/backwards/left/right) to determine if they can sprint */
+	float CheckRelativeMovementAngle(float DeltaTime) const;
 
 	/** Trace above the player to make sure we have enough space to stand up */
 	bool HasSpaceToStandUp();
@@ -291,6 +302,18 @@ private:
 	/** Whether crouching has to be held or can be toggled */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
+
+	/** Whether to prevent the user from sprinting past a specific angle */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
+	bool bRestrictSprintAngle;
+	
+	/** The maximum angle at which the player can sprint before returning to a walk */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
+	float SprintAngleLimit = 180;
+
+	/** Whether the character is allowed to slide */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
+	bool bCanSlide = true;
 	
 	/** The time in seconds between the beginning of a slide and when it is ended */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
@@ -300,6 +323,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
 	float SlideContinueAngle = -15.0f;
 
+	/** Whether the character is allowed to vault */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")	
+	bool bCanVault = true;
+	
 	/** The height of the highest surface that the player can mantle up onto */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")
 	float MaxMantleHeight = 200.0f;
@@ -359,6 +386,11 @@ private:
 	
 	/** Whether the player is holding down the aim down sights button */
 	bool bWantsToAim;
+
+	/** Whether the player is holding down the sprint key */
+	bool bWantsToSprint;
+
+	bool bRestrictingSprint = false;
 	
 	/** Whether we should display a crosshair or not */
 	bool bShowCrosshair;
@@ -374,9 +406,6 @@ private:
 	
 	/** Whether the character has performed a slide yet? */
 	bool bPerformedSlide;
-	
-	/** Whether the player is holding the sprint key */
-	bool bHoldingSprint;
 	
 	/** Whether the player wants to slide (is holding the crouch/slide key, but not on the ground) */
 	bool bWantsToSlide;
@@ -480,6 +509,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* ScrollAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
+	UInputAction* InspectWeaponAction;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* PauseAction;

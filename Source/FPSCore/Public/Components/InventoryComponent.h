@@ -13,6 +13,23 @@ class UCameraComponent;
 class UInventoryComponent;
 
 DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE_OneParam(FHitActor, UInventoryComponent, EventHitActor, FHitResult, HitResult);
+DECLARE_DYNAMIC_MULTICAST_SPARSE_DELEGATE(FFailedToReload, UInventoryComponent, EventFailedToReload);
+
+UENUM(BlueprintType)
+enum class EReloadFailedBehaviour : uint8
+{
+	Retry			UMETA(DisplayName = "Retry until successful"),
+	ChangeState		UMETA(DisplayName = "Change movement state to be able to successfuly reload"),
+	HandleInBP		UMETA(DisplayName = "Handle in Blueprint"),
+	Ignore			UMETA(DisplayName = "Ignore unsuccessful reload")
+};
+
+UENUM(BlueprintType)
+enum class EWeaponSwapBehaviour : uint8
+{
+	UseNewValue		UMETA(DisplayName = "Swap to new value"),
+	Ignore			UMETA(DisplayName = "Ignore subsequent swaps")
+};
 
 USTRUCT()
 struct FStarterWeaponData
@@ -121,6 +138,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Inventory Component")
 	FHitActor EventHitActor;
 
+	UPROPERTY(BlueprintAssignable, Category = "Inventory Component")
+	FFailedToReload EventFailedToReload;
+
 	/** The input actions implemented by this component */
 	UPROPERTY()
 	UInputAction* FiringAction;
@@ -137,6 +157,9 @@ public:
 	UPROPERTY()
 	UInputAction* ScrollAction;
 
+	UPROPERTY()
+	UInputAction* InspectWeaponAction;
+
 private:
 
 	/** Spawns starter weapons */
@@ -146,6 +169,8 @@ private:
 	 *	@param SlotId The ID of the slot which to swap to
 	 */
 	void SwapWeapon(int SlotId);
+
+	/** Swaps to the weapon in CurrentWeaponSlot */
 
 	/**	Template function for SwapWeapon (used with the enhanced input component) */
 	template <int SlotID>
@@ -163,6 +188,12 @@ private:
 	/** Reloads the weapon */
 	void Reload();
 
+	/** Plays an inspect animation on the weapon */
+	void Inspect();
+
+	void HandleUnequip();
+
+	void UnequipReturn();
 
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
@@ -175,9 +206,20 @@ private:
 	/** An array of starter weapons. Only weapons within the range of NumberOfWeaponSlots will be spawned */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Inventory")
 	TArray<FStarterWeaponData> StarterWeapons;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	EReloadFailedBehaviour ReloadFailedBehaviour = EReloadFailedBehaviour::Ignore;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	EWeaponSwapBehaviour WeaponSwapBehaviour = EWeaponSwapBehaviour::UseNewValue;
 	
 	/** The integer that keeps track of which weapon slot ID is currently active */
 	int CurrentWeaponSlot;
+
+	/** The integer that keeps track of which weapon slot ID we are aiming to switch to while waiting for the unequip animation to play */
+	int TargetWeaponSlot;
+
+	bool bPerformingWeaponSwap;
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	UPROPERTY()
@@ -186,4 +228,8 @@ private:
 	/** The player's currently equipped weapon */
 	UPROPERTY()
 	AWeaponBase* CurrentWeapon;
+
+	FTimerHandle ReloadRetry;
+
+	FTimerHandle WeaponSwapDelegate;
 };
