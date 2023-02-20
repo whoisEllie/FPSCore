@@ -6,8 +6,6 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
-#include <mach/boolean.h>
-
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
 #include "WeaponBase.h"
 #include "Components/InventoryComponent.h"
