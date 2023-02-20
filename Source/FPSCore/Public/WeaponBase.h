@@ -423,11 +423,11 @@ struct FStaticWeaponData : public FTableRowBase
 	UAnimMontage* PlayerReload;
 
 	/** The player's inspect animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsInspect;
 
 	/** The player's inspect animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponInspect;
 
 	/** The sprinting animation sequence */
