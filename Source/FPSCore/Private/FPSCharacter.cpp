@@ -589,8 +589,10 @@ void AFPSCharacter::Tick(const float DeltaTime)
 
     if (bRestrictSprintAngle)
     {
+        const float CurrentRelativeMovementAngle = CheckRelativeMovementAngle(DeltaTime);
+        
         // Sprinting
-        if (const float CurrentRelativeMovementAngle = CheckRelativeMovementAngle(DeltaTime); CurrentRelativeMovementAngle > (SprintAngleLimit * (PI/180)) && MovementState == EMovementState::State_Sprint)
+        if (CurrentRelativeMovementAngle > (SprintAngleLimit * (PI/180)) && MovementState == EMovementState::State_Sprint)
         {
             UpdateMovementState(EMovementState::State_Walk);
             bRestrictingSprint = true;
