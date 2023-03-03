@@ -123,12 +123,16 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 	{
 		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
 		{
+			CurrentWeapon->StopFire();
+			CurrentWeapon->SetCanFire(false);
 			bPerformingWeaponSwap = true;
 			TargetWeaponSlot = SlotId;
 			HandleUnequip();
 			return;
 		}	
 	}
+
+	CurrentWeaponSlot = SlotId;
 	
 	// Disabling the currently equipped weapon, if it exists
     if (CurrentWeapon)
@@ -144,6 +148,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     {
         CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
         CurrentWeapon->SetActorHiddenInGame(false);
+    	CurrentWeapon->SetCanFire(true);
         if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
@@ -328,7 +333,7 @@ void UInventoryComponent::Inspect()
 	{
 		if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect && CurrentWeapon->GetStaticWeaponData()->HandsInspect)
 		{
-			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 			{
 				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
 				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
@@ -343,9 +348,9 @@ void UInventoryComponent::HandleUnequip()
 	{
 		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
 		{
-			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 			{
-				float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
+				const float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
 				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	
