@@ -643,7 +643,14 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // Slide performed check, so that if the player is in the air and presses the slide key, they slide when they land
     if (GetCharacterMovement()->IsMovingOnGround() && !bPerformedSlide && bWantsToSlide)
     {
-        StartSlide();
+        if (bCanSlide)
+        {
+            StartSlide();
+        }
+        else
+        {
+            ToggleCrouch();
+        }
         bWantsToSlide = false;
     }
 
