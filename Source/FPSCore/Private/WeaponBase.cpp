@@ -640,7 +640,7 @@ void AWeaponBase::UpdateAmmo()
     }
 
     // Casting to the game instance (which stores all the ammunition and health variables)
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
     
     // value system to reload the correct amount of bullets if the weapon is using a chambered reloading system
@@ -687,7 +687,7 @@ void AWeaponBase::UpdateAmmo()
     
 
     // Making sure the player cannot fire if sprinting
-    if (!(PlayerCharacter->GetMovementState() == EMovementState::State_Sprint) && !(PlayerCharacter->GetMovementState() == EMovementState::State_Slide))
+    if (PlayerCharacter->GetMovementData(PlayerCharacter->GetMovementState()).bCanFire)
     {
         EnableFire();
     }

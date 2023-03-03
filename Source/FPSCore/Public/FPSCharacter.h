@@ -161,6 +161,9 @@ public:
 	*	@param NewMovementState The new movement state of the player
 	*/
 	void UpdateMovementState(EMovementState NewMovementState);
+
+	/** Returns the character's movement data map */
+	FMovementVariables GetMovementData(const EMovementState QueryMovementState) { return MovementDataMap[QueryMovementState]; }
 	
 protected:
 

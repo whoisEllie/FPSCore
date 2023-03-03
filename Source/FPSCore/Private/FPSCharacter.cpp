@@ -211,6 +211,10 @@ void AFPSCharacter::StartSprint()
     }
     bPerformedSlide = false;
     UpdateMovementState(EMovementState::State_Sprint);
+    if (InventoryComponent->GetCurrentWeapon())
+    {
+        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[EMovementState::State_Sprint].bCanFire);
+    }
     bWantsToSprint = true;
 }
 
@@ -225,6 +229,10 @@ void AFPSCharacter::StopSprint()
         UpdateMovementState(EMovementState::State_Walk);
     }
     bWantsToSprint = false;
+    if (InventoryComponent->GetCurrentWeapon())
+    {
+        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+    }
 }
 
 void AFPSCharacter::StartSlide()
