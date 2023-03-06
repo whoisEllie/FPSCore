@@ -331,14 +331,17 @@ void UInventoryComponent::Inspect()
 {
 	if (CurrentWeapon)
 	{
-		if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect && CurrentWeapon->GetStaticWeaponData()->HandsInspect)
-		{
 			if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
 			{
-				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
-				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+				if (CurrentWeapon->GetStaticWeaponData()->HandsInspect)
+				{
+					FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
+				}
+				if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect)
+				{
+					CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+				}
 			}
-		}
 	}
 }
 
