@@ -393,9 +393,8 @@ void AWeaponBase::Fire()
                 AActor* HitActor = Hit.GetActor();
 
                 // Applying the previously set damage to the hit actor
-                AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
                 UGameplayStatics::ApplyPointDamage(HitActor, FinalDamage, TraceDirection, Hit,
-                                                   CharacterController, this, DamageType);
+                                                   GetOwner()->GetInstigatorController(), this, DamageType);
 
                 EndPoint = Hit.Location;
 
