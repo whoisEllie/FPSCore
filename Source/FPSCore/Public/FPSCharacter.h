@@ -304,6 +304,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
 
+	/** Whether the player should crouch on landing if they press the crouch key while in the air */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
+	bool bCrouchOnLanding = true;
+
 	/** Whether to prevent the user from sprinting past a specific angle */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
 	bool bRestrictSprintAngle;

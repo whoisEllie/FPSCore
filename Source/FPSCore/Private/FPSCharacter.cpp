@@ -655,7 +655,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
         {
             StartSlide();
         }
-        else
+        else if (bCrouchOnLanding)
         {
             ToggleCrouch();
         }
