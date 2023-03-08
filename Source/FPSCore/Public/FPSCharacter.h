@@ -161,6 +161,9 @@ public:
 	*	@param NewMovementState The new movement state of the player
 	*/
 	void UpdateMovementState(EMovementState NewMovementState);
+
+	/** Returns the character's movement data map */
+	FMovementVariables GetMovementData(const EMovementState QueryMovementState) { return MovementDataMap[QueryMovementState]; }
 	
 protected:
 
@@ -300,6 +303,10 @@ private:
 	/** Whether crouching has to be held or can be toggled */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
+
+	/** Whether the player should crouch on landing if they press the crouch key while in the air */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
+	bool bCrouchOnLanding = true;
 
 	/** Whether to prevent the user from sprinting past a specific angle */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")

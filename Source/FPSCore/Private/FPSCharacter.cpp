@@ -211,6 +211,10 @@ void AFPSCharacter::StartSprint()
     }
     bPerformedSlide = false;
     UpdateMovementState(EMovementState::State_Sprint);
+    if (InventoryComponent->GetCurrentWeapon())
+    {
+        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[EMovementState::State_Sprint].bCanFire);
+    }
     bWantsToSprint = true;
 }
 
@@ -225,6 +229,10 @@ void AFPSCharacter::StopSprint()
         UpdateMovementState(EMovementState::State_Walk);
     }
     bWantsToSprint = false;
+    if (InventoryComponent->GetCurrentWeapon())
+    {
+        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+    }
 }
 
 void AFPSCharacter::StartSlide()
@@ -643,7 +651,14 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // Slide performed check, so that if the player is in the air and presses the slide key, they slide when they land
     if (GetCharacterMovement()->IsMovingOnGround() && !bPerformedSlide && bWantsToSlide)
     {
-        StartSlide();
+        if (bCanSlide)
+        {
+            StartSlide();
+        }
+        else if (bCrouchOnLanding)
+        {
+            ToggleCrouch();
+        }
         bWantsToSlide = false;
     }
 
