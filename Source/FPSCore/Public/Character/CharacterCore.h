@@ -11,7 +11,7 @@
 #include "Components/InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
-#include "FPSCharacter.generated.h"
+#include "CharacterCore.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
@@ -58,7 +58,7 @@ struct FMovementVariables
 };
 
 UCLASS()
-class FPSCORE_API AFPSCharacter : public ACharacter
+class FPSCORE_API ACharacterCore : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -104,11 +104,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	EMovementState GetMovementState() const { return MovementState; }
 
-	/** Returns the character's hands mesh */
-	USkeletalMeshComponent* GetHandsMesh() const { return HandsMeshComp; }
 
-	/** Returns a reference to the player's camera component */
-	UCameraComponent* GetCameraComponent() const { return CameraComponent; }
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
@@ -164,17 +160,7 @@ public:
 	
 protected:
 
-	/** The character's FPS camera component */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
-	UCameraComponent* CameraComponent;
-
-	/** The character's hands mesh component */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
-	USkeletalMeshComponent* HandsMeshComp;
 	
-	/** The spring arm component, which is required to enable 'use control rotation' */
-	UPROPERTY(EditDefaultsOnly, Category = "Components")
-	USpringArmComponent* SpringArmComponent;
 	
 	/** Hand animation blend space for when the player has no weapon  */
 	UPROPERTY(EditDefaultsOnly, Category = "Animations | Blend Spaces")
@@ -209,7 +195,7 @@ private:
 #pragma region FUNCTIONS
 
 	/** Sets default values for this character's properties */
-	AFPSCharacter();
+	ACharacterCore();
 
 	/** Called when the game starts or when spawned */
 	virtual void BeginPlay() override;
@@ -447,8 +433,7 @@ private:
 	 */
 	float CrouchedSpringArmHeightDelta;
 
-	/** The default offset of the spring arm from a Z position of 0, set automatically on BeginPlay */
-	float DefaultSpringArmOffset;
+
 	
 	/** The current offset of the spring arm */
 	float CurrentSpringArmOffset = 0.0f;

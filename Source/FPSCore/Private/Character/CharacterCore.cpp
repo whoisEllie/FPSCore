@@ -1,6 +1,6 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
-#include "FPSCharacter.h"
+#include "Character/CharacterCore.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -25,33 +25,16 @@
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
-AFPSCharacter::AFPSCharacter()
+ACharacterCore::ACharacterCore()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-    
-    // Spawning the spring arm component
-    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
-    SpringArmComponent->bUsePawnControlRotation = true;
-    SpringArmComponent->SetupAttachment(RootComponent);
-    
-    // Spawning the FPS hands mesh component and attaching it to the spring arm component
-    HandsMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
-    HandsMeshComp->CastShadow = false;
-    HandsMeshComp->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
-    
-    // Spawning the camera atop the FPS hands mesh
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-    if (HandsMeshComp)
-    {
-        CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
-    }
     
     DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
 
 // Called when the game starts or when spawned
-void AFPSCharacter::BeginPlay()
+void ACharacterCore::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -64,7 +47,6 @@ void AFPSCharacter::BeginPlay()
         UE_LOG(LogProfilingDebugging, Error, TEXT("Set up data in MovementDataMap!"))
     }
     
-    DefaultSpringArmOffset = SpringArmComponent->GetRelativeLocation().Z; // Setting the default location of the spring arm
 
     // Binding a timeline to our vaulting curve
     if (VaultTimelineCurve)
@@ -81,11 +63,11 @@ void AFPSCharacter::BeginPlay()
         InventoryComponent->GetEquippedWeapons().Reserve(InventoryComponent->GetNumberOfWeaponSlots());
     }
 
-    // Updating the crouched spring arm height based on the crouched capsule half height
+    // Updating the crouched spring arm height based on the crouched Acapsule half height
     CrouchedSpringArmHeightDelta = CrouchedCapsuleHalfHeight - DefaultCapsuleHalfHeight;
 }
 
-void AFPSCharacter::PawnClientRestart()
+void ACharacterCore::PawnClientRestart()
 {
     Super::PawnClientRestart();
 
@@ -105,7 +87,7 @@ void AFPSCharacter::PawnClientRestart()
 }
 
 
-void AFPSCharacter::Move(const FInputActionValue& Value)
+void ACharacterCore::Move(const FInputActionValue& Value)
 {
     // Storing movement vectors for animation manipulation
     ForwardMovement = Value[1];
@@ -119,7 +101,7 @@ void AFPSCharacter::Move(const FInputActionValue& Value)
     }
 }
 
-void AFPSCharacter::Look(const FInputActionValue& Value)
+void ACharacterCore::Look(const FInputActionValue& Value)
 {
     // Storing look vectors for animation manipulation
     MouseX = Value[1];
@@ -140,7 +122,7 @@ void AFPSCharacter::Look(const FInputActionValue& Value)
     }
 }
 
-void AFPSCharacter::ToggleCrouch()
+void ACharacterCore::ToggleCrouch()
 {
     bHoldingCrouch = true;
     if (GetCharacterMovement()->IsMovingOnGround())
@@ -169,7 +151,7 @@ void AFPSCharacter::ToggleCrouch()
     }
 }
 
-void AFPSCharacter::ReleaseCrouch()
+void ACharacterCore::ReleaseCrouch()
 {
     bHoldingCrouch = false;
     bPerformedSlide = false;
@@ -187,7 +169,7 @@ void AFPSCharacter::ReleaseCrouch()
     }
 }
 
-void AFPSCharacter::StopCrouch(const bool bToSprint)
+void ACharacterCore::StopCrouch(const bool bToSprint)
 {
     if ((MovementState == EMovementState::State_Crouch || MovementState == EMovementState::State_Slide) && HasSpaceToStandUp())
     {
@@ -202,7 +184,7 @@ void AFPSCharacter::StopCrouch(const bool bToSprint)
     }
 }
 
-void AFPSCharacter::StartSprint()
+void ACharacterCore::StartSprint()
 {
     if (!HasSpaceToStandUp() && (MovementState == EMovementState::State_Crouch || MovementState ==
         EMovementState::State_Slide))
@@ -214,7 +196,7 @@ void AFPSCharacter::StartSprint()
     bWantsToSprint = true;
 }
 
-void AFPSCharacter::StopSprint()
+void ACharacterCore::StopSprint()
 {
     if (MovementState == EMovementState::State_Slide && bHoldingCrouch)
     {
@@ -227,14 +209,14 @@ void AFPSCharacter::StopSprint()
     bWantsToSprint = false;
 }
 
-void AFPSCharacter::StartSlide()
+void ACharacterCore::StartSlide()
 {
     bPerformedSlide = true;
     UpdateMovementState(EMovementState::State_Slide);
-    GetWorldTimerManager().SetTimer(SlideStop, this, &AFPSCharacter::ReleaseCrouch, SlideTime, false, SlideTime);
+    GetWorldTimerManager().SetTimer(SlideStop, this, &ACharacterCore::ReleaseCrouch, SlideTime, false, SlideTime);
 }
 
-void AFPSCharacter::StopSlide()
+void ACharacterCore::StopSlide()
 {
     if (MovementState == EMovementState::State_Slide && FloorAngle > SlideContinueAngle)
     {
@@ -259,21 +241,21 @@ void AFPSCharacter::StopSlide()
     }
     else if (FloorAngle < -SlideContinueAngle)
     {
-        GetWorldTimerManager().SetTimer(SlideStop, this, &AFPSCharacter::ReleaseCrouch, 0.1f, false, 0.1f);
+        GetWorldTimerManager().SetTimer(SlideStop, this, &ACharacterCore::ReleaseCrouch, 0.1f, false, 0.1f);
     }
 }
 
-void AFPSCharacter::StartAds()
+void ACharacterCore::StartAds()
 {
     bWantsToAim = true;
 }
 
-void AFPSCharacter::StopAds()
+void ACharacterCore::StopAds()
 {
     bWantsToAim = false;
 }
 
-void AFPSCharacter::CheckVault()
+void ACharacterCore::CheckVault()
 {
     if (!bCanVault) return;
     
@@ -426,7 +408,7 @@ void AFPSCharacter::CheckVault()
 }
 
 // Progresses the timeline that is used to vault the character
-void AFPSCharacter::TimelineProgress(const float Value)
+void ACharacterCore::TimelineProgress(const float Value)
 {
     const FVector NewLocation = FMath::Lerp(VaultStartLocation.GetLocation(), VaultEndLocation.GetLocation(), Value);
     SetActorLocation(NewLocation);
@@ -440,7 +422,7 @@ void AFPSCharacter::TimelineProgress(const float Value)
     }
 }
 
-void AFPSCharacter::CheckGroundAngle(float DeltaTime)
+void ACharacterCore::CheckGroundAngle(float DeltaTime)
 {
     FCollisionQueryParams TraceParams;
     TraceParams.bTraceComplex = true;
@@ -465,7 +447,7 @@ void AFPSCharacter::CheckGroundAngle(float DeltaTime)
     }
 }
 
-float AFPSCharacter::CheckRelativeMovementAngle(const float DeltaTime) const
+float ACharacterCore::CheckRelativeMovementAngle(const float DeltaTime) const
 {
     const FVector MovementVector = GetVelocity();
     const FRotator MovementRotator = GetActorRotation();
@@ -479,7 +461,7 @@ float AFPSCharacter::CheckRelativeMovementAngle(const float DeltaTime) const
     return FMath::Abs(RelativeMovementVector.HeadingAngle());
 }
 
-bool AFPSCharacter::HasSpaceToStandUp()
+bool ACharacterCore::HasSpaceToStandUp()
 {
     FVector CenterVector = GetActorLocation();
     CenterVector.Z += 44;
@@ -510,7 +492,7 @@ bool AFPSCharacter::HasSpaceToStandUp()
     return true;
 }
 
-void AFPSCharacter::Vault(const FTransform TargetTransform)
+void ACharacterCore::Vault(const FTransform TargetTransform)
 {
     // Updating our target location and playing the vault timeline from start
     VaultStartLocation = GetActorTransform();
@@ -524,9 +506,9 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state
-void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
+void ACharacterCore::UpdateMovementState(const EMovementState NewMovementState)
 {
-    // Clearing sprinting and crouching flags
+    // Clearing sprinting and Acrouching flags
     bIsSprinting = false;
     bIsCrouching = false;
 
@@ -554,7 +536,7 @@ void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
         UE_LOG(LogProfilingDebugging, Error, TEXT("Set up data in MovementDataMap!"))
     }
 
-    // Updating sprinting and crouching flags
+    // Updating sprinting and Acrouching flags
     if (MovementState == EMovementState::State_Crouch)
     {
         bIsCrouching = true;
@@ -566,7 +548,7 @@ void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
 }
 
 // Called every frame
-void AFPSCharacter::Tick(const float DeltaTime)
+void ACharacterCore::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -640,7 +622,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
         bIsAiming = false;
     }
 
-    // Slide performed check, so that if the player is in the air and presses the slide key, they slide when they land
+    // Slide performed Acheck, so that if the player is in the air and presses the slide key, they slide when they land
     if (GetCharacterMovement()->IsMovingOnGround() && !bPerformedSlide && bWantsToSlide)
     {
         StartSlide();
@@ -679,7 +661,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
 }
 
 // Called to bind functionality to input
-void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ACharacterCore::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -708,40 +690,40 @@ void AFPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         if (JumpAction)
         {
             // Jumping
-            PlayerEnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AFPSCharacter::Jump);
+            PlayerEnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacterCore::Jump);
         }
         
         if (SprintAction)
         {
             // Sprinting
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AFPSCharacter::StartSprint);
-            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ACharacterCore::StartSprint);
+            PlayerEnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ACharacterCore::StopSprint);
         }
 
         if (MovementAction)
         {
             // Move forward/back + left/right inputs
-            PlayerEnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Move);
+            PlayerEnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ACharacterCore::Move);
         }
 
         if (LookAction)
         {
             // Look up/down + left/right
-            PlayerEnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AFPSCharacter::Look);
+            PlayerEnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterCore::Look);
         }
 
         if (AimAction)
         {
             // Aiming
-            PlayerEnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AFPSCharacter::StartAds);
-            PlayerEnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AFPSCharacter::StopAds);
+            PlayerEnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ACharacterCore::StartAds);
+            PlayerEnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ACharacterCore::StopAds);
         }
 
         if (CrouchAction)
         {
             // Crouching
-            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AFPSCharacter::ToggleCrouch);
-            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &AFPSCharacter::ReleaseCrouch);
+            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &ACharacterCore::ToggleCrouch);
+            PlayerEnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ACharacterCore::ReleaseCrouch);
         }
     }
 }
