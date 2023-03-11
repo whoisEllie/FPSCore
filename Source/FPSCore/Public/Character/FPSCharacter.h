@@ -29,8 +29,10 @@ public:
 	
 protected:
 
-
-private:
+	/** Function that actually executes the Vault
+	 * @param TargetTransform The location to which to interpolate the player
+	 */
+	virtual void Vault(FTransform TargetTransform) override;
 
 	/** The character's FPS camera component */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Components")
@@ -52,7 +54,7 @@ private:
 	/** Called when the game starts or when spawned */
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaSeconds) override;
+	virtual void Tick(float DeltaTime) override;
 
 #pragma endregion 
 

@@ -1,7 +1,7 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "AmmoPickup.h"
-#include "FPSCharacter.h"
+#include "Character/CharacterCore.h"
 #include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -49,7 +49,7 @@ void AAmmoPickup::Interact()
 {
 	if (!bIsEmpty)
 	{
-		const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		const ACharacterCore* PlayerCharacter = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
 
 

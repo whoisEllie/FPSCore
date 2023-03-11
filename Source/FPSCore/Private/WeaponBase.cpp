@@ -9,7 +9,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Math/UnrealMathUtility.h"
 #include "FPSCharacterController.h"
-#include "FPSCharacter.h"
+#include "Character/CharacterCore.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values
@@ -241,8 +241,8 @@ void AWeaponBase::StartFire()
 
 void AWeaponBase::StartRecoil()
 {
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+    const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
     
     if (bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading && CharacterController)
     {
@@ -290,7 +290,8 @@ void AWeaponBase::Fire()
     if(bCanFire && bIsWeaponReadyToFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
     {
         // Casting to the player character
-        const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
     
         // Printing debug strings
         if(bShowDebug)
@@ -308,11 +309,11 @@ void AWeaponBase::Fire()
         for (int i = 0; i < NumberOfShots; i++)
         {
             // Calculating the start and end points of our line trace, and applying randomised variation
-            TraceStart = PlayerCharacter->GetCameraComponent()->GetComponentLocation();
-            TraceStartRotation = PlayerCharacter->GetCameraComponent()->GetComponentRotation();
+            TraceStart = Character->GetLookOriginComponent()->GetComponentLocation();
+            TraceStartRotation = Character->GetLookOriginComponent()->GetComponentRotation();
 
             float AccuracyMultiplier = 1.0f;
-            if (!PlayerCharacter->IsPlayerAiming())
+            if (!Character->IsPlayerAiming())
             {
                 AccuracyMultiplier = WeaponData.AccuracyDebuff;
             }
@@ -399,7 +400,7 @@ void AWeaponBase::Fire()
                 EndPoint = Hit.Location;
 
                 // Passing hit delegate to InventoryComponent
-                AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+                ACharacterCore* PlayerRef = Cast<ACharacterCore>(GetOwner());
                 if (PlayerRef)
                 {
                     UInventoryComponent* PlayerInventoryComp = PlayerRef->FindComponentByClass<UInventoryComponent>();
@@ -525,8 +526,8 @@ void AWeaponBase::Fire()
 
 void AWeaponBase::Recoil()
 {
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+    const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
 
     // Apply recoil by adding a pitch and yaw input to the character controller
     if (WeaponData.bAutomaticFire && CharacterController && ShotsFired > 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
@@ -561,8 +562,8 @@ bool AWeaponBase::Reload()
         return false;
     }
     // Casting to the character controller (which stores all the ammunition and health variables)
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+    const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
 
     // Changing the maximum ammunition based on if the weapon can hold a bullet in the chamber
     int Value = 0;
@@ -592,7 +593,7 @@ bool AWeaponBase::Reload()
                     MeshComp->PlayAnimation(WeaponData.EmptyWeaponReload, false);
                 }
 
-                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
+                AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(
                     WeaponData.EmptyPlayerReload, 1.0f);
             }
             else if (WeaponData.PlayerReload)
@@ -605,7 +606,7 @@ bool AWeaponBase::Reload()
                 {
                     MeshComp->PlayAnimation(WeaponData.WeaponReload, false);
                 }
-                AnimTime = PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(
+                AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(
                     WeaponData.PlayerReload, 1.0f);
             }
             else
@@ -640,8 +641,8 @@ void AWeaponBase::UpdateAmmo()
     }
 
     // Casting to the game instance (which stores all the ammunition and health variables)
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+    const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
     
     // value system to reload the correct amount of bullets if the weapon is using a chambered reloading system
     int Value = 0;
@@ -687,7 +688,7 @@ void AWeaponBase::UpdateAmmo()
     
 
     // Making sure the player cannot fire if sprinting
-    if (!(PlayerCharacter->GetMovementState() == EMovementState::State_Sprint) && !(PlayerCharacter->GetMovementState() == EMovementState::State_Slide))
+    if (!(Character->GetMovementState() == EMovementState::State_Sprint) && !(Character->GetMovementState() == EMovementState::State_Slide))
     {
         EnableFire();
     }
@@ -717,8 +718,8 @@ void AWeaponBase::Tick(float DeltaTime)
 void AWeaponBase::HandleRecoveryProgress(float Value) const
 {
     // Getting a reference to the Character Controller
-    const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
+    const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
 
     // Calculating the new control rotation by interpolating between current and target 
     const FRotator NewControlRotation = FMath::Lerp(CharacterController->GetControlRotation(), ControlRotation, Value);

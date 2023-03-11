@@ -157,11 +157,23 @@ public:
 	*	@param NewMovementState The new movement state of the player
 	*/
 	void UpdateMovementState(EMovementState NewMovementState);
+
+	USkeletalMeshComponent* GetMainAnimationMesh() const { return AnimationMeshComponent; };
+
+	USceneComponent* GetLookOriginComponent() const { return LookOriginComponent; }
 	
 protected:
 
-	
-	
+	// Preset component slots
+
+	// Used as a global mesh that can be customised - the mesh that animations are played on
+	UPROPERTY()
+	USkeletalMeshComponent* AnimationMeshComponent;
+
+	// Used as the direction the player is looking in, i.e. the 'camera' - determines stuff like where shots and interaction traces come from
+	UPROPERTY()
+	USceneComponent* LookOriginComponent;	
+
 	/** Hand animation blend space for when the player has no weapon  */
 	UPROPERTY(EditDefaultsOnly, Category = "Animations | Blend Spaces")
 	UBlendSpace* BS_Walk;
@@ -189,8 +201,6 @@ protected:
 	/** Hand montage, played during vault */
 	UPROPERTY(EditDefaultsOnly, Category = "Animations | Montages")
 	UAnimMontage* VaultMontage;
-
-private:
 
 #pragma region FUNCTIONS
 
@@ -233,7 +243,7 @@ private:
 	/** Function that actually executes the Vault
 	 * @param TargetTransform The location to which to interpolate the player
 	 */
-	void Vault(FTransform TargetTransform);
+	virtual void Vault(FTransform TargetTransform);
 	
 	/** Checks the angle of the floor to determine slide behaviour */
 	void CheckGroundAngle(float DeltaTime);

@@ -2,7 +2,7 @@
 
 #include "Components/InteractionComponent.h"
 #include "EnhancedInputComponent.h"
-#include "FPSCharacter.h"
+#include "Character/CharacterCore.h"
 #include "InteractionActor.h"
 #include "WeaponBase.h"
 #include "Camera/CameraComponent.h"
@@ -31,10 +31,10 @@ void UInteractionComponent::WorldInteract()
     FVector CameraLocation = FVector::ZeroVector;
     FRotator CameraRotation = FRotator::ZeroRotator;
     
-    if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+    if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     {
-        CameraLocation = FPSCharacter->GetCameraComponent()->GetComponentLocation();
-        CameraRotation = FPSCharacter->GetCameraComponent()->GetComponentRotation();
+        CameraLocation = Character->GetLookOriginComponent()->GetComponentLocation();
+        CameraRotation = Character->GetLookOriginComponent()->GetComponentRotation();
     }
     
     const FVector TraceDirection = CameraRotation.Vector();
@@ -76,10 +76,10 @@ void UInteractionComponent::InteractionIndicator()
     FVector CameraLocation = FVector::ZeroVector;
     FRotator CameraRotation = FRotator::ZeroRotator;
     
-    if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+    if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     {
-        CameraLocation = FPSCharacter->GetCameraComponent()->GetComponentLocation();
-        CameraRotation = FPSCharacter->GetCameraComponent()->GetComponentRotation();
+        CameraLocation = Character->GetLookOriginComponent()->GetComponentLocation();
+        CameraRotation = Character->GetLookOriginComponent()->GetComponentRotation();
     }
     
     const FVector TraceDirection = CameraRotation.Vector();

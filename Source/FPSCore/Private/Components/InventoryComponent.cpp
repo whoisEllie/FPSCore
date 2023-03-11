@@ -2,7 +2,6 @@
 
 #include "Components/InventoryComponent.h"
 #include "EnhancedInputComponent.h"
-#include "FPSCharacter.h"
 #include "FPSCharacterController.h"
 #include "WeaponBase.h"
 #include "WeaponPickup.h"
@@ -10,6 +9,7 @@
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
+#include "Character/CharacterCore.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -146,11 +146,11 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         CurrentWeapon->SetActorHiddenInGame(false);
         if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
         {
-        	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+        	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
         	{
-        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-        		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-        		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
+        		Character->GetMainAnimationMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+        		Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+        		Character->UpdateMovementState(Character->GetMovementState());
         	}
         }
     }
@@ -173,10 +173,10 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
         	FVector TraceStart = FVector::ZeroVector;
         	FRotator TraceStartRotation = FRotator::ZeroRotator;
         	
-        	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+        	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
         	{
-        		TraceStart = FPSCharacter->GetCameraComponent()->GetComponentLocation();
-        		TraceStartRotation = FPSCharacter->GetCameraComponent()->GetComponentRotation();
+        		TraceStart = Character->GetLookOriginComponent()->GetComponentLocation();
+        		TraceStartRotation = Character->GetLookOriginComponent()->GetComponentRotation();
         	}
             const FVector TraceDirection = TraceStartRotation.Vector();
             const FVector TraceEnd = TraceStart + TraceDirection * WeaponSpawnDistance;
@@ -203,9 +203,9 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     {
     	// Placing the new weapon at the correct location and finishing up it's initialisation
         SpawnedWeapon->SetOwner(GetOwner());
-    	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+    	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     	{
-    		SpawnedWeapon->AttachToComponent(FPSCharacter->GetHandsMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+    		SpawnedWeapon->AttachToComponent(Character->GetMainAnimationMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
     	}
         SpawnedWeapon->SetRuntimeWeaponData(DataStruct);
         SpawnedWeapon->SpawnAttachments();
@@ -230,11 +230,11 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
             CurrentWeapon->SetActorHiddenInGame(false);
             if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
             {
-            	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+            	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 	            {
-            		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-            		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
+            		Character->GetMainAnimationMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+		            Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+            		Character->UpdateMovementState(Character->GetMovementState());
 	            }
             }
         }
@@ -243,9 +243,9 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
 
 FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 {
-	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+	if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 	{
-		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(FPSCharacter->GetController());
+		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
 
 		if (CharacterController)	
 		{
@@ -298,8 +298,8 @@ void UInventoryComponent::Reload()
 
 	        case EReloadFailedBehaviour::ChangeState:
 	        	{
-	        		AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-	        		FPSCharacter->UpdateMovementState(EMovementState::State_Walk);
+	        		ACharacterCore* Character = Cast<ACharacterCore>(GetOwner());
+	        		Character->UpdateMovementState(EMovementState::State_Walk);
 	        		Reload();
 	        		break;
 	        	}
@@ -328,9 +328,9 @@ void UInventoryComponent::Inspect()
 	{
 		if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect && CurrentWeapon->GetStaticWeaponData()->HandsInspect)
 		{
-			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
+				Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
 				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
 			}
 		}
@@ -343,9 +343,9 @@ void UInventoryComponent::HandleUnequip()
 	{
 		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
 		{
-			if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				float AnimTime = FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
+				float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
 				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	

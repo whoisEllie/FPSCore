@@ -2,7 +2,7 @@
 
 #include "WeaponPickup.h"
 
-#include "FPSCharacter.h"
+#include "Character/CharacterCore.h"
 #include "WeaponBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -132,17 +132,17 @@ void AWeaponPickup::SpawnAttachmentMesh()
 void AWeaponPickup::Interact()
 {
 	// Getting a reference to the Character Controller
-	const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-	if (PlayerCharacter->GetInventoryComponent())
+	if (Character->GetInventoryComponent())
 	{
-		int InventoryPosition = PlayerCharacter->GetInventoryComponent()->GetCurrentWeaponSlot();
+		int InventoryPosition = Character->GetInventoryComponent()->GetCurrentWeaponSlot();
 		bool SpawnPickup = true;
 
 		// Checking if the player has a free weapon slot. If not, we swap out the currently equipped weapon
-		for (int Index = 0; Index < PlayerCharacter->GetInventoryComponent()->GetNumberOfWeaponSlots(); Index++)
+		for (int Index = 0; Index < Character->GetInventoryComponent()->GetNumberOfWeaponSlots(); Index++)
 		{
-			if (PlayerCharacter->GetInventoryComponent()->GetEquippedWeapons().Find(Index) == nullptr)
+			if (Character->GetInventoryComponent()->GetEquippedWeapons().Find(Index) == nullptr)
 			{
 				InventoryPosition = Index;
 				SpawnPickup = false;
@@ -151,7 +151,7 @@ void AWeaponPickup::Interact()
 		}
 
 		// Spawning the new weapon in the player's inventory component
-		PlayerCharacter->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
+		Character->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
 	
 		// Destroying the pickup
 		Destroy();
