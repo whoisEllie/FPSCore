@@ -151,15 +151,7 @@ void AFPSCharacter::ToggleCrouch()
         }
         else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlide)
         {
-            //TODO: Make sure to add this check to the mid air slide as well
-            if (!bRequireVelocityToSlide)
-            {
-                StartSlide();
-            }
-            else if (GetVelocity().Size() > MinimumSlideVelocity)
-            {
-               StartSlide(); 
-            }
+            StartSlide();
         }
         else
         {
