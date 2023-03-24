@@ -339,7 +339,7 @@ void UInventoryComponent::Inspect()
 				}
 				if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect)
 				{
-					CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+					CurrentWeapon->GetMainMeshComp()->PlayAnimation(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, false);
 				}
 			}
 	}

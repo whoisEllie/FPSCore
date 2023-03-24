@@ -211,9 +211,12 @@ void AFPSCharacter::StartSprint()
     }
     bPerformedSlide = false;
     UpdateMovementState(EMovementState::State_Sprint);
-    if (InventoryComponent->GetCurrentWeapon())
+    if (InventoryComponent)
     {
-        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[EMovementState::State_Sprint].bCanFire);
+        if (InventoryComponent->GetCurrentWeapon())
+        {
+            InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[EMovementState::State_Sprint].bCanFire);
+        }
     }
     bWantsToSprint = true;
 }
@@ -229,9 +232,12 @@ void AFPSCharacter::StopSprint()
         UpdateMovementState(EMovementState::State_Walk);
     }
     bWantsToSprint = false;
-    if (InventoryComponent->GetCurrentWeapon())
+    if (InventoryComponent)
     {
-        InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+        if (InventoryComponent->GetCurrentWeapon())
+        {
+            InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+        }
     }
 }
 
@@ -691,6 +697,8 @@ void AFPSCharacter::Tick(const float DeltaTime)
             }
         }
     }
+
+    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(GetVelocity().Size()));
 }
 
 // Called to bind functionality to input
