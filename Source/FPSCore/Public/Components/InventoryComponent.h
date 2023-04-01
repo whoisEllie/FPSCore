@@ -196,6 +196,10 @@ private:
 
 	void UnequipReturn();
 
+	/** Whether to print debug statements to the screen */
+	UPROPERTY(EditDefaultsOnly, Category = "Debug")
+	bool bDrawDebug = false;
+
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
 	float WeaponSpawnDistance = 100.0f;

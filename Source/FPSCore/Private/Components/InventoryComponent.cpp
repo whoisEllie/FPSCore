@@ -116,6 +116,10 @@ void UInventoryComponent::BeginPlay()
 
 void UInventoryComponent::SwapWeapon(const int SlotId)
 {
+	// Clearing the weapon swap timer in case it's still active
+	GetWorld()->GetTimerManager().ClearTimer(ReloadRetry);
+
+	
 	// Returning if the target weapon is already equipped or it does not exist
     if (CurrentWeaponSlot == SlotId) { return; }
     if (!EquippedWeapons.Contains(SlotId)) { return; }
@@ -297,9 +301,22 @@ void UInventoryComponent::Reload()
 	        {
 	        case EReloadFailedBehaviour::Retry:
 	        	{
+		            if (MaxRetryAmount == 0)
+		            {
+						GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+						if (bDrawDebug)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));	
+						}
+		            	break;
+		            }
 		            if (RetryAmount < MaxRetryAmount)
 		            {
 						GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+						if (bDrawDebug)
+						{
+							GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT("Retrying Reload"));	
+						}
 		            	RetryAmount++;
 						break;
 		            }
