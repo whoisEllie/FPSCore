@@ -8,7 +8,6 @@
 // ReSharper disable once CppUnusedIncludeDirective
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
 #include "WeaponBase.h"
-#include "Components/InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "FPSCharacter.generated.h"
@@ -20,6 +19,7 @@ class AWeaponBase;
 class UAnimMontage;
 class UCurveFloat;
 class UBlendSpace;
+class UInventoryComponent;
 
 /** Movement state enumerator holding all possible movement states */
 UENUM(BlueprintType)

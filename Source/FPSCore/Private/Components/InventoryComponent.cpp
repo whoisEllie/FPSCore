@@ -297,14 +297,20 @@ void UInventoryComponent::Reload()
 	        {
 	        case EReloadFailedBehaviour::Retry:
 	        	{
-	        		GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
+		            if (RetryAmount < MaxRetryAmount)
+		            {
+						GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, RetryInterval, false, RetryInterval);
+		            	RetryAmount++;
+						break;
+		            }
+	        		RetryAmount = 0;
 	        		break;
 	        	}
 
 	        case EReloadFailedBehaviour::ChangeState:
 	        	{
 	        		AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-	        		FPSCharacter->UpdateMovementState(EMovementState::State_Walk);
+	        		FPSCharacter->UpdateMovementState(TargetMovementState);
 	        		Reload();
 	        		break;
 	        	}
@@ -339,7 +345,7 @@ void UInventoryComponent::Inspect()
 				}
 				if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect)
 				{
-					CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+					CurrentWeapon->GetMainMeshComp()->PlayAnimation(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, false);
 				}
 			}
 	}
