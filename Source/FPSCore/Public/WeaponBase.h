@@ -205,8 +205,12 @@ struct FAttachmentData : public FTableRowBase
 	UAnimSequence* Anim_Sprint;
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Gun_Shot;
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* WeaponShot;
+	
+	/** The shooting animation for the player's hands */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* HandsShot;
 
 	/** Unequip animation for the current weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
@@ -436,7 +440,11 @@ struct FStaticWeaponData : public FTableRowBase
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Gun_Shot;
+	UAnimSequence* WeaponShot;
+	
+	/** The shooting animation for the player's hands */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* HandsShot;
 	
 	/** An override for the player's reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
