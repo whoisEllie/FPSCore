@@ -151,11 +151,7 @@ void AFPSCharacter::ToggleCrouch()
         }
         else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlideFromStand)
         {
-            //TODO: Make sure to add this check to the mid air slide as well
-            if (!bRequireVelocityToSlide || GetVelocity().Size() > MinimumSlideVelocity)
-            {
-                StartSlide();
-            }
+            StartSlide();
         }
         else
         {
@@ -665,7 +661,10 @@ void AFPSCharacter::Tick(const float DeltaTime)
         switch (LandingBehaviour) {
 
             case ELandingBehaviour::Slide:
-                StartSlide();
+                if (!bRequireVelocityToSlide || GetVelocity().Size() > MinimumSlideVelocity)
+                {
+                    StartSlide();
+                }
                 break;
 
             case ELandingBehaviour::Crouch:
