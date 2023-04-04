@@ -708,9 +708,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
                 GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
             }
         }
+        
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));
     }
-
-    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(GetVelocity().Size()));
 }
 
 // Called to bind functionality to input
