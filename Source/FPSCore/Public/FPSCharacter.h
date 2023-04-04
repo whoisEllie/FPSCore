@@ -28,8 +28,17 @@ enum class EMovementState : uint8
 	State_Walk      UMETA(DisplayName = "Walking"),
 	State_Sprint    UMETA(DisplayName = "Sprinting"),
 	State_Crouch    UMETA(DisplayName = "Crouching"),
-	State_Slide		UMETA(DisplayName = "Sliding"),
-	State_Vault	    UMETA(DisplayName = "Vaulting")
+	State_Slide	  UMETA(DisplayName = "Sliding"),
+	State_Vault	  UMETA(DisplayName = "Vaulting")
+};
+
+/** Landing behaviour options */
+UENUM(BlueprintType)
+enum class ELandingBehaviour : uint8
+{
+	Slide,
+	Crouch,
+	Ignore
 };
 
 /** Variables associated with each movement state */
@@ -305,9 +314,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
 	bool bCrouchIsToggle = true;
 
-	/** Whether the player should crouch on landing if they press the crouch key while in the air */
+	/** What behaviour the player should take when landing after pressing the crouch key in mid-air */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Crouch")
-	bool bCrouchOnLanding = true;
+	ELandingBehaviour LandingBehaviour;
 
 	/** Whether to prevent the user from sprinting past a specific angle */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Sprint")
@@ -319,7 +328,7 @@ private:
 
 	/** Whether the character is allowed to slide */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
-	bool bCanSlide = true;
+	bool bCanSlideFromStand = true;
 	
 	/** The time in seconds between the beginning of a slide and when it is ended */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")

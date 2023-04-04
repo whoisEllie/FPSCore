@@ -149,21 +149,18 @@ void AFPSCharacter::ToggleCrouch()
         {
             StopCrouch(false);
         }
-        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlide)
+        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlideFromStand)
         {
             //TODO: Make sure to add this check to the mid air slide as well
-            if (!bRequireVelocityToSlide)
+            if (!bRequireVelocityToSlide || GetVelocity().Size() > MinimumSlideVelocity)
             {
                 StartSlide();
-            }
-            else if (GetVelocity().Size() > MinimumSlideVelocity)
-            {
-               StartSlide(); 
             }
         }
         else
         {
             SetMovementState(EMovementState::State_Crouch);
+            
             if (bWantsToSprint)
             {
                 bWantsToSprint = false;
@@ -665,14 +662,22 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // Slide performed check, so that if the player is in the air and presses the slide key, they slide when they land
     if (GetCharacterMovement()->IsMovingOnGround() && !bPerformedSlide && bWantsToSlide)
     {
-        if (bCanSlide)
-        {
-            StartSlide();
+        switch (LandingBehaviour) {
+
+            case ELandingBehaviour::Slide:
+                StartSlide();
+                break;
+
+            case ELandingBehaviour::Crouch:
+                SetMovementState(EMovementState::State_Crouch);
+                break;
+
+            case ELandingBehaviour::Ignore:
+                break;
+
+            default: break;
         }
-        else if (bCrouchOnLanding)
-        {
-            ToggleCrouch();
-        }
+
         bWantsToSlide = false;
     }
 
