@@ -159,7 +159,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         	{
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
         		FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-        		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
+        		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
         	}
         }
     }
@@ -243,7 +243,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
 	            {
             		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
 		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-            		FPSCharacter->UpdateMovementState(FPSCharacter->GetMovementState());
+            		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
 	            }
             }
         }
@@ -327,7 +327,7 @@ void UInventoryComponent::Reload()
 	        case EReloadFailedBehaviour::ChangeState:
 	        	{
 	        		AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner());
-	        		FPSCharacter->UpdateMovementState(TargetMovementState);
+	        		FPSCharacter->SetMovementState(TargetMovementState);
 	        		Reload();
 	        		break;
 	        	}
