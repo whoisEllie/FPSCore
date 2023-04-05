@@ -158,7 +158,8 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.WeaponReload = AttachmentData->WeaponReload;
                     WeaponData.EmptyPlayerReload = AttachmentData->EmptyPlayerReload;
                     WeaponData.PlayerReload = AttachmentData->PlayerReload;
-                    WeaponData.Gun_Shot = AttachmentData->Gun_Shot;
+                    WeaponData.WeaponShot = AttachmentData->WeaponShot;
+                    WeaponData.HandsShot = AttachmentData->HandsShot;
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
                     WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
                     WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
@@ -301,7 +302,7 @@ void AWeaponBase::Fire()
         
 
         // Subtracting from the ammunition count of the weapon
-       GeneralWeaponData.ClipSize -= 1;
+        GeneralWeaponData.ClipSize -= 1;
 
         const int NumberOfShots = WeaponData.bIsShotgun? WeaponData.ShotgunPellets : 1;
         // We run this for the number of bullets/projectiles per shot, in order to support shotguns
@@ -333,16 +334,20 @@ void AWeaponBase::Fire()
             Recoil();
 
             // Playing an animation on the weapon mesh
-            if (WeaponData.Gun_Shot)
+            if (WeaponData.WeaponShot)
             {
-                MeshComp->PlayAnimation(WeaponData.Gun_Shot, false);
+                MeshComp->PlayAnimation(WeaponData.WeaponShot, false);
                 if (WeaponData.bWaitForAnim)
                 {
                     // Preventing the player from firing the weapon until the animation finishes playing 
-                    const float AnimWaitTime = WeaponData.Gun_Shot->GetPlayLength();
+                    const float AnimWaitTime = WeaponData.WeaponShot->GetPlayLength();
                     bCanFire = false;
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
                 }
+            }
+            if (WeaponData.HandsShot)
+            {
+               PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.HandsShot); 
             }
 
             FVector EndPoint = TraceEnd;

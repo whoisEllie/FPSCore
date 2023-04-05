@@ -149,13 +149,14 @@ void AFPSCharacter::ToggleCrouch()
         {
             StopCrouch(false);
         }
-        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlide)
+        else if (MovementState == EMovementState::State_Sprint && !bPerformedSlide && bCanSlideFromStand)
         {
             StartSlide();
         }
         else
         {
-            UpdateMovementState(EMovementState::State_Crouch);
+            SetMovementState(EMovementState::State_Crouch);
+            
             if (bWantsToSprint)
             {
                 bWantsToSprint = false;
@@ -183,7 +184,7 @@ void AFPSCharacter::ReleaseCrouch()
         {
             return;
         }
-        UpdateMovementState(EMovementState::State_Walk);
+        SetMovementState(EMovementState::State_Walk);
     }
 }
 
@@ -193,11 +194,11 @@ void AFPSCharacter::StopCrouch(const bool bToSprint)
     {
         if (bToSprint)
         {
-            UpdateMovementState(EMovementState::State_Sprint);
+            SetMovementState(EMovementState::State_Sprint);
         }
         else
         {
-            UpdateMovementState(EMovementState::State_Walk);
+            SetMovementState(EMovementState::State_Walk);
         }
     }
 }
@@ -210,7 +211,7 @@ void AFPSCharacter::StartSprint()
         return;
     }
     bPerformedSlide = false;
-    UpdateMovementState(EMovementState::State_Sprint);
+    SetMovementState(EMovementState::State_Sprint);
     if (InventoryComponent)
     {
         if (InventoryComponent->GetCurrentWeapon())
@@ -225,11 +226,11 @@ void AFPSCharacter::StopSprint()
 {
     if (MovementState == EMovementState::State_Slide && bHoldingCrouch)
     {
-        UpdateMovementState(EMovementState::State_Crouch);
+        SetMovementState(EMovementState::State_Crouch);
     }
     else if (MovementState == EMovementState::State_Sprint)
     {
-        UpdateMovementState(EMovementState::State_Walk);
+        SetMovementState(EMovementState::State_Walk);
     }
     bWantsToSprint = false;
     if (InventoryComponent)
@@ -244,7 +245,7 @@ void AFPSCharacter::StopSprint()
 void AFPSCharacter::StartSlide()
 {
     bPerformedSlide = true;
-    UpdateMovementState(EMovementState::State_Slide);
+    SetMovementState(EMovementState::State_Slide);
     GetWorldTimerManager().SetTimer(SlideStop, this, &AFPSCharacter::ReleaseCrouch, SlideTime, false, SlideTime);
 }
 
@@ -254,7 +255,7 @@ void AFPSCharacter::StopSlide()
     {
         if (!HasSpaceToStandUp())
         {
-            UpdateMovementState(EMovementState::State_Crouch);
+            SetMovementState(EMovementState::State_Crouch);
         }
         else if (bWantsToSprint)
         {
@@ -262,11 +263,11 @@ void AFPSCharacter::StopSlide()
         }
         else if (bHoldingCrouch)
         {
-            UpdateMovementState(EMovementState::State_Crouch);
+            SetMovementState(EMovementState::State_Crouch);
         }
         else
         {
-            UpdateMovementState(EMovementState::State_Walk);
+            SetMovementState(EMovementState::State_Walk);
         }
         bPerformedSlide = false;
         GetWorldTimerManager().ClearTimer(SlideStop);
@@ -449,7 +450,7 @@ void AFPSCharacter::TimelineProgress(const float Value)
         bIsVaulting = false;
         if (bWantsToSprint)
         {
-            UpdateMovementState(EMovementState::State_Sprint);
+            SetMovementState(EMovementState::State_Sprint);
         }
     }
 }
@@ -529,7 +530,7 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
     // Updating our target location and playing the vault timeline from start
     VaultStartLocation = GetActorTransform();
     VaultEndLocation = TargetTransform;
-    UpdateMovementState(EMovementState::State_Vault);
+    SetMovementState(EMovementState::State_Vault);
     if (VaultMontage)
     {
         HandsMeshComp->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
@@ -538,7 +539,7 @@ void AFPSCharacter::Vault(const FTransform TargetTransform)
 }
 
 // Function that determines the player's maximum speed and other related variables based on movement state
-void AFPSCharacter::UpdateMovementState(const EMovementState NewMovementState)
+void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
 {
     // Clearing sprinting and crouching flags
     bIsSprinting = false;
@@ -608,12 +609,12 @@ void AFPSCharacter::Tick(const float DeltaTime)
         // Sprinting
         if (CurrentRelativeMovementAngle > (SprintAngleLimit * (PI/180)) && MovementState == EMovementState::State_Sprint)
         {
-            UpdateMovementState(EMovementState::State_Walk);
+            SetMovementState(EMovementState::State_Walk);
             bRestrictingSprint = true;
         }
         else if (CurrentRelativeMovementAngle < (SprintAngleLimit * (PI/180)) && bRestrictingSprint && bWantsToSprint && MovementState != EMovementState::State_Sprint)
         {
-            UpdateMovementState(EMovementState::State_Sprint);
+            SetMovementState(EMovementState::State_Sprint);
             bRestrictingSprint = false;
         }
     }
@@ -657,14 +658,25 @@ void AFPSCharacter::Tick(const float DeltaTime)
     // Slide performed check, so that if the player is in the air and presses the slide key, they slide when they land
     if (GetCharacterMovement()->IsMovingOnGround() && !bPerformedSlide && bWantsToSlide)
     {
-        if (bCanSlide)
-        {
-            StartSlide();
+        switch (LandingBehaviour) {
+
+            case ELandingBehaviour::Slide:
+                if (!bRequireVelocityToSlide || GetVelocity().Size() > MinimumSlideVelocity)
+                {
+                    StartSlide();
+                }
+                break;
+
+            case ELandingBehaviour::Crouch:
+                SetMovementState(EMovementState::State_Crouch);
+                break;
+
+            case ELandingBehaviour::Ignore:
+                break;
+
+            default: break;
         }
-        else if (bCrouchOnLanding)
-        {
-            ToggleCrouch();
-        }
+
         bWantsToSlide = false;
     }
 
@@ -696,9 +708,9 @@ void AFPSCharacter::Tick(const float DeltaTime)
                 GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
             }
         }
+        
+        GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, (TEXT("Current Velocity: " + FString::SanitizeFloat(GetVelocity().Size()))));
     }
-
-    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Orange, FString::SanitizeFloat(GetVelocity().Size()));
 }
 
 // Called to bind functionality to input

@@ -6,6 +6,7 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "WeaponBase.h"
+#include "FPSCharacter.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -195,6 +196,10 @@ private:
 
 	void UnequipReturn();
 
+	/** Whether to print debug statements to the screen */
+	UPROPERTY(EditDefaultsOnly, Category = "Debug")
+	bool bDrawDebug = false;
+
 	/** The distance at which pickups for old weapons spawn during a weapon swap */
 	UPROPERTY(EditDefaultsOnly, Category = "Camera | Interaction")
 	float WeaponSpawnDistance = 100.0f;
@@ -209,6 +214,19 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
 	EReloadFailedBehaviour ReloadFailedBehaviour = EReloadFailedBehaviour::Ignore;
+
+	/** How many times we should retry the reload before cancelling it. Set to 0 for unlimited. */
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	int MaxRetryAmount = 5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	float RetryInterval = 0.1f;
+
+	/** The amount of times we have re-tried the reload animation */
+	int RetryAmount; 
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
+	EMovementState TargetMovementState;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
 	EWeaponSwapBehaviour WeaponSwapBehaviour = EWeaponSwapBehaviour::UseNewValue;
