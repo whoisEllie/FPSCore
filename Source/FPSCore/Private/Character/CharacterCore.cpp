@@ -576,9 +576,6 @@ void ACharacterCore::Tick(const float DeltaTime)
         }
     }
     
-    
-
-
     // Continuous aiming check (so that you don't have to re-press the ADS button every time you jump/sprint/reload/etc)
     if (bWantsToAim == true && MovementState != EMovementState::State_Sprint && MovementState != EMovementState::State_Slide)
     {
@@ -601,7 +598,6 @@ void ACharacterCore::Tick(const float DeltaTime)
 
     // Checks the floor angle to determine whether we should keep sliding or not
     CheckGroundAngle(DeltaTime);
-
 
     if (bDrawDebug)
     {
@@ -632,7 +628,6 @@ void ACharacterCore::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-        
     // Make sure that we are using a UEnhancedInputComponent; if not, the project is not configured correctly.
     if (UEnhancedInputComponent* PlayerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
     {        

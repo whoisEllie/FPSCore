@@ -34,6 +34,11 @@
 				"Win64",
 				"Mac"
 			]
+		},
+		{
+			"Name": "FPSCoreEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	]
 }
