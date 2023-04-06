@@ -43,7 +43,7 @@ TSharedRef< FSlateStyleSet > FFPSCoreEditorStyle::Create()
 	TSharedRef< FSlateStyleSet > Style = MakeShareable(new FSlateStyleSet("FPSCoreEditorStyle"));
 	Style->SetContentRoot(IPluginManager::Get().FindPlugin("FPSCore")->GetBaseDir() / TEXT("Resources"));
 
-	Style->Set("FPSCoreEditor.PluginAction", new IMAGE_BRUSH_SVG(TEXT("PlaceholderButtonIcon"), Icon20x20));
+	Style->Set("FPSCoreEditor.PluginAction", new IMAGE_BRUSH_SVG(TEXT("FPSCoreIcon"), Icon20x20));
 	return Style;
 }
 
