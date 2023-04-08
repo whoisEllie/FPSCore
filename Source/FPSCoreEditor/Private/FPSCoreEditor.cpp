@@ -1,8 +1,12 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "FPSCoreEditor.h"
+
+#include "FPSCoreCustomSettings.h"
 #include "FPSCoreEditorStyle.h"
 #include "FPSCoreEditorCommands.h"
+#include "ISettingsContainer.h"
+#include "ISettingsModule.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
 
@@ -27,6 +31,22 @@ void FFPSCoreEditorModule::StartupModule()
 		FCanExecuteAction());
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FFPSCoreEditorModule::RegisterMenus));
+
+	// Set up custom settings
+	{
+		ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+		if (SettingsModule)
+		{
+			const TSharedPtr<ISettingsContainer> ProjectSettingsContainer = SettingsModule->GetContainer("Project");
+			ProjectSettingsContainer->DescribeCategory("FPS Core", FText::FromString("FPS Core"), FText::FromString("Settings for the FPS Core Plugin"));
+
+			SettingsModule->RegisterSettings("Project", "FPS Core", "FPS Core Settings",
+				FText::FromString("FPS Core Settings"),
+				FText::FromString("Configure FPS Core Settings"),
+				GetMutableDefault<UFPSCoreCustomSettings>()
+			);
+		}
+	}
 }
 
 void FFPSCoreEditorModule::ShutdownModule()
@@ -41,17 +61,20 @@ void FFPSCoreEditorModule::ShutdownModule()
 	FFPSCoreEditorStyle::Shutdown();
 
 	FFPSCoreEditorCommands::Unregister();
+
+	// Unregister settings
+	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+	if (SettingsModule)
+	{
+		SettingsModule->UnregisterSettings("Project", "FPS Core", "FPS Core Settings");	
+	}
 }
 
 void FFPSCoreEditorModule::PluginButtonClicked()
 {
-	// Put your "OnButtonClicked" stuff here
-	FText DialogText = FText::Format(
-							LOCTEXT("PluginButtonDialogText", "Add code to {0} in {1} to override this button's actions"),
-							FText::FromString(TEXT("FFPSCoreEditorModule::PluginButtonClicked()")),
-							FText::FromString(TEXT("FPSCoreEditor.cpp"))
-					   );
-	FMessageDialog::Open(EAppMsgType::Ok, DialogText);
+	// Open the FPS Core settings
+	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+	SettingsModule->ShowViewer("Project", "FPS Core", "FPS Core Settings");
 }
 
 void FFPSCoreEditorModule::RegisterMenus()

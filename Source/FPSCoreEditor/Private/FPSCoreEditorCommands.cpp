@@ -6,7 +6,7 @@
 
 void FFPSCoreEditorCommands::RegisterCommands()
 {
-	UI_COMMAND(PluginAction, "FPSCoreEditor", "Execute FPSCoreEditor action", EUserInterfaceActionType::Button, FInputChord());
+	UI_COMMAND(PluginAction, "FPS Core", "Opens the FPS Core settings", EUserInterfaceActionType::Button, FInputChord());
 }
 
 #undef LOCTEXT_NAMESPACE
