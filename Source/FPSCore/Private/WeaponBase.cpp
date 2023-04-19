@@ -248,8 +248,6 @@ void AWeaponBase::StartRecoil()
     if (bCanFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading && CharacterController)
     {
         // Plays the recoil timelines and saves the current control rotation in order to recover to it
-        VerticalRecoilTimeline.PlayFromStart();
-        HorizontalRecoilTimeline.PlayFromStart();
         ControlRotation = CharacterController->GetControlRotation();
         bShouldRecover = true;
     }
@@ -510,8 +508,6 @@ void AWeaponBase::Fire()
 
         if (!WeaponData.bAutomaticFire)
         {
-            VerticalRecoilTimeline.Stop();
-            HorizontalRecoilTimeline.Stop();
             RecoilRecovery();
         }
 
@@ -536,8 +532,8 @@ void AWeaponBase::Recoil()
     // Apply recoil by adding a pitch and yaw input to the character controller
     if (WeaponData.bAutomaticFire && CharacterController && ShotsFired > 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
     {
-        CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue(VerticalRecoilTimeline.GetPlaybackPosition()) * VerticalRecoilModifier);
-        CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue(HorizontalRecoilTimeline.GetPlaybackPosition()) * HorizontalRecoilModifier);
+        CharacterController->AddPitchInput(WeaponData.VerticalRecoilCurve->GetFloatValue((60 / WeaponData.RateOfFire) * ShotsFired) * VerticalRecoilModifier);
+        CharacterController->AddYawInput(WeaponData.HorizontalRecoilCurve->GetFloatValue((60 / WeaponData.RateOfFire) * ShotsFired) * HorizontalRecoilModifier);
     }
     else if (CharacterController && ShotsFired <= 0 && IsValid(WeaponData.VerticalRecoilCurve) && IsValid(WeaponData.HorizontalRecoilCurve))
     {
