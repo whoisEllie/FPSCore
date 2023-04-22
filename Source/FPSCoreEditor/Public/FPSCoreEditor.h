@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NormalDistributionActions.h"
 #include "Modules/ModuleManager.h"
 
 class FToolBarBuilder;
@@ -22,6 +23,8 @@ public:
 private:
 
 	void RegisterMenus();
+
+	TSharedPtr<FNormalDistributionActions> NormalDistributionActions;
 
 
 private:

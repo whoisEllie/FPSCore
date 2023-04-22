@@ -7,8 +7,10 @@
 #include "FPSCoreEditorCommands.h"
 #include "ISettingsContainer.h"
 #include "ISettingsModule.h"
+#include "NormalDistributionActions.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
+#include "Misc/FileHelper.h"
 
 static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
@@ -16,6 +18,7 @@ static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
 void FFPSCoreEditorModule::StartupModule()
 {
+
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 	
 	FFPSCoreEditorStyle::Initialize();
@@ -32,6 +35,10 @@ void FFPSCoreEditorModule::StartupModule()
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FFPSCoreEditorModule::RegisterMenus));
 
+	// Registering Custom Asset Types
+	NormalDistributionActions = MakeShared<FNormalDistributionActions>();
+	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
+	
 	// Set up custom settings
 	{
 		ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
@@ -61,6 +68,10 @@ void FFPSCoreEditorModule::ShutdownModule()
 	FFPSCoreEditorStyle::Shutdown();
 
 	FFPSCoreEditorCommands::Unregister();
+
+	// Unregistering Custom Asset Types
+	if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
+	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
 
 	// Unregister settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");

@@ -30,7 +30,6 @@ ACharacterCore::ACharacterCore()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
     
-    DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +63,7 @@ void ACharacterCore::BeginPlay()
     }
 
     // Updating the crouched spring arm height based on the crouched Acapsule half height
+    DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
     CrouchedSpringArmHeightDelta = CrouchedCapsuleHalfHeight - DefaultCapsuleHalfHeight;
 }
 

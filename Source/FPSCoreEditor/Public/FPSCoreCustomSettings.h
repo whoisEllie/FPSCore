@@ -8,4 +8,7 @@ class UFPSCoreCustomSettings : public UObject
 
 	UPROPERTY(EditAnywhere, config, Category = Test)
 	bool bTest = false;
+
+	UFUNCTION(CallInEditor, Category = Test)
+	void CreateCollisionChannels();
 };
