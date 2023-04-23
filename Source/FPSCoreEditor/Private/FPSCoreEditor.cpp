@@ -2,6 +2,7 @@
 
 #include "FPSCoreEditor.h"
 
+#include "DatasmithContentEditorStyle.h"
 #include "FPSCoreCustomSettings.h"
 #include "FPSCoreEditorStyle.h"
 #include "FPSCoreEditorCommands.h"
@@ -10,11 +11,41 @@
 #include "NormalDistributionActions.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
-#include "Misc/FileHelper.h"
+#include "Styling/SlateStyleMacros.h"
+#include "Styling/SlateStyleRegistry.h"
+#include "WeaponCore/AmmoType.h"
 
 static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
 #define LOCTEXT_NAMESPACE "FFPSCoreEditorModule"
+
+class FAmmoTypeActions : public FAssetTypeActions_Base
+{
+public:
+	virtual UClass* GetSupportedClass() const override { return UAmmoType::StaticClass(); };
+	virtual FText GetName() const override { return INVTEXT("Ammo Type"); };
+	virtual FColor GetTypeColor() const override { return FColor::Orange; };
+	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
+};
+
+class FFPSCoreSlateStyle final : public FSlateStyleSet
+{
+public:
+	FFPSCoreSlateStyle() : FSlateStyleSet("FPSCoreEditor")
+	{
+		SetParentStyleName(FAppStyle::GetAppStyleSetName());
+
+		SetContentRoot(FPaths::ProjectPluginsDir() / TEXT("FPSCore/Resources"));
+		SetCoreContentRoot(FPaths::EngineContentDir() / TEXT("Slate"));
+
+		// Enhanced Input Editor icons
+		static const FVector2D Icon16 = FVector2D(16.0f, 16.0f);
+		static const FVector2D Icon64 = FVector2D(64.0f, 64.0f);
+
+		Set("ClassIcon.AmmoType", new IMAGE_BRUSH_SVG("InputAction_16", Icon16));
+		Set("ClassThumbnail.AmmoType", new IMAGE_BRUSH_SVG("InputAction_64", Icon64));
+	}
+};
 
 void FFPSCoreEditorModule::StartupModule()
 {
@@ -48,23 +79,27 @@ void FFPSCoreEditorModule::StartupModule()
 	NormalDistributionActions = MakeShared<FNormalDistributionActions>();
 	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
 
-	AmmoTypeActions = MakeShared<FAmmoTypeActions>();
-	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(AmmoTypeActions.ToSharedRef());
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTOols").Get();
+	{
+		RegisterAssetTypeActions(AssetTools, MakeShareable(new FAmmoTypeActions));
+	}
+
+	// Registering custom styles
+	StyleSet = MakeShared<FFPSCoreSlateStyle>();
+	FSlateStyleRegistry::RegisterSlateStyle(*StyleSet.Get());
 	
 	// Set up custom settings
+	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
+	if (SettingsModule)
 	{
-		ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
-		if (SettingsModule)
-		{
-			const TSharedPtr<ISettingsContainer> ProjectSettingsContainer = SettingsModule->GetContainer("Project");
-			ProjectSettingsContainer->DescribeCategory("FPS Core", FText::FromString("FPS Core"), FText::FromString("Settings for the FPS Core Plugin"));
+		const TSharedPtr<ISettingsContainer> ProjectSettingsContainer = SettingsModule->GetContainer("Project");
+		ProjectSettingsContainer->DescribeCategory("FPS Core", FText::FromString("FPS Core"), FText::FromString("Settings for the FPS Core Plugin"));
 
-			SettingsModule->RegisterSettings("Project", "FPS Core", "FPS Core Settings",
-				FText::FromString("FPS Core Settings"),
-				FText::FromString("Configure FPS Core Settings"),
-				GetMutableDefault<UFPSCoreCustomSettings>()
-			);
-		}
+		SettingsModule->RegisterSettings("Project", "FPS Core", "FPS Core Settings",
+			FText::FromString("FPS Core Settings"),
+			FText::FromString("Configure FPS Core Settings"),
+			GetMutableDefault<UFPSCoreCustomSettings>()
+		);
 	}
 }
 
@@ -84,8 +119,16 @@ void FFPSCoreEditorModule::ShutdownModule()
 	// Unregistering Custom Asset Types
 	if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
 	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
-	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(AmmoTypeActions.ToSharedRef());
 
+	if (FAssetToolsModule* AssetToolsModule = FModuleManager::GetModulePtr<FAssetToolsModule>("AssetTools"))
+	{
+		for (TSharedPtr<IAssetTypeActions>& AssetAction : CreatedAssetTypeActions)
+		{
+			AssetToolsModule->Get().UnregisterAssetTypeActions(AssetAction.ToSharedRef());
+		}
+	}
+	CreatedAssetTypeActions.Empty();
+	
 	// Unregister settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
 	if (SettingsModule)

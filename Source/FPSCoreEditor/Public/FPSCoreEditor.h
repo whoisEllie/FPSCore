@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "NormalDistributionActions.h"
 #include "Modules/ModuleManager.h"
-#include "WeaponCore/FAmmoTypeActions.h"
 
 class FToolBarBuilder;
 class FMenuBuilder;
@@ -22,12 +21,19 @@ public:
 	void PluginButtonClicked();
 	
 private:
+	void RegisterAssetTypeActions(IAssetTools& AssetTools, TSharedRef<IAssetTypeActions> Actions)
+	{
+		AssetTools.RegisterAssetTypeActions(Actions);
+		CreatedAssetTypeActions.Add(Actions);	
+	}
 
 	void RegisterMenus();
 
-	TSharedPtr<FNormalDistributionActions> NormalDistributionActions;
-	TSharedPtr<FAmmoTypeActions> AmmoTypeActions;
+	TArray<TSharedPtr<IAssetTypeActions>> CreatedAssetTypeActions;
 
+	TSharedPtr<FNormalDistributionActions> NormalDistributionActions;
+
+	TSharedPtr<class FSlateStyleSet> StyleSet;
 
 private:
 	TSharedPtr<class FUICommandList> PluginCommands;
