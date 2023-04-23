@@ -35,9 +35,21 @@ void FFPSCoreEditorModule::StartupModule()
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FFPSCoreEditorModule::RegisterMenus));
 
+	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Character Core"),
+	FText::FromString("Character Core"));
+	
+	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Weapon Core"),
+	FText::FromString("Weapon Core"));
+	
+	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Interaction Core"),
+	FText::FromString("Interaction Core"));
+	
 	// Registering Custom Asset Types
 	NormalDistributionActions = MakeShared<FNormalDistributionActions>();
 	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
+
+	AmmoTypeActions = MakeShared<FAmmoTypeActions>();
+	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(AmmoTypeActions.ToSharedRef());
 	
 	// Set up custom settings
 	{
@@ -72,6 +84,7 @@ void FFPSCoreEditorModule::ShutdownModule()
 	// Unregistering Custom Asset Types
 	if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
 	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
+	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(AmmoTypeActions.ToSharedRef());
 
 	// Unregister settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");

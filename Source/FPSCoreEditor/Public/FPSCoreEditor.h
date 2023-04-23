@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "NormalDistributionActions.h"
 #include "Modules/ModuleManager.h"
+#include "WeaponCore/FAmmoTypeActions.h"
 
 class FToolBarBuilder;
 class FMenuBuilder;
@@ -25,6 +26,7 @@ private:
 	void RegisterMenus();
 
 	TSharedPtr<FNormalDistributionActions> NormalDistributionActions;
+	TSharedPtr<FAmmoTypeActions> AmmoTypeActions;
 
 
 private:

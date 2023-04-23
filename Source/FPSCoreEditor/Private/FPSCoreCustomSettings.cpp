@@ -19,10 +19,7 @@ void UFPSCoreCustomSettings::CreateCollisionChannels()
 		// We use the LoadFileToString to load the file into
 		if(FFileHelper::LoadFileToString(FileContent,*file,FFileHelper::EHashOptions::None))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Text From File: %s"), *FileContent);
-
 			FileContent.Append("\n; FPS Core Settings\n[/Script/Engine.CollisionProfile]\n+DefaultChannelResponses=(Channel=ECC_GameTraceChannel18,DefaultResponse=ECR_Block,bTraceType=True,bStaticObject=False,Name=\"Testing\")");
-			
 
 			// We will use this FileManager to deal with the file.
 			IPlatformFile& WriteFileManager = FPlatformFileManager::Get().GetPlatformFile();

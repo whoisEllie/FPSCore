@@ -43,6 +43,7 @@ public class FPSCoreEditor : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"FPSCore" 
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
