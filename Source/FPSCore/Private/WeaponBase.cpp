@@ -11,6 +11,7 @@
 #include "FPSCharacterController.h"
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/InventoryComponent.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -234,7 +235,7 @@ void AWeaponBase::StartFire()
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange, TEXT("Started firing timer"));
         }
 
-        // Simultaneously begins to play the recoil timeline
+        // Simultaneously engage recoil systems 
         StartRecoil();
     }
     
@@ -654,7 +655,7 @@ void AWeaponBase::UpdateAmmo()
 
         if(bShowDebug)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "Value = 1", true);
+            GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, "There is a bullet in the chamber already.", true);
         }
     }
     
