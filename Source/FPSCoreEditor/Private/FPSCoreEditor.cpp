@@ -2,7 +2,6 @@
 
 #include "FPSCoreEditor.h"
 
-#include "DatasmithContentEditorStyle.h"
 #include "FPSCoreCustomSettings.h"
 #include "FPSCoreEditorStyle.h"
 #include "FPSCoreEditorCommands.h"
@@ -11,9 +10,12 @@
 #include "NormalDistributionActions.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
+#include "Interfaces/IPluginManager.h"
 #include "Styling/SlateStyleMacros.h"
 #include "Styling/SlateStyleRegistry.h"
 #include "WeaponCore/AmmoType.h"
+#include "WeaponCore/LineTraceBullet.h"
+#include "WeaponCore/ProjectileBase.h"
 
 static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
@@ -28,6 +30,24 @@ public:
 	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
 };
 
+class FLineTraceBulletActions : public FAssetTypeActions_Base
+{
+public:
+	virtual UClass* GetSupportedClass() const override { return ULineTraceBullet::StaticClass(); };
+	virtual FText GetName() const override { return INVTEXT("Line Trace Bullet"); };
+	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
+	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
+};
+
+class FProjectileBaseActions : public  FAssetTypeActions_Base
+{
+public:
+	virtual UClass* GetSupportedClass() const override { return AProjectileBase::StaticClass(); };
+	virtual FText GetName() const override { return INVTEXT("Projectile Base"); };
+	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
+	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
+};
+
 class FFPSCoreSlateStyle final : public FSlateStyleSet
 {
 public:
@@ -35,15 +55,26 @@ public:
 	{
 		SetParentStyleName(FAppStyle::GetAppStyleSetName());
 
-		SetContentRoot(FPaths::ProjectPluginsDir() / TEXT("FPSCore/Resources"));
-		SetCoreContentRoot(FPaths::EngineContentDir() / TEXT("Slate"));
+		const TSharedPtr<IPlugin> Plugin = IPluginManager::Get().FindPlugin(TEXT("FPSCore"));
+		check(Plugin.IsValid());
 
-		// Enhanced Input Editor icons
+		const FString PluginIconsDir = FPaths::ConvertRelativePathToFull(FPaths::Combine(Plugin->GetBaseDir(), TEXT("Resources")));
+
+		SetContentRoot(PluginIconsDir);
+		SetCoreContentRoot(FPaths::EngineContentDir() / TEXT("Slate"));
+		
+		// FPS Core Editor icons
 		static const FVector2D Icon16 = FVector2D(16.0f, 16.0f);
 		static const FVector2D Icon64 = FVector2D(64.0f, 64.0f);
 
 		Set("ClassIcon.AmmoType", new IMAGE_BRUSH_SVG("InputAction_16", Icon16));
 		Set("ClassThumbnail.AmmoType", new IMAGE_BRUSH_SVG("InputAction_64", Icon64));
+		
+		Set("ClassIcon.LineTraceBullet", new IMAGE_BRUSH_SVG("InputAction_16", Icon16));
+		Set("ClassThumbnail.LineTraceBullet", new IMAGE_BRUSH_SVG("InputAction_64", Icon64));
+		
+		Set("ClassIcon.ProjectileBase", new IMAGE_BRUSH_SVG("InputAction_16", Icon16));
+		Set("ClassThumbnail.ProjectileBase", new IMAGE_BRUSH_SVG("InputAction_64", Icon64));
 	}
 };
 
@@ -79,9 +110,11 @@ void FFPSCoreEditorModule::StartupModule()
 	NormalDistributionActions = MakeShared<FNormalDistributionActions>();
 	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
 
-	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTOols").Get();
+	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
 	{
 		RegisterAssetTypeActions(AssetTools, MakeShareable(new FAmmoTypeActions));
+		RegisterAssetTypeActions(AssetTools, MakeShareable(new FProjectileBaseActions));
+		RegisterAssetTypeActions(AssetTools, MakeShareable(new FLineTraceBulletActions));
 	}
 
 	// Registering custom styles

@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponCore/AmmoTypeFactory.h"
-
+#include "WeaponCore/Factories/AmmoTypeFactory.h"
 #include "WeaponCore/AmmoType.h"
 
 UAmmoTypeFactory::UAmmoTypeFactory()
