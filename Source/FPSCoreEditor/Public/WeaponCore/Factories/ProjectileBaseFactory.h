@@ -18,7 +18,6 @@ class FPSCOREEDITOR_API UProjectileBaseFactory : public UFactory
 public:
 	UProjectileBaseFactory(const FObjectInitializer& ObjectInitializer);
 	virtual UObject* FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn);
-	virtual bool ConfigureProperties() override;
 
 private:
 
