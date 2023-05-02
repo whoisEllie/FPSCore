@@ -707,6 +707,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	float GetVerticalCameraOffset() const { return VerticalCameraOffset; }
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void GunFired();
+
 protected:
 		
 	/** The main skeletal mesh - holds the weapon model */

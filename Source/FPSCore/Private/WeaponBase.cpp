@@ -298,7 +298,8 @@ void AWeaponBase::Fire()
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Fire", true);
             GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green, FString::FromInt(GeneralWeaponData.ClipSize > 0 && !bIsReloading), true);
         }
-        
+
+        GunFired();
 
         // Subtracting from the ammunition count of the weapon
         GeneralWeaponData.ClipSize -= 1;
