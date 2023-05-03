@@ -164,6 +164,7 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
                     WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
                     WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
+                    WeaponData.bAutoReload = AttachmentData->bAutoReload;
                 }
                 else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
                 {
@@ -521,6 +522,11 @@ void AWeaponBase::Fire()
         // Clearing the ShotDelay timer so that we don't have a constant ticking when the player has no ammo, just a single click
         GetWorldTimerManager().ClearTimer(ShotDelay);
 
+        if (WeaponData.bAutoReload && GeneralWeaponData.ClipSize == 0)
+        {
+            Reload();
+        }
+        
         RecoilRecovery();
     }
     
@@ -696,6 +702,11 @@ void AWeaponBase::UpdateAmmo()
     }
 
     bIsWeaponReadyToFire = true;
+
+    if (WeaponData.bAutoReload && ShotsFired > 0)
+    {
+       StartFire(); 
+    }
 }
 
 
