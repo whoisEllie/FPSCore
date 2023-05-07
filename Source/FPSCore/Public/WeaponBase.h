@@ -205,11 +205,15 @@ struct FAttachmentData : public FTableRowBase
 	UAnimSequence* Anim_Sprint;
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimSequence* WeaponShot;
 	
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* LastWeaponShot;
+	
 	/** The shooting animation for the player's hands */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* HandsShot;
 
 	/** Unequip animation for the current weapon */
@@ -449,6 +453,10 @@ struct FStaticWeaponData : public FTableRowBase
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* WeaponShot;
+	
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* LastWeaponShot;
 	
 	/** The shooting animation for the player's hands */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")

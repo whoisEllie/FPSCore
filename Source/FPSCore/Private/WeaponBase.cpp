@@ -158,6 +158,7 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.EmptyPlayerReload = AttachmentData->EmptyPlayerReload;
                     WeaponData.PlayerReload = AttachmentData->PlayerReload;
                     WeaponData.WeaponShot = AttachmentData->WeaponShot;
+                    WeaponData.LastWeaponShot = AttachmentData->LastWeaponShot;
                     WeaponData.HandsShot = AttachmentData->HandsShot;
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
                     WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
@@ -275,11 +276,15 @@ void AWeaponBase::StopFire()
 
     if (WeaponData.bPreventRapidManualFire && bHasFiredRecently)
     {
-        bHasFiredRecently = false;
-        bIsWeaponReadyToFire = false;
         GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
-        //GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(GetWorldTimerManager().GetTimerRemaining(ShotDelay)));
-        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+        const float TimeRemaining = GetWorldTimerManager().GetTimerRemaining(ShotDelay);
+        // GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(TimeRemaining));
+        if (TimeRemaining > 0.0f)
+        {
+            bHasFiredRecently = false;
+            bIsWeaponReadyToFire = false;
+            GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+        }
     }
     GetWorldTimerManager().ClearTimer(ShotDelay);
 }
@@ -336,7 +341,7 @@ void AWeaponBase::Fire()
             // Playing an animation on the weapon mesh
             if (WeaponData.WeaponShot)
             {
-                MeshComp->PlayAnimation(WeaponData.WeaponShot, false);
+                MeshComp->PlayAnimation(GeneralWeaponData.ClipSize == 0? WeaponData.LastWeaponShot : WeaponData.WeaponShot, false);
                 if (WeaponData.bWaitForAnim)
                 {
                     // Preventing the player from firing the weapon until the animation finishes playing 
