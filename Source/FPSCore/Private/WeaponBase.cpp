@@ -115,8 +115,6 @@ void AWeaponBase::BeginPlay()
     }
 }
 
-
-
 void AWeaponBase::SpawnAttachments()
 {
     if (WeaponData.bHasAttachments)
@@ -483,13 +481,13 @@ void AWeaponBase::Fire()
         {
             UNiagaraFunctionLibrary::SpawnSystemAttached(WeaponData.MuzzleFlash, BarrelAttachment, WeaponData.ParticleSpawnLocation,
                                                     FVector::ZeroVector,
-                                                    BarrelAttachment->GetSocketRotation(WeaponData.ParticleSpawnLocation), EAttachLocation::SnapToTarget, true);
+                                                    FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
         }
         else
         {
             UNiagaraFunctionLibrary::SpawnSystemAttached(WeaponData.MuzzleFlash, MeshComp, WeaponData.ParticleSpawnLocation,
                                                    FVector::ZeroVector,
-                                                   MeshComp->GetSocketRotation(WeaponData.ParticleSpawnLocation), EAttachLocation::SnapToTarget, true);
+                                                   FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
         }
 
         // Spawning the firing sound
@@ -703,6 +701,7 @@ void AWeaponBase::UpdateAmmo()
 
     bIsWeaponReadyToFire = true;
 
+    //TODO: Make this it's own variable bAutoFireAfterReload
     if (WeaponData.bAutoReload && ShotsFired > 0)
     {
        StartFire(); 
