@@ -163,6 +163,7 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
                     WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
                     WeaponData.bAutoReload = AttachmentData->bAutoReload;
+                    WeaponData.bAutoFireAfterReload = AttachmentData->bAutoFireAfterReload;
                 }
                 else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
                 {
@@ -701,8 +702,7 @@ void AWeaponBase::UpdateAmmo()
 
     bIsWeaponReadyToFire = true;
 
-    //TODO: Make this it's own variable bAutoFireAfterReload
-    if (WeaponData.bAutoReload && ShotsFired > 0)
+    if (WeaponData.bAutoFireAfterReload && ShotsFired > 0)
     {
        StartFire(); 
     }

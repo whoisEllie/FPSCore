@@ -252,6 +252,10 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	bool bAutoReload;
 	
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool bAutoFireAfterReload;
+
 	/** The vertical recoil curve to be used with this magazine */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UCurveFloat* VerticalRecoilCurve;
@@ -479,6 +483,10 @@ struct FStaticWeaponData : public FTableRowBase
 	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bAutoReload;
+	
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	bool bAutoFireAfterReload;
 
 	/** Whether this weapon is a shotgun or not */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
