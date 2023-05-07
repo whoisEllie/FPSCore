@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "LineTraceBullet.generated.h"
+#include "LineTraceTemplate.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSCORE_API ULineTraceBullet : public UObject
+class FPSCORE_API ULineTraceTemplate : public UObject
 {
 	GENERATED_BODY()
 	

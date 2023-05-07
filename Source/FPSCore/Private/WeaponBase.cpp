@@ -347,7 +347,6 @@ void AWeaponBase::Fire()
             }
 
             FVector EndPoint = TraceEnd;
-
             	
             /** collision parameters for spawning the line trace */
             FCollisionQueryParams QueryParams;

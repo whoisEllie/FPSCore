@@ -4,23 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Factories/Factory.h"
-#include "WeaponCore/ProjectileBase.h"
-#include "ProjectileBaseFactory.generated.h"
+#include "WeaponCore/ProjectileTemplate.h"
+#include "ProjectileTemplateFactory.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSCOREEDITOR_API UProjectileBaseFactory : public UFactory
+class FPSCOREEDITOR_API UProjectileTemplateFactory : public UFactory
 {
 	GENERATED_BODY()
 	
 public:
-	UProjectileBaseFactory(const FObjectInitializer& ObjectInitializer);
+	UProjectileTemplateFactory(const FObjectInitializer& ObjectInitializer);
 	virtual UObject* FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn);
-
-private:
-
-	UPROPERTY()
-	TSubclassOf<AProjectileBase> ParentClass;
 };

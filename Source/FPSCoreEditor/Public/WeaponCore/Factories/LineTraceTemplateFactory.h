@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Factories/Factory.h"
-#include "LineTraceBulletFactory.generated.h"
+#include "LineTraceTemplateFactory.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSCOREEDITOR_API ULineTraceBulletFactory : public UFactory
+class FPSCOREEDITOR_API ULineTraceTemplateFactory : public UFactory
 {
 
 	GENERATED_BODY()
 	
 public:
-	ULineTraceBulletFactory();
+	ULineTraceTemplateFactory();
 	virtual UObject* FactoryCreateNew(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, UObject* Context, FFeedbackContext* Warn);
 };

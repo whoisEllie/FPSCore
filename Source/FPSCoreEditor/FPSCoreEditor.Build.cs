@@ -25,7 +25,7 @@ public class FPSCoreEditor : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
+				"Core", "FPSCore",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

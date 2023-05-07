@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "FPSCoreEditor.h"
-
 #include "FPSCoreCustomSettings.h"
 #include "FPSCoreEditorStyle.h"
 #include "FPSCoreEditorCommands.h"
@@ -14,8 +13,9 @@
 #include "Styling/SlateStyleMacros.h"
 #include "Styling/SlateStyleRegistry.h"
 #include "WeaponCore/AmmoType.h"
-#include "WeaponCore/LineTraceBullet.h"
-#include "WeaponCore/ProjectileBase.h"
+#include "WeaponCore/LineTraceTemplate.h"
+#include "WeaponCore/ProjectileTemplate.h"
+#include "WeaponCore/Editors/ProjectileTemplateEditorToolkit.h"
 
 static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
@@ -33,8 +33,8 @@ public:
 class FLineTraceBulletActions : public FAssetTypeActions_Base
 {
 public:
-	virtual UClass* GetSupportedClass() const override { return ULineTraceBullet::StaticClass(); };
-	virtual FText GetName() const override { return INVTEXT("Line Trace Bullet"); };
+	virtual UClass* GetSupportedClass() const override { return ULineTraceTemplate::StaticClass(); };
+	virtual FText GetName() const override { return INVTEXT("Line Trace Template"); };
 	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
 	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
 };
@@ -42,10 +42,14 @@ public:
 class FProjectileBaseActions : public  FAssetTypeActions_Base
 {
 public:
-	virtual UClass* GetSupportedClass() const override { return AProjectileBase::StaticClass(); };
-	virtual FText GetName() const override { return INVTEXT("Projectile Base"); };
+	virtual UClass* GetSupportedClass() const override { return UProjectileTemplate::StaticClass(); };
+	virtual FText GetName() const override { return INVTEXT("Projectile Template"); };
 	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
 	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
+	virtual void OpenAssetEditor(const TArray<UObject*>& InObjects, TSharedPtr<IToolkitHost> EditWithinLevelEditor) override
+	{
+		MakeShared<ProjectileTemplateEditorToolkit>()->InitEditor(InObjects);	
+	}
 };
 
 class FFPSCoreSlateStyle final : public FSlateStyleSet
