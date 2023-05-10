@@ -94,27 +94,27 @@ struct FRuntimeWeaponData
 	GENERATED_BODY()
 
 	/** A reference to the weapon class of the given weapon */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	TSubclassOf<AWeaponBase> WeaponClassReference;
 
 	/** The maximum size of the player's magazine */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	int ClipCapacity; 
 
 	/** The amount of ammunition currently in the magazine */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	int ClipSize;
 
 	/** Enumerator holding the 4 possible ammo types defined above */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	EAmmoType AmmoType;
 
 	/** The current health of the weapon (degradation values are in the weapon class) */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	float WeaponHealth;
 
 	/** The attachments used in the current weapon */
-	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
+	UPROPERTY(EditAnywhere, Category = "Weapon Data")
 	TArray<FName> WeaponAttachments;
 };
 
@@ -647,6 +647,10 @@ public:
 	/** Returns the runtime weapon data of the weapon */
 	FRuntimeWeaponData* GetRuntimeWeaponData() { return &GeneralWeaponData; }
 
+	/** Returns a value rather than a reference of the runtime weapon data */
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	FRuntimeWeaponData GetRuntimeWeaponDataValue() { return GeneralWeaponData; }
+
 	/** Update the weapon's runtime weapon data
 	 *	@param NewWeaponData The weapons new runtime weapon data 
 	 */
@@ -661,9 +665,11 @@ public:
 	void SetStaticWeaponData(const FStaticWeaponData NewWeaponData) { WeaponData = NewWeaponData; }
 	
 	/** Starts firing the gun (sets the timer for automatic fire) */
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void StartFire();
 	
 	/** Stops the timer that allows for automatic fire */
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void StopFire();
 	
 	/** Plays the reload animation and sets a timer based on the length of the reload montage */

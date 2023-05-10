@@ -52,7 +52,7 @@ void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 	}
 	else if (!bPerformingWeaponSwap)
 	{
-		SwapWeapon(NewID);
+		SwapWeapon(NewID, true);
 	}
 }
 
@@ -108,13 +108,13 @@ void UInventoryComponent::BeginPlay()
 						}
 					}
 				}
-				UpdateWeapon(StarterWeapons[i].WeaponClassRef, i, false, false, GetOwner()->GetActorTransform(), StarterWeapons[i].DataStruct);
+				UpdateWeapon(StarterWeapons[i].WeaponClassRef, i, true, false, false, GetOwner()->GetActorTransform(), StarterWeapons[i].DataStruct);
 			}
 		}
 	}
 }
 
-void UInventoryComponent::SwapWeapon(const int SlotId)
+void UInventoryComponent::SwapWeapon(const int SlotId, bool bPlaySwapAnim)
 {
 	// Clearing the weapon swap timer in case it's still active
 	GetWorld()->GetTimerManager().ClearTimer(ReloadRetry);
@@ -131,8 +131,11 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 			CurrentWeapon->SetCanFire(false);
 			bPerformingWeaponSwap = true;
 			TargetWeaponSlot = SlotId;
-			HandleUnequip();
-			return;
+			if (bPlaySwapAnim)
+			{
+				HandleUnequip();
+				return;
+			}
 		}	
 	}
 
@@ -153,7 +156,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
         CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
         CurrentWeapon->SetActorHiddenInGame(false);
     	CurrentWeapon->SetCanFire(true);
-        if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+        if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip && bPlaySwapAnim)
         {
         	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
         	{
@@ -168,7 +171,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 }
 
 // Spawns a new weapon (either from weapon swap or picking up a new weapon)
-void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon, const int InventoryPosition, const bool bSpawnPickup,
+void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon, const int InventoryPosition, const bool bSwapTo, const bool bSpawnPickup,
                                        const bool bStatic, const FTransform PickupTransform, const FRuntimeWeaponData DataStruct)
 {
     // Determining spawn parameters (forcing the weapon pickup to spawn at all times)
@@ -228,24 +231,35 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
         	CurrentWeapon->StopFire();
         }
 
-    	
-    	// Swapping to the new weapon, enabling it and playing it's equip animation
-        CurrentWeapon = EquippedWeapons[InventoryPosition];
-        CurrentWeaponSlot = InventoryPosition; 
-        
-        if (CurrentWeapon)
+        if (bSwapTo)
         {
-            CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
-            CurrentWeapon->SetActorHiddenInGame(false);
-            if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
-            {
-            	if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
-	            {
-            		FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-		            FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
-            		FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
-	            }
-            }
+			// Swapping to the new weapon, enabling it and playing it's equip animation
+			CurrentWeapon = EquippedWeapons[InventoryPosition];
+			CurrentWeaponSlot = InventoryPosition; 
+			
+			if (CurrentWeapon)
+			{
+				CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+				CurrentWeapon->SetActorHiddenInGame(false);
+				if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+				{
+					if (AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))
+					{
+						FPSCharacter->GetHandsMesh()->GetAnimInstance()->StopAllMontages(0.1f);
+						FPSCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+						FPSCharacter->SetMovementState(FPSCharacter->GetMovementState());
+					}
+				}
+			}
+        }
+        else
+        {
+	        if (SpawnedWeapon)
+	        {
+				SpawnedWeapon->PrimaryActorTick.bCanEverTick = false;
+				SpawnedWeapon->SetActorHiddenInGame(true);
+				SpawnedWeapon->StopFire();
+	        }
         }
     }
 }
@@ -385,7 +399,7 @@ void UInventoryComponent::HandleUnequip()
 
 void UInventoryComponent::UnequipReturn()
 {
-	SwapWeapon(TargetWeaponSlot);
+	SwapWeapon(TargetWeaponSlot, false);
 }
 
 void UInventoryComponent::SetupInputComponent(UEnhancedInputComponent* PlayerInputComponent)

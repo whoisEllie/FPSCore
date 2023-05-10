@@ -71,12 +71,14 @@ public:
 	/** Equipping a new weapon
 	 * @param NewWeapon The new weapon which to spawn
 	 * @param InventoryPosition The position in the player's inventory in which to place the weapon
+	 * @param bSwapTo Whether to swap to the new weapon or not
 	 * @param bSpawnPickup Whether to spawn a pickup of CurrentWeapon (can be false if player has an empty weapon slot)
 	 * @param bStatic Whether the spawned pickup should be static or run a physics simulation
 	 * @param PickupTransform The position at which to spawn the new pickup, in the case that it is static (bStatic)
 	 * @param DataStruct The FRuntimeWeaponData struct for the newly equipped weapon
 	 */
-	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup,
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSwapTo, bool bSpawnPickup,
 						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
 
 	/** Returns the number of weapon slots */
@@ -165,21 +167,26 @@ public:
 	UPROPERTY()
 	UInputAction* InspectWeaponAction;
 
+	/** Swap to a new weapon
+	 *	@param SlotId The ID of the slot which to swap to
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	void SwapWeapon(int SlotId, bool bPlaySwapAnim);
+	
+	/** The integer that keeps track of which weapon slot ID is currently active */
+	UPROPERTY(VisibleAnywhere, Category = "Inventory Component")
+	int CurrentWeaponSlot;
+	
 private:
 
 	/** Spawns starter weapons */
 	virtual void BeginPlay() override;
 
-	/** Swap to a new weapon
-	 *	@param SlotId The ID of the slot which to swap to
-	 */
-	void SwapWeapon(int SlotId);
-
 	/** Swaps to the weapon in CurrentWeaponSlot */
 
 	/**	Template function for SwapWeapon (used with the enhanced input component) */
 	template <int SlotID>
-	void SwapWeapon() { SwapWeapon(SlotID); }
+	void SwapWeapon() { SwapWeapon(SlotID, true); }
 	
 	/** Swaps between weapons using the scroll wheel */
 	void ScrollWeapon(const FInputActionValue& Value);
@@ -234,9 +241,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapons | Behaviour")
 	EWeaponSwapBehaviour WeaponSwapBehaviour = EWeaponSwapBehaviour::UseNewValue;
-	
-	/** The integer that keeps track of which weapon slot ID is currently active */
-	int CurrentWeaponSlot;
+
 
 	/** The integer that keeps track of which weapon slot ID we are aiming to switch to while waiting for the unequip animation to play */
 	int TargetWeaponSlot;
