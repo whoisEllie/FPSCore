@@ -1,3 +1,5 @@
+<img alt="Discord" src="https://img.shields.io/discord/1010210608030961804">
+
 # FPS Core
 An open source plugin for Unreal Engine kickstarting the development of your next first person shooter!
 
