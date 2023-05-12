@@ -46,8 +46,6 @@ AFPSCharacter::AFPSCharacter()
     {
         CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
     }
-    
-    DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
 }
 
 // Called when the game starts or when spawned
@@ -82,6 +80,7 @@ void AFPSCharacter::BeginPlay()
     }
 
     // Updating the crouched spring arm height based on the crouched capsule half height
+    DefaultCapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); // setting the default height of the capsule
     CrouchedSpringArmHeightDelta = CrouchedCapsuleHalfHeight - DefaultCapsuleHalfHeight;
 }
 

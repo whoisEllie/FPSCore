@@ -10,6 +10,7 @@
 #include "WeaponBase.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "Engine/HitResult.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;
@@ -337,6 +338,14 @@ private:
 	/** The angle that the floor has to be at in order for sliding to not be cancelled after SlideTime has passed */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
 	float SlideContinueAngle = -15.0f;
+
+	/** Whether to require a velocity (MinimumSlideVelocity) in order to be able to slide */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
+	bool bRequireVelocityToSlide = false;
+
+	/** The minimum velocity required to slide if RequireVelocityToSlide is true */
+	UPROPERTY(EditDefaultsOnly, Category = "Movement | Slide")
+	float MinimumSlideVelocity = 300.0f;
 
 	/** Whether the character is allowed to vault */
 	UPROPERTY(EditDefaultsOnly, Category = "Movement | Vault")	

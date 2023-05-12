@@ -80,18 +80,22 @@ public:
 						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
 
 	/** Returns the number of weapon slots */
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetNumberOfWeaponSlots() const { return NumberOfWeaponSlots; }
 
 	/** Returns the currently equipped weapon slot */
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
 
 	/** Returns the map of currently equipped weapons */
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	TMap<int, AWeaponBase*> GetEquippedWeapons() const { return EquippedWeapons; }
 	
 	/** Returns an equipped weapon
 	 *	@param WeaponID The ID of the weapon to get
 	 *	@return The weapon with the given ID
 	 */
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	AWeaponBase* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
 
 	/** Returns the current weapon equipped by the player */

@@ -1,8 +1,8 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "0.1.8",
-	"EngineVersion": "5.1",
+	"VersionName": "0.1.8 LTS",
+	"EngineVersion": "5.2",
 	"FriendlyName": "FPS Core",
 	"Description": "Kickstart your development of first person shooters!",
 	"Category": "Gameplay",

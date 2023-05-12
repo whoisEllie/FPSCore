@@ -9,6 +9,7 @@
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties

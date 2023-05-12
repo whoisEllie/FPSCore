@@ -21,9 +21,7 @@ void UInteractionComponent::WorldInteract()
     FCollisionQueryParams TraceParams;
     TraceParams.bTraceComplex = true;
 
-    const AActor* Owner = GetOwner();
-    
-    if (Owner)
+    if (const AFPSCharacter* Owner = Cast<AFPSCharacter>(GetOwner()))
     {
         TraceParams.AddIgnoredActor(Owner);
     }

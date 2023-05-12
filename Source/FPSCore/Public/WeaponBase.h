@@ -7,6 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
+#include "Engine/HitResult.h"
 #include "WeaponBase.generated.h"
 
 class AWeaponBase;
@@ -205,11 +206,15 @@ struct FAttachmentData : public FTableRowBase
 	UAnimSequence* Anim_Sprint;
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimSequence* WeaponShot;
 	
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimSequence* LastWeaponShot;
+	
 	/** The shooting animation for the player's hands */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* HandsShot;
 
 	/** Unequip animation for the current weapon */
@@ -248,6 +253,14 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	bool AutomaticFire;
 	
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool bAutoReload;
+	
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	bool bAutoFireAfterReload;
+
 	/** The vertical recoil curve to be used with this magazine */
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
 	UCurveFloat* VerticalRecoilCurve;
@@ -430,9 +443,9 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsInspect;
 
-	/** The player's inspect animation */
+	/** The weapon's half of the inspect animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimMontage* WeaponInspect;
+	UAnimationAsset* WeaponInspect;
 
 	/** The sprinting animation sequence */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -441,6 +454,10 @@ struct FStaticWeaponData : public FTableRowBase
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* WeaponShot;
+	
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimSequence* LastWeaponShot;
 	
 	/** The shooting animation for the player's hands */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -471,6 +488,14 @@ struct FStaticWeaponData : public FTableRowBase
 	/** Whether to prevent players from spam-firing this weapon faster than the assigned Rate of Fire */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bPreventRapidManualFire;
+
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	bool bAutoReload;
+	
+	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	bool bAutoFireAfterReload;
 
 	/** Whether this weapon is a shotgun or not */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -706,6 +731,9 @@ public:
 	/** Returns the vertical camera offset for this weapon instance */
 	UFUNCTION(BlueprintCallable, Category = "Weapon Base")
 	float GetVerticalCameraOffset() const { return VerticalCameraOffset; }
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void GunFired();
 
 protected:
 		
