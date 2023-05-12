@@ -1,9 +1,11 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "AmmoPickup.h"
+#include "DrawDebugHelpers.h"
 #include "FPSCharacter.h"
 #include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

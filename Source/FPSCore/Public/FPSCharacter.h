@@ -10,6 +10,7 @@
 #include "WeaponBase.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "Engine/HitResult.h"
 #include "FPSCharacter.generated.h"
 
 class UCameraComponent;

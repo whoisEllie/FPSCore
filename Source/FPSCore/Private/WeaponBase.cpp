@@ -11,6 +11,7 @@
 #include "FPSCharacterController.h"
 #include "FPSCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Curves/CurveFloat.h"
 #include "Components/InventoryComponent.h"
 
 // Sets default values

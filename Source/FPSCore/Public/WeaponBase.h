@@ -7,6 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
+#include "Engine/HitResult.h"
 #include "WeaponBase.generated.h"
 
 class AWeaponBase;
@@ -442,9 +443,9 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsInspect;
 
-	/** The player's inspect animation */
+	/** The weapon's half of the inspect animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimMontage* WeaponInspect;
+	UAnimationAsset* WeaponInspect;
 
 	/** The sprinting animation sequence */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
