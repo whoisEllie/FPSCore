@@ -3,15 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "BaseTemplate.h"
 #include "ProjectileTemplate.generated.h"
 
 UCLASS()
-class FPSCORE_API UProjectileTemplate : public UObject 
+class FPSCORE_API UProjectileTemplate : public UBaseTemplate 
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	UProjectileTemplate();
 };

@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
+#include "BaseTemplate.h"
 #include "LineTraceTemplate.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FPSCORE_API ULineTraceTemplate : public UObject
+class FPSCORE_API ULineTraceTemplate : public UBaseTemplate 
 {
 	GENERATED_BODY()
-	
 };
