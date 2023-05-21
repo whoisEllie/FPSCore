@@ -27,7 +27,7 @@ It abstracts a number of core functions and behaviours (hence, FPS Core) to pre-
 - Support for **Enhanced Input** & **Niagara**
 
 ### installation
-You'll likely have the best expereince installing FPS Core through the [Unreal Engine Marketplace](https://www.unrealengine.com/marketplace/en-US/product/fps-core). This way you get the most up-to-date production ready binaries, so there's no compilation required.
+You'll likely have the best experience installing FPS Core through the [Unreal Engine Marketplace](https://www.unrealengine.com/marketplace/en-US/product/fps-core). This way you get the most up-to-date production ready binaries, so there's no compilation required.
 
 If you'd like to compile your own copy, you can clone from the main branch without hesitation - this is always kept up to date with the latest stable release, and mirrors the version found on the Unreal Engine Marketplace. In order to download bleeding-edge releases, you'll have to pull from a branch.
     
