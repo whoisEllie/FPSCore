@@ -30,6 +30,10 @@ It abstracts a number of core functions and behaviours (hence, FPS Core) to pre-
 You'll likely have the best experience installing FPS Core through the [Unreal Engine Marketplace](https://www.unrealengine.com/marketplace/en-US/product/fps-core). This way you get the most up-to-date production ready binaries, so there's no compilation required.
 
 If you'd like to compile your own copy, you can clone from the main branch without hesitation - this is always kept up to date with the latest stable release, and mirrors the version found on the Unreal Engine Marketplace. In order to download bleeding-edge releases, you'll have to pull from a branch.
+
+### alternate versions
+If you're looking for versions of FPS Core with support for alternate features, you might find them in some public forks. Notable forks are listed here.
+- (https://github.com/TheMarcusDev/FPSCore): This fork by Marcus Henrique is fully replicated, and has modifications that bring it closer to a CS-style game, such as sprint being the default movement state.
     
 ### learning and docs
 The best way to get started with FPS Core is by following the QuickStart! series on the [documentation site](https://emmadocs.dev). You can find the first part of that [here](https://emmadocs.dev/fps-core/quickstart-part-1-creating-a-character/). Currently, there is no complete API reference. This will come with the impending 2.0 release, which should arrive in Q3 2023. In lieu of such documentation, you're welcome to ask any API-related questions in the [discord server](https://discord.gg/MzxdZd2WqR).
@@ -37,7 +41,7 @@ The best way to get started with FPS Core is by following the QuickStart! series
 ### getting help
 The best place to get support is the [EMMA Discord Server](https://discord.gg/MzxdZd2WqR), which includes additional features such as a GPT-4 powered assistant and the ability to suggest features and report bugs.
 
-Alternate means of support are:
+Alternate means of getting support are:
 - [emailing me](mailto:contact@emmadocs.dev)
 - creating a github issue
 - asking a question using the marketplace
