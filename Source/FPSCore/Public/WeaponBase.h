@@ -7,6 +7,7 @@
 #include "Components/TimelineComponent.h"
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
+#include "WeaponCore/WeaponInterface.h"
 #include "WeaponBase.generated.h"
 
 class AWeaponBase;
@@ -606,7 +607,7 @@ struct FStaticWeaponData : public FTableRowBase
 };
 
 UCLASS()
-class FPSCORE_API AWeaponBase : public AActor
+class FPSCORE_API AWeaponBase : public AActor, public IWeaponInterface
 {
 	GENERATED_BODY()
 
@@ -635,7 +636,7 @@ public:
 	void StopFire();
 	
 	/** Plays the reload animation and sets a timer based on the length of the reload montage */
-	bool Reload();
+	virtual bool Reload() override;
 
 	/** Spawns the weapons attachments and applies their data/modifications to the weapon's statistics */ 
 	void SpawnAttachments();

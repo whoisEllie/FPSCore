@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "Character/CharacterCore.h"
 
+
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
 {
@@ -286,39 +287,42 @@ void UInventoryComponent::Reload()
 {
     if (CurrentWeapon)
     {
-        if (!CurrentWeapon->Reload())
-        {
-	        switch (ReloadFailedBehaviour)
-	        {
-	        case EReloadFailedBehaviour::Retry:
-	        	{
-	        		GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
-	        		break;
-	        	}
+	    if (CurrentWeapon->GetClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
+	    {
+		    if (!(Cast<IWeaponInterface>(CurrentWeapon)->Reload()))
+		    {
+			    switch (ReloadFailedBehaviour)
+			    {
+			    case EReloadFailedBehaviour::Retry:
+				    {
+					    GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
+					    break;
+				    }
 
-	        case EReloadFailedBehaviour::ChangeState:
-	        	{
-	        		ACharacterCore* Character = Cast<ACharacterCore>(GetOwner());
-	        		Character->UpdateMovementState(EMovementState::State_Walk);
-	        		Reload();
-	        		break;
-	        	}
+			    case EReloadFailedBehaviour::ChangeState:
+				    {
+					    ACharacterCore* Character = Cast<ACharacterCore>(GetOwner());
+					    Character->UpdateMovementState(EMovementState::State_Walk);
+					    Reload();
+					    break;
+				    }
 
-	        case EReloadFailedBehaviour::HandleInBP:
-	        	{
-	        		EventFailedToReload.Broadcast();	
-	        		break;
-	        	}
+			    case EReloadFailedBehaviour::HandleInBP:
+				    {
+					    EventFailedToReload.Broadcast();	
+					    break;
+				    }
 
-	        case EReloadFailedBehaviour::Ignore:
-		        {
-			        // Ignoring it, obviously :)
-	        		break;
-		        }
+			    case EReloadFailedBehaviour::Ignore:
+				    {
+					    // Ignoring it, obviously :)
+					    break;
+				    }
 
-	        default: { break; }
-	        } 
-        }
+			    default: { break; }
+			    } 
+		    }
+	    }
     }
 }
 
