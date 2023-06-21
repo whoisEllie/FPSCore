@@ -2,7 +2,7 @@
 
 #include "WeaponPickup.h"
 
-#include "Character/CharacterCore.h"
+#include "CharacterCore/CharacterCore.h"
 #include "WeaponBase.h"
 #include "Kismet/GameplayStatics.h"
 

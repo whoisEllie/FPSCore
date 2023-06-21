@@ -1,7 +1,7 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "AmmoPickup.h"
-#include "Character/CharacterCore.h"
+#include "CharacterCore/CharacterCore.h"
 #include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"

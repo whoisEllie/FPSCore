@@ -9,8 +9,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Math/UnrealMathUtility.h"
 #include "FPSCharacterController.h"
-#include "Character/CharacterCore.h"
-#include "Camera/CameraComponent.h"
+#include "CharacterCore/CharacterCore.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()

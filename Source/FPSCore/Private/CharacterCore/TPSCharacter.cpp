@@ -1,14 +1,10 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
-#include "Character/FPSCharacter.h"
+#include "CharacterCore/TPSCharacter.h"
 #include "DrawDebugHelpers.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "FPSCharacterController.h"
 #include "WeaponBase.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/TimelineComponent.h"
@@ -20,11 +16,10 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
-AFPSCharacter::AFPSCharacter()
+ATPSCharacter::ATPSCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -32,25 +27,19 @@ AFPSCharacter::AFPSCharacter()
     // Spawning the spring arm component
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
     SpringArmComponent->bUsePawnControlRotation = true;
-    SpringArmComponent->SetupAttachment(RootComponent);
-    
-    // Spawning the FPS hands mesh component and attaching it to the spring arm component
-    HandsMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
-    HandsMeshComp->CastShadow = false;
-    HandsMeshComp->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
-    AnimationMeshComponent = HandsMeshComp;
+    SpringArmComponent->SetupAttachment(GetMesh());
     
     // Spawning the camera atop the FPS hands mesh
     CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-    if (HandsMeshComp)
+    if (SpringArmComponent)
     {
-        CameraComponent->AttachToComponent(HandsMeshComp, FAttachmentTransformRules::KeepRelativeTransform, "CameraSocket");
+        CameraComponent->AttachToComponent(SpringArmComponent, FAttachmentTransformRules::KeepRelativeTransform);
     }
     LookOriginComponent = CameraComponent;
 }
 
 // Called when the game starts or when spawned
-void AFPSCharacter::BeginPlay()
+void ATPSCharacter::BeginPlay()
 {
     Super::BeginPlay();
     
@@ -58,7 +47,7 @@ void AFPSCharacter::BeginPlay()
 
 }
 
-void AFPSCharacter::Vault(FTransform TargetTransform)
+void ATPSCharacter::Vault(FTransform TargetTransform)
 {
     Super::Vault(TargetTransform);
     // Updating our target location and playing the vault timeline from start
@@ -67,12 +56,12 @@ void AFPSCharacter::Vault(FTransform TargetTransform)
     UpdateMovementState(EMovementState::State_Vault);
     if (VaultMontage)
     {
-        HandsMeshComp->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
+        GetMesh()->GetAnimInstance()->Montage_Play(VaultMontage, 1.0f);
     }
     VaultTimeline.PlayFromStart();
 }
 
-void AFPSCharacter::Tick(float DeltaTime)
+void ATPSCharacter::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 

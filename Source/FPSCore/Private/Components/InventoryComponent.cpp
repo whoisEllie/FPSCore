@@ -9,7 +9,7 @@
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
-#include "Character/CharacterCore.h"
+#include "CharacterCore/CharacterCore.h"
 
 
 // Sets default values for this component's properties

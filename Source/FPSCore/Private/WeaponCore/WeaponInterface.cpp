@@ -21,3 +21,7 @@ bool IWeaponInterface::Reload()
 {
 	return false;
 }
+
+void IWeaponInterface::Inspect()
+{
+}

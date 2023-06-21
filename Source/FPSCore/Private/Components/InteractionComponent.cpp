@@ -2,10 +2,8 @@
 
 #include "Components/InteractionComponent.h"
 #include "EnhancedInputComponent.h"
-#include "Character/CharacterCore.h"
+#include "CharacterCore/CharacterCore.h"
 #include "InteractionActor.h"
-#include "WeaponBase.h"
-#include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()

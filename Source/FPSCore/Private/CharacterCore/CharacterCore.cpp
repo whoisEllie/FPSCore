@@ -1,12 +1,11 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
-#include "Character/CharacterCore.h"
+#include "CharacterCore/CharacterCore.h"
 #include "DrawDebugHelpers.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FPSCharacterController.h"
 #include "WeaponBase.h"
-#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
@@ -20,8 +19,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/InputSettings.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values

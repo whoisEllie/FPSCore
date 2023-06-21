@@ -34,4 +34,7 @@ public:
 
 	UFUNCTION()
 	virtual bool Reload();
+
+	UFUNCTION()
+	virtual void Inspect();
 };
