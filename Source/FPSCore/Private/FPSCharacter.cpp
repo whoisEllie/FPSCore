@@ -558,6 +558,8 @@ void AFPSCharacter::SetMovementState(const EMovementState NewMovementState)
                 InventoryComponent->GetCurrentWeapon()->SetCanReload(MovementDataMap[MovementState].bCanReload);
             }
         }
+
+        bCanAim = MovementDataMap[MovementState].bCanAim;
         GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
         GetCharacterMovement()->BrakingDecelerationWalking = MovementDataMap[MovementState].BreakingDecelerationWalking;
         GetCharacterMovement()->GroundFriction = MovementDataMap[MovementState].GroundFriction;
@@ -645,7 +647,7 @@ void AFPSCharacter::Tick(const float DeltaTime)
     }
 
     // Continuous aiming check (so that you don't have to re-press the ADS button every time you jump/sprint/reload/etc)
-    if (bWantsToAim == true && MovementState != EMovementState::State_Sprint && MovementState != EMovementState::State_Slide)
+    if (bWantsToAim && bCanAim)
     {
         bIsAiming = true;
     }

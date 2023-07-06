@@ -29,8 +29,9 @@ enum class EMovementState : uint8
 	State_Walk      UMETA(DisplayName = "Walking"),
 	State_Sprint    UMETA(DisplayName = "Sprinting"),
 	State_Crouch    UMETA(DisplayName = "Crouching"),
-	State_Slide	  UMETA(DisplayName = "Sliding"),
-	State_Vault	  UMETA(DisplayName = "Vaulting")
+	State_Slide		UMETA(DisplayName = "Sliding"),
+	State_Vault		UMETA(DisplayName = "Vaulting"),
+	State_Mantle	UMETA(DisplayName = "Mantling")
 };
 
 /** Landing behaviour options */
@@ -53,6 +54,9 @@ struct FMovementVariables
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	bool bCanReload = true;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
+	bool bCanAim = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement Variables")
 	float MaxAcceleration = 2048.0f;
@@ -410,6 +414,9 @@ private:
 	
 	/** Whether the player is holding down the aim down sights button */
 	bool bWantsToAim;
+	
+	/** Whether the player is allowed to aim in the current state */
+	bool bCanAim = true;
 
 	/** Whether the player is holding down the sprint key */
 	bool bWantsToSprint;

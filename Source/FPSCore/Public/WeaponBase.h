@@ -217,6 +217,10 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* HandsShot;
 
+	/** The shooting animation for the player's hands */
+	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
+	UAnimMontage* HandsADSShot;
+
 	/** Unequip animation for the current weapon */
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimMontage* WeaponEquip;
@@ -462,6 +466,10 @@ struct FStaticWeaponData : public FTableRowBase
 	/** The shooting animation for the player's hands */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsShot;
+	
+	/** The shooting animation for the player's hands */
+	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* HandsADSShot;
 	
 	/** An override for the player's reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -734,6 +742,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
 	void GunFired();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void StartReload();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void FinishReload();
 
 protected:
 		
