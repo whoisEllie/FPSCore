@@ -735,6 +735,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
 	void GunFired();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void StartReload();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon Base")
+	void FinishReload();
+
 protected:
 		
 	/** The main skeletal mesh - holds the weapon model */
