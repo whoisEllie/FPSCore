@@ -8,6 +8,7 @@
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "WeaponCore/WeaponInterface.h"
+#include "Helpers/GlobalCharacterAnimStruct.h"
 #include "WeaponBase.generated.h"
 
 class AWeaponBase;
@@ -46,44 +47,7 @@ enum class EAttachmentType : uint8
 	Grip		UMETA(DispayName = "Grip Attachment"),
 };
 
-/** A struct containing all the animations needed by FPS Core, in order to simplify blueprint operations */
-USTRUCT(BlueprintType)
-struct FHandsAnimSet
-{
-	GENERATED_BODY()
 
-	/** The walking BlendSpace */
-	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
-	UBlendSpace* BS_Walk;
-
-	/** The ADS Walking BlendSpace */
-	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
-	UBlendSpace* BS_Ads_Walk;
-
-	/** The Idle animation sequence */
-	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Idle;
-
-	/** The ADS Idle animation sequence */
-	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Ads_Idle;
-	
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_Start;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_End;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Fall;
-
-	/** The sprinting animation sequence */
-	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Sprint;
-};
 
 /** Struct keeping track of important weapon variables modified at runtime. This structs contains data that is either
  *	modified at runtime, such as the amount of ammunition in the weapon, but also data required to spawn attachments
@@ -173,38 +137,10 @@ struct FAttachmentData : public FTableRowBase
 	UPROPERTY(EditDefaultsOnly, Category = "Barrel", meta=(EditCondition="AttachmentType == EAttachmentType::Barrel"))
 	bool bSilenced;
 
-	/** An override for the default walk BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UBlendSpace* BS_Walk;
-
-	/** An override for the default ADS walk BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UBlendSpace* BS_Ads_Walk;
-
-	/** An override for the default idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Idle;
-
-	/** An override for the default ADS idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Ads_Idle;
+	// The hands animation set
+	UPROPERTY(EditAnywhere, Category = "Magazine", meta=(EditCondition="AttachmentType == EAttachmentType::Magazine"))
+	FFPSHandsAnimSet HandsAnimSet;
 	
-	/** An override for the default jump start animation sequence  */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Jump_Start;
-
-	/** An override for the default jump end animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Jump_End;
-
-	/** An override for the default fall animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Fall;
-
-	/** An override for the default sprint animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
-	UAnimSequence* Anim_Sprint;
-
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(EditDefaultsOnly, Category = "Grip", meta=(EditCondition="AttachmentType == EAttachmentType::Grip"))
 	UAnimSequence* Gun_Shot;
@@ -379,33 +315,9 @@ struct FStaticWeaponData : public FTableRowBase
 
 	/** Animations */
 
-	/** The walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UBlendSpace* BS_Walk;
-
-	/** The ADS Walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UBlendSpace* BS_Ads_Walk;
-
-	/** The Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Idle;
-
-	/** The ADS Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Ads_Idle;
-	
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_Start;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_End;
-
-	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Fall;
+	// The weapon's animation set
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Unique Weapon (No Attachments)")
+	FFPSHandsAnimSet HandsAnimSet;
 
 	/** The weapon's empty reload animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -430,10 +342,6 @@ struct FStaticWeaponData : public FTableRowBase
 	/** The player's inspect animation */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponInspect;
-
-	/** The sprinting animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
-	UAnimSequence* Anim_Sprint;
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
@@ -638,6 +546,10 @@ public:
 	/** Plays the reload animation and sets a timer based on the length of the reload montage */
 	virtual bool Reload() override;
 
+	/** Connects this weapon to the weapon interface */
+	virtual void StartAttack() override { StartFire(); };
+	virtual void StopAttack() override { StopFire(); };
+
 	/** Spawns the weapons attachments and applies their data/modifications to the weapon's statistics */ 
 	void SpawnAttachments();
 
@@ -676,18 +588,9 @@ public:
 	
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")
-	FHandsAnimSet GetWeaponAnimations() const
+	FFPSHandsAnimSet GetWeaponAnimations() const
 	{
-		FHandsAnimSet PlayerAnimSet;
-		PlayerAnimSet.BS_Walk = WeaponData.BS_Walk;
-		PlayerAnimSet.BS_Ads_Walk = WeaponData.BS_Ads_Walk;
-		PlayerAnimSet.Anim_Idle = WeaponData.Anim_Idle;
-		PlayerAnimSet.Anim_Ads_Idle = WeaponData.Anim_Ads_Idle;
-		PlayerAnimSet.Anim_Jump_Start = WeaponData.Anim_Jump_Start;
-		PlayerAnimSet.Anim_Jump_End = WeaponData.Anim_Jump_End;
-		PlayerAnimSet.Anim_Fall = WeaponData.Anim_Fall;
-		PlayerAnimSet.Anim_Sprint = WeaponData.Anim_Sprint;
-		return PlayerAnimSet;
+		return WeaponData.HandsAnimSet;
 	}
 
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")

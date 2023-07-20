@@ -68,25 +68,25 @@ void AWeaponBase::BeginPlay()
     {
         WeaponEquip = WeaponData.WeaponEquip;
     }
-    if (WeaponData.BS_Walk)
+    if (WeaponData.HandsAnimSet.BS_Walk)
     {
-        WalkBlendSpace = WeaponData.BS_Walk;
+        WalkBlendSpace = WeaponData.HandsAnimSet.BS_Walk;
     }
-    if (WeaponData.BS_Ads_Walk)
+    if (WeaponData.HandsAnimSet.BS_Ads_Walk)
     {
-        ADSWalkBlendSpace = WeaponData.BS_Ads_Walk;
+        ADSWalkBlendSpace = WeaponData.HandsAnimSet.BS_Ads_Walk;
     }
-    if (WeaponData.Anim_Idle)
+    if (WeaponData.HandsAnimSet.Anim_Idle)
     {
-        Anim_Idle = WeaponData.Anim_Idle;
+        Anim_Idle = WeaponData.HandsAnimSet.Anim_Idle;
     }
-    if (WeaponData.Anim_Sprint)
+    if (WeaponData.HandsAnimSet.Anim_Sprint)
     {
-        Anim_Sprint = WeaponData.Anim_Sprint;
+        Anim_Sprint = WeaponData.HandsAnimSet.Anim_Sprint;
     }
-    if (WeaponData.Anim_Ads_Idle)
+    if (WeaponData.HandsAnimSet.Anim_Ads_Idle)
     {
-        Anim_ADS_Idle = WeaponData.Anim_Ads_Idle;
+        Anim_ADS_Idle = WeaponData.HandsAnimSet.Anim_Ads_Idle;
     }
 
 
@@ -182,38 +182,7 @@ void AWeaponBase::SpawnAttachments()
                     {
                         WeaponEquip = AttachmentData->WeaponEquip;
                     }
-                    if (AttachmentData->BS_Walk)
-                    {
-                        WalkBlendSpace = AttachmentData->BS_Walk;
-                    }
-                    if (AttachmentData->BS_Ads_Walk)
-                    {
-                        ADSWalkBlendSpace = AttachmentData->BS_Ads_Walk;
-                    }
-                    if (AttachmentData->Anim_Idle)
-                    {
-                        Anim_Idle = AttachmentData->Anim_Idle;
-                    }
-                    if (AttachmentData->Anim_Sprint)
-                    {
-                        Anim_Sprint = AttachmentData->Anim_Sprint;
-                    }
-                    if (AttachmentData->Anim_Ads_Idle)
-                    {
-                        Anim_ADS_Idle = AttachmentData->Anim_Ads_Idle;
-                    }
-                    if (AttachmentData->Anim_Jump_Start)
-                    {
-                        Anim_Jump_Start = AttachmentData->Anim_Jump_Start;
-                    }
-                    if (AttachmentData->Anim_Jump_End)
-                    {
-                        Anim_Jump_End = AttachmentData->Anim_Jump_End;
-                    }
-                    if (AttachmentData->Anim_Fall)
-                    {
-                        Anim_Fall = AttachmentData->Anim_Fall;
-                    }
+                    WeaponData.HandsAnimSet = AttachmentData->HandsAnimSet;
                 }
             }
         }

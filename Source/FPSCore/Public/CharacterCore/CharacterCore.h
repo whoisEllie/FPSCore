@@ -108,33 +108,24 @@ public:
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UBlendSpace* GetEmptyWalkBlendSpace() const { return BS_Walk; }
+	UBlendSpace* GetEmptyWalkBlendSpace() const { return HandsAnimSet.BS_Walk; }
 
 	/** Returns the character's empty-handed idle animation */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UAnimSequence* GetEmptyIdleAnim() const { return Anim_Idle; }
+	UAnimSequence* GetEmptyIdleAnim() const { return HandsAnimSet.Anim_Idle; }
 
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base", meta=(DeprecatedFunction))
-	FHandsAnimSet GetWeaponAnimations() const
+	FFPSHandsAnimSet GetWeaponAnimations() const
 	{
 		return GetPlayerAnimations();
 	}
 	
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")
-	FHandsAnimSet GetPlayerAnimations() const
+	FFPSHandsAnimSet GetPlayerAnimations() const
 	{
-		FHandsAnimSet PlayerAnimSet;
-		PlayerAnimSet.BS_Walk = BS_Walk;
-		PlayerAnimSet.BS_Ads_Walk = BS_Walk;
-		PlayerAnimSet.Anim_Idle = Anim_Idle;
-		PlayerAnimSet.Anim_Ads_Idle = Anim_Idle;
-		PlayerAnimSet.Anim_Jump_Start = Anim_Jump_Start;
-		PlayerAnimSet.Anim_Jump_End = Anim_Jump_End;
-		PlayerAnimSet.Anim_Fall = Anim_Fall;
-		PlayerAnimSet.Anim_Sprint = Anim_Sprint;
-		return PlayerAnimSet;
+		return HandsAnimSet;
 	}
 
 	/** Returns the character's current input mapping context */
@@ -172,34 +163,13 @@ protected:
 
 	// Used as the direction the player is looking in, i.e. the 'camera' - determines stuff like where shots and interaction traces come from
 	UPROPERTY()
-	USceneComponent* LookOriginComponent;	
+	USceneComponent* LookOriginComponent;
 
-	/** Hand animation blend space for when the player has no weapon  */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Blend Spaces")
-	UBlendSpace* BS_Walk;
-	
-	/** Hand animation for when the player has no weapon and is idle */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Idle;
-	
-	/** Hand animation for when the player has no weapon and starts to jump */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_Start;
-
-	/** Hand animation for when the player has no weapon and stops jumping */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Jump_End;
-
-	/** Hand animation for when the player has no weapon and is falling */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Fall;
-	
-	/** Hand animation for when the player has no weapon and is sprinting */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Sequences")
-	UAnimSequence* Anim_Sprint;
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
+	FFPSHandsAnimSet HandsAnimSet;
 
 	/** Hand montage, played during vault */
-	UPROPERTY(EditDefaultsOnly, Category = "Animations | Montages")
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* VaultMontage;
 
 #pragma region FUNCTIONS
