@@ -17,10 +17,13 @@ class AFPSCharacterController : public APlayerController
 	public:
 	
 	/** Stored ammo data for the player character */
-    UPROPERTY(EditDefaultsOnly, Category = "Inventory")
-    TMap<EAmmoType, int32> AmmoMap;
+    	UPROPERTY(EditDefaultsOnly, Category = "Inventory")
+    	TMap<EAmmoType, int32> AmmoMap;
 
 	/** The amount of ammunition boxes that the player has */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int AmmoBoxCount;
+
+	UFUNCTION(BlueprintCallable)
+	void SetAmmoTypeValue(int32 AmmoCount, EAmmoType AmmoType);
 };
