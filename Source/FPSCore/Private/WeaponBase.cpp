@@ -161,6 +161,7 @@ void AWeaponBase::SpawnAttachments()
                     WeaponData.WeaponShot = AttachmentData->WeaponShot;
                     WeaponData.LastWeaponShot = AttachmentData->LastWeaponShot;
                     WeaponData.HandsShot = AttachmentData->HandsShot;
+                    WeaponData.HandsADSShot = AttachmentData->HandsADSShot;
                     WeaponData.AccuracyDebuff = AttachmentData->AccuracyDebuff;
                     WeaponData.bWaitForAnim = AttachmentData->bWaitForAnim;
                     WeaponData.bPreventRapidManualFire = AttachmentData->bPreventRapidManualFire;
@@ -351,9 +352,19 @@ void AWeaponBase::Fire()
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
                 }
             }
-            if (WeaponData.HandsShot)
+            if (PlayerCharacter->IsPlayerAiming())
             {
-               PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.HandsShot); 
+                if (WeaponData.HandsADSShot)
+                {
+                   PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.HandsADSShot); 
+                } 
+            }
+            else
+            {
+                if (WeaponData.HandsShot)
+                {
+                   PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.HandsShot); 
+                }
             }
 
             FVector EndPoint = TraceEnd;
@@ -574,6 +585,10 @@ bool AWeaponBase::Reload()
     {
         return false;
     }
+
+    // Calling a blueprint implementable reload function
+    StartReload();
+    
     // Casting to the character controller (which stores all the ammunition and health variables)
     const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(PlayerCharacter->GetController());
@@ -646,7 +661,10 @@ bool AWeaponBase::Reload()
 }
 
 void AWeaponBase::UpdateAmmo()
-{ 
+{
+    // Calling a blueprint implementable function signifying the end of a reload
+    FinishReload();
+    
     // Printing debug strings
     if(bShowDebug)
     {
