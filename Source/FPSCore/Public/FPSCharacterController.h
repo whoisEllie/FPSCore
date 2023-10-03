@@ -23,4 +23,7 @@ class AFPSCharacterController : public APlayerController
 	/** The amount of ammunition boxes that the player has */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")
 	int AmmoBoxCount;
+
+	UFUNCTION(BlueprintCallable)
+	void SetAmmoTypeValue(int32 AmmoCount, EAmmoType AmmoType);
 };
