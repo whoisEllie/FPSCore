@@ -479,6 +479,10 @@ struct FStaticWeaponData : public FTableRowBase
 	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponUnequip;
 
+	/** Arms Montage For Weapon Melee*/
+	UPROPERTY(BlueprintReadOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* WeaponMelee;
+
 	/** Firing Mechanisms */
 
 	/** Determines if the weapon can have a round in the chamber or not */
@@ -803,6 +807,12 @@ private:
 	/** Initiates the recoil function */
 	void RecoilRecovery();
 
+	UFUNCTION(BlueprintCallable,Category = "Default")
+	void Melee();
+
+	UFUNCTION(BlueprintCallable, Category = "Default")
+	void EnableMelee();
+
 	/** Interpolates the player back to their initial view vector */
 	UFUNCTION()
 	void HandleRecoveryProgress(float Value) const;
@@ -859,8 +869,15 @@ private:
 	/** Determines if the player can fire */
 	bool bCanFire = true;
 
+
 	/** Determines if the player can reload */
 	bool bCanReload = true;
+
+	/** Determines if the player can melee */
+	bool bCanMelee = true;
+	
+	/** Keeps Track Of Melee*/
+	bool bIsReadyToMelee = true;
 	
 	/** Keeps track of whether the weapon is being reloaded */
 	bool bIsReloading = false;

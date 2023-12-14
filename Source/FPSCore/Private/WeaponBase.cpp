@@ -261,6 +261,8 @@ void AWeaponBase::EnableFire()
 {
     // Fairly self explanatory - allows the weapon to fire again after waiting for an animation to finish or finishing a reload
     bCanFire = true;
+    bCanMelee = true;
+    bIsReadyToMelee = true;
 }
 
 void AWeaponBase::ReadyToFire()
@@ -349,6 +351,8 @@ void AWeaponBase::Fire()
                     // Preventing the player from firing the weapon until the animation finishes playing 
                     const float AnimWaitTime = WeaponData.WeaponShot->GetPlayLength();
                     bCanFire = false;
+                    bCanMelee = false;
+                    bIsReadyToMelee = false;
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
                 }
             }
@@ -761,4 +765,70 @@ void AWeaponBase::HandleRecoveryProgress(float Value) const
     const FRotator NewControlRotation = FMath::Lerp(CharacterController->GetControlRotation(), ControlRotation, Value);
     
     CharacterController->SetControlRotation(NewControlRotation);
+}
+
+// Melee Event
+void AWeaponBase::Melee() 
+{
+    if (bCanMelee && bIsReadyToMelee && WeaponData.WeaponMelee)
+    {
+        bIsReadyToMelee = false;
+        AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+        PlayerRef->SetCanAim(false);
+        bCanFire = false;
+        bCanReload = false;
+        bCanMelee = false;
+        const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+        Melee();
+
+        //FVector EndPoint = TraceEnd;
+
+        PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.WeaponMelee);
+
+        /** collision parameters for spawning the line trace */
+        //FCollisionQueryParams QueryParams;
+
+        //Sets the default values for our trace query
+        //QueryParams.AddIgnoredActor(this);
+       // QueryParams.bTraceComplex = true;
+       // QueryParams.bReturnPhysicalMaterial = true;
+
+        //const FVector TraceEnd = TraceStart + TraceDirection * 25.0f;
+
+
+        // Drawing a line trace based on the parameters calculated previously 
+        //if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_GameTraceChannel1, QueryParams))
+           // FinalDamage = 25.0f;
+
+        // Applying the previously set damage to the hit actor
+       // UGameplayStatics::ApplyPointDamage(HitActor, FinalDamage, TraceDirection, Hit,
+            //GetOwner()->GetInstigatorController(), this, DamageType);
+
+        //EndPoint = Hit.Location;
+
+        // Passing hit delegate to InventoryComponent
+        //AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+        //if (PlayerRef)
+        //{
+          //  UInventoryComponent* PlayerInventoryComp = PlayerRef->FindComponentByClass<UInventoryComponent>();
+           // if (IsValid(PlayerInventoryComp))
+            //{
+           //     PlayerInventoryComp->EventHitActor.Broadcast(Hit);
+           // }
+        //}
+        //const float AnimWaitTime = WeaponData.WeaponMelee->GetPlayLength();
+
+        //GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableMelee, AnimWaitTime, false, AnimWaitTime);
+    }
+}
+
+// Simple Reset Melee When Anim Is Done
+void AWeaponBase::EnableMelee() 
+{
+    AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+    PlayerRef->SetCanAim(true);
+    bIsReadyToMelee = true;
+    bCanReload = true;
+    bCanMelee = true;
 }

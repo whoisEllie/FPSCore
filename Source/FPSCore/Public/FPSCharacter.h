@@ -155,6 +155,12 @@ public:
 		return PlayerAnimSet;
 	}
 
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	bool CanAim() const { return bCanAim; }
+
+	UFUNCTION(BlueprintCallable, Category = "FPS Character")
+	void SetCanAim(bool NewCanAim) { bCanAim = NewCanAim; }
+
 	/** Returns the character's current input mapping context */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	UInputMappingContext* GetBaseMappingContext() const { return BaseMappingContext; }
@@ -546,6 +552,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input | Actions")
 	UInputAction* PauseAction;
+
+	UPROPERTY(EditDefaultsOnly,Category = "Input | Actions")
+	UInputAction* MeleeAction;
 
 	/** Input Mappings */
 
