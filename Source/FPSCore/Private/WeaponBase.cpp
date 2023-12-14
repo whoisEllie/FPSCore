@@ -782,44 +782,7 @@ void AWeaponBase::Melee()
 
         Melee();
 
-        //FVector EndPoint = TraceEnd;
-
         PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.WeaponMelee);
-
-        /** collision parameters for spawning the line trace */
-        //FCollisionQueryParams QueryParams;
-
-        //Sets the default values for our trace query
-        //QueryParams.AddIgnoredActor(this);
-       // QueryParams.bTraceComplex = true;
-       // QueryParams.bReturnPhysicalMaterial = true;
-
-        //const FVector TraceEnd = TraceStart + TraceDirection * 25.0f;
-
-
-        // Drawing a line trace based on the parameters calculated previously 
-        //if (GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_GameTraceChannel1, QueryParams))
-           // FinalDamage = 25.0f;
-
-        // Applying the previously set damage to the hit actor
-       // UGameplayStatics::ApplyPointDamage(HitActor, FinalDamage, TraceDirection, Hit,
-            //GetOwner()->GetInstigatorController(), this, DamageType);
-
-        //EndPoint = Hit.Location;
-
-        // Passing hit delegate to InventoryComponent
-        //AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
-        //if (PlayerRef)
-        //{
-          //  UInventoryComponent* PlayerInventoryComp = PlayerRef->FindComponentByClass<UInventoryComponent>();
-           // if (IsValid(PlayerInventoryComp))
-            //{
-           //     PlayerInventoryComp->EventHitActor.Broadcast(Hit);
-           // }
-        //}
-        //const float AnimWaitTime = WeaponData.WeaponMelee->GetPlayLength();
-
-        //GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableMelee, AnimWaitTime, false, AnimWaitTime);
     }
 }
 
