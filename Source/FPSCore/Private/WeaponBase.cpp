@@ -770,19 +770,18 @@ void AWeaponBase::HandleRecoveryProgress(float Value) const
 // Melee Event
 void AWeaponBase::Melee() 
 {
-    if (bCanMelee && bIsReadyToMelee && WeaponData.WeaponMelee)
+    if (bCanMelee && bIsReadyToMelee)
     {
-        bIsReadyToMelee = false;
         AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
         PlayerRef->SetCanAim(false);
         bCanFire = false;
         bCanReload = false;
-        bCanMelee = false;
-        const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-        Melee();
-
-        PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.WeaponMelee);
+        DisableMelee();
+        if (WeaponData.WeaponMelee)
+        {
+            const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+            PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.WeaponMelee);
+        }
     }
 }
 
@@ -794,4 +793,10 @@ void AWeaponBase::EnableMelee()
     bIsReadyToMelee = true;
     bCanReload = true;
     bCanMelee = true;
+}
+
+void AWeaponBase::DisableMelee()
+{
+    bCanMelee = false;
+    bIsReadyToMelee = false;
 }

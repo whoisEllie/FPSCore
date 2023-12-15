@@ -813,6 +813,9 @@ private:
 	UFUNCTION(BlueprintCallable, Category = "Default")
 	void EnableMelee();
 
+	UFUNCTION(BlueprintCallable, Category = "Default")
+	void DisableMelee();
+
 	/** Interpolates the player back to their initial view vector */
 	UFUNCTION()
 	void HandleRecoveryProgress(float Value) const;
