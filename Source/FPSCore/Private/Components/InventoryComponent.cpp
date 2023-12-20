@@ -3,12 +3,11 @@
 #include "Components/InventoryComponent.h"
 #include "EnhancedInputComponent.h"
 #include "FPSCharacterController.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "WeaponPickup.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
-#include "Camera/CameraComponent.h"
 #include "CharacterCore/CharacterCore.h"
 
 
@@ -68,7 +67,7 @@ void UInventoryComponent::BeginPlay()
 			if (StarterWeapons[i].WeaponClassRef != nullptr)
 			{
 				// Getting a reference to our Weapon Data table in order to see if we have attachments
-				const AWeaponBase* WeaponBaseReference = StarterWeapons[i].WeaponClassRef.GetDefaultObject();
+				const AWeapon* WeaponBaseReference = StarterWeapons[i].WeaponClassRef.GetDefaultObject();
 				if (StarterWeapons[i].WeaponDataTableRef && WeaponBaseReference)
 				{
 					if (const FStaticWeaponData* WeaponData = StarterWeapons[i].WeaponDataTableRef->FindRow<FStaticWeaponData>(
@@ -160,7 +159,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 }
 
 // Spawns a new weapon (either from weapon swap or picking up a new weapon)
-void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon, const int InventoryPosition, const bool bSpawnPickup,
+void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeapon> NewWeapon, const int InventoryPosition, const bool bSpawnPickup,
                                        const bool bStatic, const FTransform PickupTransform, const FRuntimeWeaponData DataStruct)
 {
     // Determining spawn parameters (forcing the weapon pickup to spawn at all times)
@@ -199,7 +198,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
         }
     }
     // Spawns the new weapon and sets the player as it's owner
-    AWeaponBase* SpawnedWeapon = GetWorld()->SpawnActor<AWeaponBase>(NewWeapon, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+    AWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(NewWeapon, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
     if (SpawnedWeapon)
     {
     	// Placing the new weapon at the correct location and finishing up it's initialisation

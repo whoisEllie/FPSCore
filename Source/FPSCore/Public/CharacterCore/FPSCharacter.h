@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "CharacterCore.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Components/InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"

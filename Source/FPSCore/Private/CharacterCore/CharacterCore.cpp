@@ -5,7 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FPSCharacterController.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"

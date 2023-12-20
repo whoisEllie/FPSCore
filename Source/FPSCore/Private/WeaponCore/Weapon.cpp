@@ -1,6 +1,6 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Animation/AnimationAsset.h"
 #include "Animation/AnimSequence.h"
 #include "Engine/Engine.h"
@@ -12,7 +12,7 @@
 #include "CharacterCore/CharacterCore.h"
 
 // Sets default values
-AWeaponBase::AWeaponBase()
+AWeapon::AWeapon()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,7 +47,7 @@ AWeaponBase::AWeaponBase()
 
 
 // Called when the game starts or when spawned
-void AWeaponBase::BeginPlay()
+void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -115,7 +115,7 @@ void AWeaponBase::BeginPlay()
 
 
 
-void AWeaponBase::SpawnAttachments()
+void AWeapon::SpawnAttachments()
 {
     if (WeaponData.bHasAttachments)
     {
@@ -189,12 +189,12 @@ void AWeaponBase::SpawnAttachments()
     }
 }
 
-void AWeaponBase::StartFire()
+void AWeapon::StartFire()
 { 
     if (bCanFire)
     {
         // sets a timer for firing the weapon - if bAutomaticFire is true then this timer will repeat until cleared by StopFire(), leading to fully automatic fire
-        GetWorldTimerManager().SetTimer(ShotDelay, this, &AWeaponBase::Fire, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
+        GetWorldTimerManager().SetTimer(ShotDelay, this, &AWeapon::Fire, (60 / WeaponData.RateOfFire), WeaponData.bAutomaticFire, 0.0f);
 
         if (bShowDebug)
         {
@@ -207,7 +207,7 @@ void AWeaponBase::StartFire()
     
 }
 
-void AWeaponBase::StartRecoil()
+void AWeapon::StartRecoil()
 {
     const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     const AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
@@ -222,18 +222,18 @@ void AWeaponBase::StartRecoil()
     }
 }
 
-void AWeaponBase::EnableFire()
+void AWeapon::EnableFire()
 {
     // Fairly self explanatory - allows the weapon to fire again after waiting for an animation to finish or finishing a reload
     bCanFire = true;
 }
 
-void AWeaponBase::ReadyToFire()
+void AWeapon::ReadyToFire()
 {
     bIsWeaponReadyToFire = true;
 }
 
-void AWeaponBase::StopFire()
+void AWeapon::StopFire()
 {
     // Stops the gun firing (for automatic fire)
     VerticalRecoilTimeline.Stop();
@@ -247,12 +247,12 @@ void AWeaponBase::StopFire()
         bIsWeaponReadyToFire = false;
         GetWorldTimerManager().ClearTimer(SpamFirePreventionDelay);
         //GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::SanitizeFloat(GetWorldTimerManager().GetTimerRemaining(ShotDelay)));
-        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeaponBase::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
+        GetWorldTimerManager().SetTimer(SpamFirePreventionDelay, this, &AWeapon::ReadyToFire, GetWorldTimerManager().GetTimerRemaining(ShotDelay), false, GetWorldTimerManager().GetTimerRemaining(ShotDelay));
     }
     GetWorldTimerManager().ClearTimer(ShotDelay);
 }
 
-void AWeaponBase::Fire()
+void AWeapon::Fire()
 {    
     // Allowing the gun to fire if it has ammunition, is not reloading and the bCanFire variable is true
     if(bCanFire && bIsWeaponReadyToFire && GeneralWeaponData.ClipSize > 0 && !bIsReloading)
@@ -310,7 +310,7 @@ void AWeaponBase::Fire()
                     // Preventing the player from firing the weapon until the animation finishes playing 
                     const float AnimWaitTime = WeaponData.Gun_Shot->GetPlayLength();
                     bCanFire = false;
-                    GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
+                    GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeapon::EnableFire, AnimWaitTime, false, AnimWaitTime);
                 }
             }
 
@@ -491,7 +491,7 @@ void AWeaponBase::Fire()
     
 }
 
-void AWeaponBase::Recoil()
+void AWeapon::Recoil()
 {
     const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
@@ -512,7 +512,7 @@ void AWeaponBase::Recoil()
     GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(WeaponData.RecoilCameraShake);  
 }
 
-void AWeaponBase::RecoilRecovery()
+void AWeapon::RecoilRecovery()
 {
     // Plays the recovery timeline
     if (bShouldRecover)
@@ -522,7 +522,7 @@ void AWeaponBase::RecoilRecovery()
 }
 
 
-bool AWeaponBase::Reload()
+bool AWeapon::Reload()
 {
     if (!bCanReload)
     {
@@ -592,14 +592,14 @@ bool AWeaponBase::Reload()
             bIsReloading = true;
 
             // Starting the timer alongside the animation of the weapon reloading, casting to UpdateAmmo when it finishes
-            GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeaponBase::UpdateAmmo, AnimTime, false, AnimTime);
+            GetWorldTimerManager().SetTimer(ReloadingDelay, this, &AWeapon::UpdateAmmo, AnimTime, false, AnimTime);
         }
     }
 
     return true;
 }
 
-void AWeaponBase::UpdateAmmo()
+void AWeapon::UpdateAmmo()
 { 
     // Printing debug strings
     if(bShowDebug)
@@ -665,7 +665,7 @@ void AWeaponBase::UpdateAmmo()
 
 
 // Called every frame
-void AWeaponBase::Tick(float DeltaTime)
+void AWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
         
@@ -682,7 +682,7 @@ void AWeaponBase::Tick(float DeltaTime)
 }
 
 // Recovering the player's recoil to the pre-fired position
-void AWeaponBase::HandleRecoveryProgress(float Value) const
+void AWeapon::HandleRecoveryProgress(float Value) const
 {
     // Getting a reference to the Character Controller
     const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));

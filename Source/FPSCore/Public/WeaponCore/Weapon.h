@@ -9,9 +9,9 @@
 #include "GameFramework/Actor.h"
 #include "WeaponCore/WeaponInterface.h"
 #include "Helpers/GlobalCharacterAnimStruct.h"
-#include "WeaponBase.generated.h"
+#include "Weapon.generated.h"
 
-class AWeaponBase;
+class AWeapon;
 class USkeletalMeshComponent;
 class USkeletalMesh;
 class UStaticMesh;
@@ -60,7 +60,7 @@ struct FRuntimeWeaponData
 
 	/** A reference to the weapon class of the given weapon */
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
-	TSubclassOf<AWeaponBase> WeaponClassReference;
+	TSubclassOf<AWeapon> WeaponClassReference;
 
 	/** The maximum size of the player's magazine */
 	UPROPERTY(BlueprintReadOnly, Category = "Weapon Data")
@@ -515,7 +515,7 @@ struct FStaticWeaponData : public FTableRowBase
 };
 
 UCLASS()
-class FPSCORE_API AWeaponBase : public AActor, public IWeaponInterface
+class FPSCORE_API AWeapon : public AActor, public IWeaponInterface
 {
 	GENERATED_BODY()
 
@@ -634,7 +634,7 @@ private:
 #pragma region FUNCTIONS
 	
 	/** Sets default values for this actor's properties */
-	AWeaponBase();
+	AWeapon();
 	
 	/** Spawns the line trace that deals damage and applies sound/visual effects */
 	void Fire();	

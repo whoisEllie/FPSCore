@@ -7,7 +7,7 @@
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Components/InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
@@ -103,8 +103,6 @@ public:
 	/** Returns the character's current movement state */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
 	EMovementState GetMovementState() const { return MovementState; }
-
-
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")

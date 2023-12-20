@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "GameFramework/PlayerController.h"
 #include "FPSCharacterController.generated.h"
 

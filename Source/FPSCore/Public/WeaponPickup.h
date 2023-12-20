@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractionActor.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "WeaponPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -30,7 +30,7 @@ public:
 	void SetRuntimeSpawned(const bool bNewRuntimeSpawned) { bRuntimeSpawned = bNewRuntimeSpawned; }
 
 	/** Set the weapon class that this pickup corresponds to */
-	void SetWeaponReference(const TSubclassOf<AWeaponBase> NewWeaponReference) { WeaponReference = NewWeaponReference; }
+	void SetWeaponReference(const TSubclassOf<AWeapon> NewWeaponReference) { WeaponReference = NewWeaponReference; }
 
 	/** Set the cached data struct that this weapon pickup hold */
 	void SetCacheDataStruct(const FRuntimeWeaponData* NewDataStruct) { DataStruct = *NewDataStruct; }
@@ -58,7 +58,7 @@ private:
 
 	/** Weapon to spawn when picked up */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AWeaponBase> WeaponReference;
+	TSubclassOf<AWeapon> WeaponReference;
 
 	/** Local weapon data struct to keep track of ammo amounts and weapon health */
 	UPROPERTY()

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractionBase.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "AmmoPickup.generated.h"
 
 class UStaticMeshComponent;

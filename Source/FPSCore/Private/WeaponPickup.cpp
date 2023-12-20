@@ -3,7 +3,7 @@
 #include "WeaponPickup.h"
 
 #include "CharacterCore/CharacterCore.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -66,7 +66,7 @@ void AWeaponPickup::OnConstruction(const FTransform& Transform)
 void AWeaponPickup::SpawnAttachmentMesh()
 {
 	// Getting a reference to our Weapon Data table in order to see if we have attachments
-	const AWeaponBase* WeaponBaseReference =  WeaponReference.GetDefaultObject();
+	const AWeapon* WeaponBaseReference =  WeaponReference.GetDefaultObject();
 	if (WeaponDataTable && WeaponBaseReference)
 	{
 		if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))

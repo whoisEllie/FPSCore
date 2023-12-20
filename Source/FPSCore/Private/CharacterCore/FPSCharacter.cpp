@@ -2,7 +2,7 @@
 
 #include "CharacterCore/FPSCharacter.h"
 #include "DrawDebugHelpers.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InventoryComponent.h"

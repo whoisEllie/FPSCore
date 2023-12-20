@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
-#include "WeaponBase.h"
+#include "WeaponCore/Weapon.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -35,7 +35,7 @@ USTRUCT()
 struct FStarterWeaponData
 {
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	TSubclassOf<AWeaponBase> WeaponClassRef;
+	TSubclassOf<AWeapon> WeaponClassRef;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTableRef;
@@ -75,7 +75,7 @@ public:
 	 * @param PickupTransform The position at which to spawn the new pickup, in the case that it is static (bStatic)
 	 * @param DataStruct The FRuntimeWeaponData struct for the newly equipped weapon
 	 */
-	void UpdateWeapon(TSubclassOf<AWeaponBase> NewWeapon, int InventoryPosition, bool bSpawnPickup,
+	void UpdateWeapon(TSubclassOf<AWeapon> NewWeapon, int InventoryPosition, bool bSpawnPickup,
 						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
 
 	/** Returns the number of weapon slots */
@@ -85,17 +85,17 @@ public:
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
 
 	/** Returns the map of currently equipped weapons */
-	TMap<int, AWeaponBase*> GetEquippedWeapons() const { return EquippedWeapons; }
+	TMap<int, AWeapon*> GetEquippedWeapons() const { return EquippedWeapons; }
 	
 	/** Returns an equipped weapon
 	 *	@param WeaponID The ID of the weapon to get
 	 *	@return The weapon with the given ID
 	 */
-	AWeaponBase* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
+	AWeapon* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
 
 	/** Returns the current weapon equipped by the player */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
-	AWeaponBase* GetCurrentWeapon() const {return CurrentWeapon; }
+	AWeapon* GetCurrentWeapon() const {return CurrentWeapon; }
 
 	/**  Returns the amount of ammunition currently loaded into the weapon */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -161,6 +161,9 @@ public:
 	UInputAction* InspectWeaponAction;
 
 private:
+	
+
+	//TODO: Start converting these over to accept generic Actors that include the weapon interface
 
 	/** Spawns starter weapons */
 	virtual void BeginPlay() override;
@@ -223,11 +226,11 @@ private:
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	UPROPERTY()
-	TMap<int, AWeaponBase*> EquippedWeapons;
+	TMap<int, AWeapon*> EquippedWeapons;
 
 	/** The player's currently equipped weapon */
 	UPROPERTY()
-	AWeaponBase* CurrentWeapon;
+	AWeapon* CurrentWeapon;
 
 	FTimerHandle ReloadRetry;
 
