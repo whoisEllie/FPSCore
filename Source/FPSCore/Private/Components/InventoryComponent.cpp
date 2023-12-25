@@ -11,11 +11,6 @@
 #include "CharacterCore/CharacterCore.h"
 
 
-// Sets default values for this component's properties
-UInventoryComponent::UInventoryComponent()
-{
-}
-
 // Swapping weapons with the scroll wheel
 void UInventoryComponent::ScrollWeapon(const FInputActionValue& Value)
 {
@@ -135,7 +130,10 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     {
         CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
         CurrentWeapon->SetActorHiddenInGame(true);
-        CurrentWeapon->StopFire();
+		if (CurrentWeapon->GetClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
+		{
+			 Cast<IWeaponInterface>(CurrentWeapon)->StopAttack();
+		}
     }
 
 	// Swapping to the new weapon, enabling it and playing it's equip animation
@@ -159,9 +157,11 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
 }
 
 // Spawns a new weapon (either from weapon swap or picking up a new weapon)
-void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeapon> NewWeapon, const int InventoryPosition, const bool bSpawnPickup,
-                                       const bool bStatic, const FTransform PickupTransform, const FRuntimeWeaponData DataStruct)
+void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, const int InventoryPosition, const bool bSpawnPickup,
+                                       const bool bStatic, const FTransform PickupTransform)
 {
+
+	
     // Determining spawn parameters (forcing the weapon pickup to spawn at all times)
     FActorSpawnParameters SpawnParameters;
     SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -181,8 +181,10 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeapon> NewWeapon, con
             const FVector TraceDirection = TraceStartRotation.Vector();
             const FVector TraceEnd = TraceStart + TraceDirection * WeaponSpawnDistance;
 
+			IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon); 
+
             // Spawning the new pickup
-            AWeaponPickup* NewPickup = GetWorld()->SpawnActor<AWeaponPickup>(CurrentWeapon->GetStaticWeaponData()->PickupReference, TraceEnd, FRotator::ZeroRotator, SpawnParameters);
+            AWeaponPickup* NewPickup = GetWorld()->SpawnActor<AWeaponPickup>(CurrentWeaponInterface->PickupReference, TraceEnd, FRotator::ZeroRotator, SpawnParameters);
             if (bStatic)
             {
                 NewPickup->GetMainMesh()->SetSimulatePhysics(false);
@@ -192,23 +194,21 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeapon> NewWeapon, con
             NewPickup->SetStatic(bStatic);
             NewPickup->SetRuntimeSpawned(true);
             NewPickup->SetWeaponReference(EquippedWeapons[InventoryPosition]->GetClass());
-            NewPickup->SetCacheDataStruct(EquippedWeapons[InventoryPosition]->GetRuntimeWeaponData());
             NewPickup->SpawnAttachmentMesh();
             EquippedWeapons[InventoryPosition]->Destroy();
         }
     }
     // Spawns the new weapon and sets the player as it's owner
-    AWeapon* SpawnedWeapon = GetWorld()->SpawnActor<AWeapon>(NewWeapon, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+    AActor* SpawnedWeapon = GetWorld()->SpawnActor<AActor>(WeaponActor, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
+	IWeaponInterface* NewWeapon = Cast<IWeaponInterface>(SpawnedWeapon);	
     if (SpawnedWeapon)
     {
     	// Placing the new weapon at the correct location and finishing up it's initialisation
         SpawnedWeapon->SetOwner(GetOwner());
     	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     	{
-    		SpawnedWeapon->AttachToComponent(Character->GetMainAnimationMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SpawnedWeapon->GetStaticWeaponData()->WeaponAttachmentSocketName);
+    		SpawnedWeapon->AttachToComponent(Character->GetMainAnimationMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, NewWeapon->WeaponAttachmentSocketName);
     	}
-        SpawnedWeapon->SetRuntimeWeaponData(DataStruct);
-        SpawnedWeapon->SpawnAttachments();
         EquippedWeapons.Add(InventoryPosition, SpawnedWeapon);
 
 		// Disabling the currently equipped weapon, if it exists
@@ -216,7 +216,10 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeapon> NewWeapon, con
         {
             CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
             CurrentWeapon->SetActorHiddenInGame(true);
-        	CurrentWeapon->StopFire();
+			if (CurrentWeapon->GetClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
+			{
+				Cast<IWeaponInterface>(CurrentWeapon)->StopAttack();
+			}
         }
 
     	
@@ -246,12 +249,13 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 	if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 	{
 		AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
+		IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon); 
 
 		if (CharacterController)	
 		{
 			if (CurrentWeapon != nullptr)
 			{
-				return FText::AsNumber(CharacterController->AmmoMap[CurrentWeapon->GetRuntimeWeaponData()->AmmoType]);
+				return FText::AsNumber(CharacterController->AmmoMap[CurrentWeaponInterface->AmmoType]);
 			}
 			UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
 			return FText::AsNumber(0);
@@ -266,75 +270,70 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 // Passing player inputs to WeaponBase
 void UInventoryComponent::StartFire()
 {
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->StartFire();
-    }
+	IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+	WeaponInterface->Attack();
 }
 
 // Passing player inputs to WeaponBase
 void UInventoryComponent::StopFire()
 {
-    if (CurrentWeapon)
-    {
-        CurrentWeapon->StopFire();
-    }
+	IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+	WeaponInterface->StopAttack();
 }
 
 // Passing player inputs to WeaponBase
 void UInventoryComponent::Reload()
 {
-    if (CurrentWeapon)
-    {
-	    if (CurrentWeapon->GetClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
-	    {
-		    if (!(Cast<IWeaponInterface>(CurrentWeapon)->Reload()))
-		    {
-			    switch (ReloadFailedBehaviour)
-			    {
-			    case EReloadFailedBehaviour::Retry:
-				    {
-					    GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
-					    break;
-				    }
+	if (IWeaponInterface* WeaponInterface = Cast<IWeaponInterface>(CurrentWeapon))
+	{
+		if (!WeaponInterface->Reload())
+		{
+			switch (ReloadFailedBehaviour)
+			{
+				case EReloadFailedBehaviour::Retry:
+					   {
+								GetWorld()->GetTimerManager().SetTimer(ReloadRetry, this, &UInventoryComponent::Reload, 0.1f, false, 0.1f);
+								break;
+					   }
 
-			    case EReloadFailedBehaviour::ChangeState:
-				    {
-					    ACharacterCore* Character = Cast<ACharacterCore>(GetOwner());
-					    Character->UpdateMovementState(EMovementState::State_Walk);
-					    Reload();
-					    break;
-				    }
+				case EReloadFailedBehaviour::ChangeState:
+					   {
+								ACharacterCore* Character = Cast<ACharacterCore>(GetOwner());
+								Character->UpdateMovementState(EMovementState::State_Walk);
+								Reload();
+								break;
+					   }
 
-			    case EReloadFailedBehaviour::HandleInBP:
-				    {
-					    EventFailedToReload.Broadcast();	
-					    break;
-				    }
+				case EReloadFailedBehaviour::HandleInBP:
+					   {
+								EventFailedToReload.Broadcast();	
+								break;
+					   }
 
-			    case EReloadFailedBehaviour::Ignore:
-				    {
-					    // Ignoring it, obviously :)
-					    break;
-				    }
+				case EReloadFailedBehaviour::Ignore:
+					   {
+								// Ignoring it, obviously :)
+								break;
+					   }
 
-			    default: { break; }
-			    } 
-		    }
-	    }
-    }
+				default: { break; }
+			} 
+		}
+	}	
 }
 
 void UInventoryComponent::Inspect()
 {
 	if (CurrentWeapon)
 	{
-		if (CurrentWeapon->GetStaticWeaponData()->WeaponInspect && CurrentWeapon->GetStaticWeaponData()->HandsInspect)
+		IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+		
+		if (CurrentWeaponInterface->Animations.Weapon.Inspect  && CurrentWeapon->Animations.Hands.Inspect)
 		{
 			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->HandsInspect, 1.0f);
-				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponInspect, 1.0f);
+				Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Inspect, 1.0f);
+				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Weapon.Inspect, 1.0f);
 			}
 		}
 	}
@@ -344,11 +343,13 @@ void UInventoryComponent::HandleUnequip()
 {
 	if (CurrentWeapon)
 	{
-		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+		IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+		
+		if (CurrentWeaponInterface->Animations.Hands.Unequip)
 		{
 			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponUnequip, 1.0f);
+				float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Unequip, 1.0f);
 				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	

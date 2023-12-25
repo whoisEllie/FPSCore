@@ -9,17 +9,13 @@ void IWeaponInterface::Attack()
 {
 }
 
-void IWeaponInterface::StartAttack()
-{
-}
-
 void IWeaponInterface::StopAttack()
 {
 }
 
 bool IWeaponInterface::Reload()
 {
-	return false;
+	return true;
 }
 
 void IWeaponInterface::Inspect()

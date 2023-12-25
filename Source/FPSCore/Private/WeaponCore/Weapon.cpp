@@ -189,7 +189,7 @@ void AWeapon::SpawnAttachments()
     }
 }
 
-void AWeapon::StartFire()
+void AWeapon::StartAttack()
 { 
     if (bCanFire)
     {
@@ -233,7 +233,7 @@ void AWeapon::ReadyToFire()
     bIsWeaponReadyToFire = true;
 }
 
-void AWeapon::StopFire()
+void AWeapon::StopAttack()
 {
     // Stops the gun firing (for automatic fire)
     VerticalRecoilTimeline.Stop();

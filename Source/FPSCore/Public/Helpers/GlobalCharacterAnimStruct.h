@@ -8,42 +8,62 @@
 
 /** A struct containing all the animations needed by FPS Core, in order to simplify blueprint operations */
 USTRUCT(BlueprintType)
-struct FFPSHandsAnimSet
+struct FHandAnimations 
 {
 	GENERATED_BODY()
 
 	/** The walking BlendSpace */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UBlendSpace* BS_Walk;
+	UBlendSpace* Walk;
 
 	/** The ADS Walking BlendSpace */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UBlendSpace* BS_Ads_Walk;
+	UBlendSpace* Ads_Walk;
 
 	/** The Idle animation sequence */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Idle;
+	UAnimSequence* Idle;
 
 	/** The ADS Idle animation sequence */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Ads_Idle;
+	UAnimSequence* Ads_Idle;
 	
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Jump_Start;
+	UAnimSequence* Jump_Start;
 
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Jump_End;
+	UAnimSequence* Jump_End;
 
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Fall;
+	UAnimSequence* Fall;
 
 	/** The sprinting animation sequence */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Anim_Sprint;
+	UAnimSequence* Sprint;
 
+	/** The weapon's reload animation */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimationAsset* Reload;
+
+	/** The reload animation for when the weapon is empty */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimationAsset* EmptyReload;
+	
+	/** The animation to play when inspecting the weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Inspect;
+	
+	/** The animation to play when equipping this weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Equip;
+
+	/** The animation to play when unequipping this weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Unequip;
+	
 	/** Custom user animations */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TMap<FString, UAnimSequence*> CustomAnimations;
@@ -52,6 +72,56 @@ struct FFPSHandsAnimSet
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TMap<FString, UBlendSpace*> CustomBlendSpaces;
 };
+
+USTRUCT(BlueprintType)
+struct FWeaponAnimations
+{
+	/** The weapon's reload animation */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimationAsset* Reload;
+
+	/** The reload animation for when the weapon is empty */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimationAsset* EmptyReload;
+	
+	/** The animation to play when inspecting the weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Inspect;
+
+	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimSequence* Gun_Shot;
+	
+	/** The animation to play when equipping this weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Equip;
+
+	/** The animation to play when unequipping this weapon */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UAnimMontage* Unequip;
+	
+	/** Custom user animations */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TMap<FString, UAnimSequence*> CustomAnimations;
+	
+	/** Custom user animations */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TMap<FString, UBlendSpace*> CustomBlendSpaces;
+};
+
+USTRUCT()
+struct FFPSCoreAnimations
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	FWeaponAnimations Weapon;
+
+	UPROPERTY(BlueprintReadOnly)
+	FHandAnimations Hands;
+};
+
+
 
 UCLASS()
 class FPSCORE_API UGlobalCharacterAnimStruct : public UObject

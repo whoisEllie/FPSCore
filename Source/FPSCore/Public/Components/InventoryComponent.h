@@ -44,10 +44,6 @@ struct FStarterWeaponData
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* AttachmentsDataTable;
 
-	/** Local weapon data struct to keep track of ammo amounts and weapon health */
-	UPROPERTY()
-	FRuntimeWeaponData DataStruct;
-
 	/** The array of attachments to spawn (usually inherited, can be set by instance) */
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	TArray<FName> AttachmentArrayOverrideRef;
@@ -61,9 +57,6 @@ class FPSCORE_API UInventoryComponent final : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	/** Sets default values for this component's properties */
-	UInventoryComponent();
-
 	/** Called to bind functionality to input */
 	void SetupInputComponent(class UEnhancedInputComponent* PlayerInputComponent);
 
@@ -73,10 +66,9 @@ public:
 	 * @param bSpawnPickup Whether to spawn a pickup of CurrentWeapon (can be false if player has an empty weapon slot)
 	 * @param bStatic Whether the spawned pickup should be static or run a physics simulation
 	 * @param PickupTransform The position at which to spawn the new pickup, in the case that it is static (bStatic)
-	 * @param DataStruct The FRuntimeWeaponData struct for the newly equipped weapon
 	 */
-	void UpdateWeapon(TSubclassOf<AWeapon> NewWeapon, int InventoryPosition, bool bSpawnPickup,
-						  bool bStatic, FTransform PickupTransform, FRuntimeWeaponData DataStruct);
+	void UpdateWeapon(TSubclassOf<AActor> NewWeapon, int InventoryPosition, bool bSpawnPickup,
+						  bool bStatic, FTransform PickupTransform);
 
 	/** Returns the number of weapon slots */
 	int GetNumberOfWeaponSlots() const { return NumberOfWeaponSlots; }
@@ -85,13 +77,13 @@ public:
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
 
 	/** Returns the map of currently equipped weapons */
-	TMap<int, AWeapon*> GetEquippedWeapons() const { return EquippedWeapons; }
+	TMap<int, AActor*> GetEquippedWeapons() const { return EquippedWeapons; }
 	
 	/** Returns an equipped weapon
 	 *	@param WeaponID The ID of the weapon to get
 	 *	@return The weapon with the given ID
 	 */
-	AWeapon* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
+	AActor* GetWeaponByID(const int WeaponID) const { return EquippedWeapons[WeaponID]; }
 
 	/** Returns the current weapon equipped by the player */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -103,7 +95,8 @@ public:
 	{
 		if (CurrentWeapon != nullptr)
 		{
-			return FText::AsNumber(CurrentWeapon->GetRuntimeWeaponData()->ClipSize);
+			return FText::AsNumber(0);
+			//return FText::AsNumber();
 		}
 		UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
 		return FText::FromString("0");
@@ -118,7 +111,8 @@ public:
 	{
 		if (CurrentWeapon != nullptr)
 		{
-			return CurrentWeapon->GetStaticWeaponData()->WeaponName;
+			return FName("NULL");
+			//return CurrentWeapon->GetStaticWeaponData()->WeaponName;
 		}
 		UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
 		return TEXT("Currentweapon is nullptr!");
@@ -129,7 +123,8 @@ public:
 	{
 		if (CurrentWeapon != nullptr)
 		{
-			return CurrentWeapon->GetStaticWeaponData()->WeaponIcon;
+			return nullptr;
+			//return CurrentWeapon->GetStaticWeaponData()->WeaponIcon;
 		}
 		UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
 		return nullptr;
@@ -162,9 +157,6 @@ public:
 
 private:
 	
-
-	//TODO: Start converting these over to accept generic Actors that include the weapon interface
-
 	/** Spawns starter weapons */
 	virtual void BeginPlay() override;
 
@@ -226,7 +218,7 @@ private:
 
 	/** A Map storing the player's current weapons and the slot that they correspond to */
 	UPROPERTY()
-	TMap<int, AWeapon*> EquippedWeapons;
+	TMap<int, AActor*> EquippedWeapons;
 
 	/** The player's currently equipped weapon */
 	UPROPERTY()
