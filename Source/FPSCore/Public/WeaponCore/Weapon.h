@@ -8,7 +8,6 @@
 #include "Engine/DataTable.h"
 #include "GameFramework/Actor.h"
 #include "WeaponCore/WeaponInterface.h"
-#include "Helpers/GlobalCharacterAnimStruct.h"
 #include "Weapon.generated.h"
 
 class AWeapon;
@@ -54,7 +53,7 @@ public:
 	virtual bool Reload() override;
 
 	/** Connects this weapon to the weapon interface */
-	virtual void StartAttack() override;
+	virtual void Attack() override;
 	virtual void StopAttack() override;
 
 	/** Spawns the weapons attachments and applies their data/modifications to the weapon's statistics */ 

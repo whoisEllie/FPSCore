@@ -189,7 +189,7 @@ void AWeapon::SpawnAttachments()
     }
 }
 
-void AWeapon::StartAttack()
+void AWeapon::Attack()
 { 
     if (bCanFire)
     {

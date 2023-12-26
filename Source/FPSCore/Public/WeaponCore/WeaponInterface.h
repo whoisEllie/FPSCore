@@ -5,9 +5,8 @@
 #include "CoreMinimal.h"
 #include "AmmoType.h"
 #include "WeaponPickup.h"
+#include "Helpers/Animations.h"
 #include "UObject/Interface.h"
-#include "WeaponCore/WeaponData.h"
-#include "Helpers/GlobalCharacterAnimStruct.h"
 #include "WeaponInterface.generated.h"
 
 // This class does not need to be modified.
@@ -40,18 +39,14 @@ public:
 	virtual void Inspect();
 	
 	/** Determines the socket or bone with which the weapon will be attached to the character's hand (typically the root bone or the grip bone) */
-	UPROPERTY()
 	FName WeaponAttachmentSocketName;
 
 	/** The Ammo Type to use for this weapon */
-	UPROPERTY()
 	UAmmoType AmmoType;
 	
 	/** Pickup reference */
-	UPROPERTY()
 	TSubclassOf<AWeaponPickup> PickupReference;
 
 	/** Declares the animations  */
-	UPROPERTY()
 	FFPSCoreAnimations Animations;
 };

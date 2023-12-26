@@ -55,7 +55,7 @@ void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (int i = 0; i < NumberOfWeaponSlots; ++i)
+	/*for (int i = 0; i < NumberOfWeaponSlots; ++i)
 	{
 		if (StarterWeapons.IsValidIndex(i))
 		{
@@ -106,7 +106,7 @@ void UInventoryComponent::BeginPlay()
 				UpdateWeapon(StarterWeapons[i].WeaponClassRef, i, false, false, GetOwner()->GetActorTransform(), StarterWeapons[i].DataStruct);
 			}
 		}
-	}
+	} */
 }
 
 void UInventoryComponent::SwapWeapon(const int SlotId)
@@ -173,7 +173,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, co
         	FVector TraceStart = FVector::ZeroVector;
         	FRotator TraceStartRotation = FRotator::ZeroRotator;
         	
-        	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
+        	if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
         	{
         		TraceStart = Character->GetLookOriginComponent()->GetComponentLocation();
         		TraceStartRotation = Character->GetLookOriginComponent()->GetComponentRotation();
@@ -181,7 +181,7 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, co
             const FVector TraceDirection = TraceStartRotation.Vector();
             const FVector TraceEnd = TraceStart + TraceDirection * WeaponSpawnDistance;
 
-			IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon); 
+			const IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon); 
 
             // Spawning the new pickup
             AWeaponPickup* NewPickup = GetWorld()->SpawnActor<AWeaponPickup>(CurrentWeaponInterface->PickupReference, TraceEnd, FRotator::ZeroRotator, SpawnParameters);
@@ -200,12 +200,12 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, co
     }
     // Spawns the new weapon and sets the player as it's owner
     AActor* SpawnedWeapon = GetWorld()->SpawnActor<AActor>(WeaponActor, FVector::ZeroVector, FRotator::ZeroRotator, SpawnParameters);
-	IWeaponInterface* NewWeapon = Cast<IWeaponInterface>(SpawnedWeapon);	
+	const IWeaponInterface* NewWeapon = Cast<IWeaponInterface>(SpawnedWeapon);	
     if (SpawnedWeapon)
     {
     	// Placing the new weapon at the correct location and finishing up it's initialisation
         SpawnedWeapon->SetOwner(GetOwner());
-    	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
+    	if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     	{
     		SpawnedWeapon->AttachToComponent(Character->GetMainAnimationMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, NewWeapon->WeaponAttachmentSocketName);
     	}
@@ -326,11 +326,11 @@ void UInventoryComponent::Inspect()
 {
 	if (CurrentWeapon)
 	{
-		IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+		const IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
 		
 		if (CurrentWeaponInterface->Animations.Weapon.Inspect  && CurrentWeapon->Animations.Hands.Inspect)
 		{
-			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
+			if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
 				Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Inspect, 1.0f);
 				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Weapon.Inspect, 1.0f);
@@ -343,13 +343,13 @@ void UInventoryComponent::HandleUnequip()
 {
 	if (CurrentWeapon)
 	{
-		IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
+		const IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
 		
 		if (CurrentWeaponInterface->Animations.Hands.Unequip)
 		{
-			if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
+			if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Unequip, 1.0f);
+				const float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Unequip, 1.0f);
 				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	

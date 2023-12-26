@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "GlobalCharacterAnimStruct.generated.h"
+#include "Animations.generated.h"
 
 /** A struct containing all the animations needed by FPS Core, in order to simplify blueprint operations */
 USTRUCT(BlueprintType)
@@ -76,6 +76,8 @@ struct FHandAnimations
 USTRUCT(BlueprintType)
 struct FWeaponAnimations
 {
+	GENERATED_BODY()
+	
 	/** The weapon's reload animation */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UAnimationAsset* Reload;
