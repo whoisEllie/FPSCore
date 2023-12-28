@@ -31,7 +31,10 @@ public:
 
 	FFPSCoreAnimations Animations;
 
-	FRequiredWeaponData WeaponData;
+
+	/** The mains skeletal mesh used for the weapon model */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USkeletalMeshComponent* MeshComp;
 
 protected:
 	// Called when the game starts or when spawned
@@ -42,6 +45,12 @@ protected:
 	bool bShowDebug;
 
 	FTimerHandle ShotDelay;
+
+	FRotator ControlRotation;
+
+	FTimeline VerticalRecoilTimeline;
+
+	FTimeline HorizontalRecoilTimeline;
 
 public:
 	// Called every frame
