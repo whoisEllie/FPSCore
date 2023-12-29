@@ -109,6 +109,14 @@ struct FMagazineData
 	/** The increase in shot variation when the player is not aiming down the sights */
 	UPROPERTY(EditDefaultsOnly)
 	float AccuracyDebuff = 1.25f;
+	
+	/** The pitch variation applied to the bullet as it leaves the barrel */
+	UPROPERTY(EditDefaultsOnly)
+	float WeaponPitchVariation;
+	
+	/** The yaw variation applied to the bullet as it leaves the barrel */
+	UPROPERTY(EditDefaultsOnly)
+	float WeaponYawVariation;
 };
 
 USTRUCT(BlueprintType)
@@ -168,6 +176,8 @@ struct FLineTraceWeaponData
 {
 	GENERATED_BODY()
 
+	FGeneralData General;
+
 	FBarrelData Barrel;
 
 	FFiringMechanismData FiringMechanism;
@@ -185,6 +195,8 @@ USTRUCT(BlueprintType)
 struct FProjectileWeaponData 
 {
 	GENERATED_BODY()
+	
+	FGeneralData General;
 
 	FBarrelData Barrel;
 

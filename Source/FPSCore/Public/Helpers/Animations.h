@@ -92,7 +92,7 @@ struct FWeaponAnimations
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimSequence* Gun_Shot;
+	UAnimSequence* Gunshot;
 	
 	/** The animation to play when equipping this weapon */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)

@@ -9,6 +9,14 @@
 #include "WeaponCore/WeaponData.h"
 #include "LineTraceWeapon.generated.h"
 
+UENUM()
+enum EWeaponState
+{
+	Idle,
+	Firing,
+	Reloading
+};
+
 UCLASS()
 class FPSCORE_API ALineTraceWeapon : public AActor, public IWeaponInterface
 {
@@ -29,8 +37,11 @@ public:
 
 	void StartRecoil();
 
+	void EnableFire();
+
 	FFPSCoreAnimations Animations;
 
+	FLineTraceWeaponData WeaponData;
 
 	/** The mains skeletal mesh used for the weapon model */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -44,6 +55,10 @@ protected:
 
 	bool bShowDebug;
 
+	EWeaponState WeaponState;
+
+	int CurrentAmmoCount;	
+
 	FTimerHandle ShotDelay;
 
 	FRotator ControlRotation;
@@ -51,6 +66,8 @@ protected:
 	FTimeline VerticalRecoilTimeline;
 
 	FTimeline HorizontalRecoilTimeline;
+
+	TSubclassOf<UDamageType> DamageType;
 
 public:
 	// Called every frame
