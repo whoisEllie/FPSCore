@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "AmmoType.generated.h"
 
 /**
@@ -19,6 +18,8 @@ public:
 	FName GetDisplayName() const { return AmmoTypeName; }
 
 	FName GetDisplayCaliber() const { return Caliber; }
+
+	UTexture2D* GetDisplayIcon() const { return Icon; }
 
 private:
 

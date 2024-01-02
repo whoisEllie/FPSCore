@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "WeaponInterface.h"
-#include "Helpers/Debugs.h"
 #include "WeaponCore/WeaponData.h"
 #include "LineTraceWeapon.generated.h"
 
@@ -37,7 +36,13 @@ public:
 
 	void StartRecoil();
 
-	void EnableFire();
+	void EnableFire() { bCanFire = true; }
+
+	void Recoil();
+
+	void UpdateAmmo();
+
+	void HandleRecoveryProgress(float Value) const;
 
 	FFPSCoreAnimations Animations;
 
@@ -61,13 +66,19 @@ protected:
 
 	FTimerHandle ShotDelay;
 
+	FTimerHandle ReloadingDelay;
+
 	FRotator ControlRotation;
 
-	FTimeline VerticalRecoilTimeline;
-
-	FTimeline HorizontalRecoilTimeline;
+	FTimeline RecoilRecoveryTimeline;
 
 	TSubclassOf<UDamageType> DamageType;
+
+	int ShotCount;
+
+	UPROPERTY(EditDefaultsOnly)
+	float FallbackReloadTime;
+	
 
 public:
 	// Called every frame

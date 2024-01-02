@@ -4,6 +4,8 @@
 #include "WeaponCore/AmmoType.h"
 #include "CoreMinimal.h"
 
+class UNiagaraSystem;
+
 USTRUCT(BlueprintType)
 struct FGeneralData
 {
@@ -51,6 +53,9 @@ struct FBarrelData
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UCameraShakeBase> RecoilCameraShake;
 
+	UPROPERTY(EditDefaultsOnly)
+	TMap<UPhysicalMaterial*, UNiagaraSystem*> HitEffects;
+
 };
 
 USTRUCT()
@@ -86,6 +91,10 @@ struct FMagazineData
 	/** The horizontal recoil curve to be used with this weapon */
 	UPROPERTY(EditDefaultsOnly)
 	UCurveFloat* HorizontalRecoilCurve;
+	
+	/** The recoil recovery curve to be used with this weapon */
+	UPROPERTY(EditDefaultsOnly)
+	UCurveFloat* RecoilRecoveryCurve;
 
 	/** The type of ammunition stored in the magazine */
 	UAmmoType AmmoType;
@@ -109,6 +118,9 @@ struct FMagazineData
 	/** The increase in shot variation when the player is not aiming down the sights */
 	UPROPERTY(EditDefaultsOnly)
 	float AccuracyDebuff = 1.25f;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<UPhysicalMaterial*, float> DamageModifiers;
 	
 	/** The pitch variation applied to the bullet as it leaves the barrel */
 	UPROPERTY(EditDefaultsOnly)

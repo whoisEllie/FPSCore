@@ -7,10 +7,10 @@
 UENUM(BlueprintType)
 enum class EDebugSeverity : uint8
 {
+ Log,
  Low,
  Medium,
- High,
- Extreme
+ High
 };
 
 /**

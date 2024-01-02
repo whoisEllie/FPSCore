@@ -46,11 +46,11 @@ struct FHandAnimations
 
 	/** The weapon's reload animation */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimationAsset* Reload;
+	UAnimMontage* Reload;
 
 	/** The reload animation for when the weapon is empty */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UAnimationAsset* EmptyReload;
+	UAnimMontage* EmptyReload;
 	
 	/** The animation to play when inspecting the weapon */
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
@@ -111,7 +111,7 @@ struct FWeaponAnimations
 	TMap<FString, UBlendSpace*> CustomBlendSpaces;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FFPSCoreAnimations
 {
 	GENERATED_BODY()
