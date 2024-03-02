@@ -7,10 +7,10 @@
 #include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "InputMappingContext.h" // Rider may mark this as unused, but this is incorrect and removal will cause issues
-#include "WeaponCore/Weapon.h"
 #include "Components/InventoryComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
+#include "Helpers/Animations.h"
 #include "CharacterCore.generated.h"
 
 class UCameraComponent;
@@ -106,15 +106,15 @@ public:
 
 	/** Returns the character's empty-handed walking blend space */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UBlendSpace* GetEmptyWalkBlendSpace() const { return HandsAnimSet.BS_Walk; }
+	UBlendSpace* GetEmptyWalkBlendSpace() const { return HandsAnimSet.Walk; }
 
 	/** Returns the character's empty-handed idle animation */
 	UFUNCTION(BlueprintPure, Category = "FPS Character")
-	UAnimSequence* GetEmptyIdleAnim() const { return HandsAnimSet.Anim_Idle; }
+	UAnimSequence* GetEmptyIdleAnim() const { return HandsAnimSet.Idle; }
 
 	/** Returns the character's set of animations */
 	UFUNCTION(BlueprintPure, Category = "Weapon Base")
-	FFPSHandsAnimSet GetPlayerAnimations() const
+ 	FHandAnimations GetPlayerAnimations() const
 	{
 		return HandsAnimSet;
 	}
@@ -157,7 +157,7 @@ protected:
 	USceneComponent* LookOriginComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
-	FFPSHandsAnimSet HandsAnimSet;
+	FHandAnimations HandsAnimSet;
 
 	/** Hand montage, played during vault */
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")

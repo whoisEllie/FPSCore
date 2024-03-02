@@ -21,3 +21,8 @@ bool IWeaponInterface::Reload()
 void IWeaponInterface::Inspect()
 {
 }
+
+USkeletalMeshComponent* IWeaponInterface::GetMainMeshComponent()
+{
+	return nullptr;
+}

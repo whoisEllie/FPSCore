@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
-#include "WeaponCore/Weapon.h"
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
@@ -35,7 +34,7 @@ USTRUCT()
 struct FStarterWeaponData
 {
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
-	TSubclassOf<AWeapon> WeaponClassRef;
+	TSubclassOf<AActor> WeaponClassRef;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
 	UDataTable* WeaponDataTableRef;
@@ -87,7 +86,7 @@ public:
 
 	/** Returns the current weapon equipped by the player */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
-	AWeapon* GetCurrentWeapon() const {return CurrentWeapon; }
+	AActor* GetCurrentWeapon() const {return CurrentWeapon; }
 
 	/**  Returns the amount of ammunition currently loaded into the weapon */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
@@ -222,7 +221,7 @@ private:
 
 	/** The player's currently equipped weapon */
 	UPROPERTY()
-	AWeapon* CurrentWeapon;
+	AActor* CurrentWeapon;
 
 	FTimerHandle ReloadRetry;
 

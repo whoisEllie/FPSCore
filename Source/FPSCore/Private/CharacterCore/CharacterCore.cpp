@@ -5,7 +5,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FPSCharacterController.h"
-#include "WeaponCore/Weapon.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
@@ -113,8 +112,8 @@ void ACharacterCore::Look(const FInputActionValue& Value)
         if (Value.GetMagnitude() != 0.0f && InventoryComponent->GetCurrentWeapon())
         {
             // If movement is detected and we have a current weapon, make sure we don't recover the recoil
-            InventoryComponent->GetCurrentWeapon()->SetShouldRecover(false);
-            InventoryComponent->GetCurrentWeapon()->GetRecoilRecoveryTimeline()->Stop();
+            //InventoryComponent->GetCurrentWeapon()->SetShouldRecover(false);
+            //InventoryComponent->GetCurrentWeapon()->GetRecoilRecoveryTimeline()->Stop();
         }
     }
 }
@@ -515,8 +514,8 @@ void ACharacterCore::UpdateMovementState(const EMovementState NewMovementState)
         {
             if (InventoryComponent->GetCurrentWeapon())
             {
-                InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
-                InventoryComponent->GetCurrentWeapon()->SetCanReload(MovementDataMap[MovementState].bCanReload);
+                //InventoryComponent->GetCurrentWeapon()->SetCanFire(MovementDataMap[MovementState].bCanFire);
+                //InventoryComponent->GetCurrentWeapon()->SetCanReload(MovementDataMap[MovementState].bCanReload);
             }
         }
         GetCharacterMovement()->MaxAcceleration = MovementDataMap[MovementState].MaxAcceleration;
@@ -595,29 +594,6 @@ void ACharacterCore::Tick(const float DeltaTime)
 
     // Checks the floor angle to determine whether we should keep sliding or not
     CheckGroundAngle(DeltaTime);
-
-    if (bDrawDebug)
-    {
-        if (InventoryComponent)
-        {
-            for ( int Index = 0; Index < InventoryComponent->GetNumberOfWeaponSlots(); Index++ )
-            {
-                if (InventoryComponent->GetEquippedWeapons().Contains(Index))
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipSize));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipCapacity));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->WeaponHealth));
-                }
-                else
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                }
-                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
-            }
-        }
-    }
 }
 
 // Called to bind functionality to input

@@ -3,7 +3,6 @@
 #include "WeaponPickup.h"
 
 #include "CharacterCore/CharacterCore.h"
-#include "WeaponCore/Weapon.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -31,11 +30,6 @@ void AWeaponPickup::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AttachmentArrayOverride.Num() > 0)
-	{
-		DataStruct.WeaponAttachments = AttachmentArrayOverride;
-	}
-
 	// Spawning attachments on begin play
 	SpawnAttachmentMesh();
 
@@ -53,11 +47,6 @@ void AWeaponPickup::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	if (AttachmentArrayOverride.Num() > 0)
-	{
-		DataStruct.WeaponAttachments = AttachmentArrayOverride;
-	}
-
 	// Live attachment preview in the editor
 	SpawnAttachmentMesh();
 }
@@ -66,67 +55,7 @@ void AWeaponPickup::OnConstruction(const FTransform& Transform)
 void AWeaponPickup::SpawnAttachmentMesh()
 {
 	// Getting a reference to our Weapon Data table in order to see if we have attachments
-	const AWeapon* WeaponBaseReference =  WeaponReference.GetDefaultObject();
-	if (WeaponDataTable && WeaponBaseReference)
-	{
-		if (const FStaticWeaponData* WeaponData = WeaponDataTable->FindRow<FStaticWeaponData>(FName(WeaponBaseReference->GetDataTableNameRef()), FString(WeaponBaseReference->GetDataTableNameRef()), true))
-		{
-			// Spawning attachments if the weapon has them and the attachments table exists
-			if (WeaponData->bHasAttachments && AttachmentsDataTable)
-			{
-				// Iterating through all the attachments in AttachmentArray
-				for (FName RowName : DataStruct.WeaponAttachments)
-				{
-					// Searching the data table for the attachment
-					const FAttachmentData* AttachmentData = AttachmentsDataTable->FindRow<FAttachmentData>(RowName, RowName.ToString(), true);
-
-					// Applying the effects of the attachment
-					if (AttachmentData)
-					{
-						if (AttachmentData->AttachmentType == EAttachmentType::Barrel)
-						{
-							BarrelAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-						}
-						else if (AttachmentData->AttachmentType == EAttachmentType::Magazine)
-						{
-							MagazineAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-							// Pulling default values from the Magazine attachment type
-							if (!bRuntimeSpawned)
-							{
-								DataStruct.AmmoType = AttachmentData->AmmoToUse;
-								DataStruct.ClipCapacity = AttachmentData->ClipCapacity;
-								DataStruct.ClipSize = AttachmentData->ClipSize;
-								DataStruct.WeaponHealth = 100.0f;
-							}
-						}
-						else if (AttachmentData->AttachmentType == EAttachmentType::Sights)
-						{
-							SightsAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-						}
-						else if (AttachmentData->AttachmentType == EAttachmentType::Stock)
-						{
-							StockAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-						}
-						else if (AttachmentData->AttachmentType == EAttachmentType::Grip)
-						{
-							GripAttachment->SetStaticMesh(AttachmentData->PickupMesh);
-						}
-					}
-				}
-			}
-			else
-			{
-				// Applying default values if the weapon doesn't use attachments
-				if (!bRuntimeSpawned)
-				{
-					DataStruct.AmmoType = WeaponData->AmmoToUse;
-					DataStruct.ClipCapacity = WeaponData->ClipCapacity;
-					DataStruct.ClipSize = WeaponData->ClipSize;
-					DataStruct.WeaponHealth = 100.0f;
-				}
-			}
-		}
-	}
+	const AActor* WeaponBaseReference =  WeaponReference.GetDefaultObject();
 }
 
 void AWeaponPickup::Interact()
@@ -149,9 +78,6 @@ void AWeaponPickup::Interact()
 				break;
 			}
 		}
-
-		// Spawning the new weapon in the player's inventory component
-		Character->GetInventoryComponent()->UpdateWeapon(WeaponReference, InventoryPosition, SpawnPickup, bStatic, GetActorTransform(),  DataStruct);
 	
 		// Destroying the pickup
 		Destroy();

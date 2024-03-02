@@ -3,6 +3,7 @@
 #pragma once
 #include "WeaponCore/AmmoType.h"
 #include "CoreMinimal.h"
+#include "WeaponData.generated.h"
 
 class UNiagaraSystem;
 
@@ -97,7 +98,8 @@ struct FMagazineData
 	UCurveFloat* RecoilRecoveryCurve;
 
 	/** The type of ammunition stored in the magazine */
-	UAmmoType AmmoType;
+	UPROPERTY(EditDefaultsOnly)
+	UAmmoType* AmmoType;
 	
 	/** Unmodified damage values of this weapon */
 	UPROPERTY(EditDefaultsOnly)
@@ -226,4 +228,7 @@ struct FProjectileWeaponData
 /**
  * 
  */
-class FPSCORE_API WeaponData {};
+class FPSCORE_API WeaponData
+{
+};
+

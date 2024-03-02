@@ -12,7 +12,6 @@
 // Sets default values
 ALineTraceWeapon::ALineTraceWeapon()
 {
-	
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -25,6 +24,13 @@ ALineTraceWeapon::ALineTraceWeapon()
 		RecoveryProgressFunction.BindUFunction(this, FName("HandleRecoveryProgress"));
 		RecoilRecoveryTimeline.AddInterpFloat(WeaponData.Magazine.RecoilRecoveryCurve, RecoveryProgressFunction);
 	}
+	/*
+	// Testing dynamic attachment allocation
+	USkeletalMeshComponent* AttachmentComponent = NewObject<USkeletalMeshComponent>(this, "Attachment Mesh");
+	AttachmentComponent->SetupAttachment(RootComponent);
+	AttachmentComponent->RegisterComponent();
+	// TODO: Assign skeletal mesh
+	Attachments.Add(AttachmentComponent); */
 }
 
 
@@ -98,7 +104,8 @@ void ALineTraceWeapon::Fire()
                 -((WeaponData.Magazine.WeaponYawVariation + WeaponData.General.WeaponYawVariationModifier) * AccuracyMultiplier),
                 (WeaponData.Magazine.WeaponYawVariation + WeaponData.General.WeaponYawVariationModifier) * AccuracyMultiplier);
             FVector TraceDirection = TraceStartRotation.Vector();
-            FVector TraceEnd = TraceStart + (TraceDirection * WeaponData.LineTrace.LengthMultiplier);
+            //FVector TraceEnd = TraceStart + (TraceDirection * WeaponData.LineTrace.LengthMultiplier);
+			FVector TraceEnd = FVector::ZeroVector;
 
 			//Recoil();
 
@@ -158,7 +165,7 @@ void ALineTraceWeapon::Fire()
 	else if (bCanFire && WeaponState != Reloading)
 	{
 		//TODO: Make sure that this works for attachments too
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), /*Empty fire sound*/, MeshComp->GetSocketLocation(WeaponData.Barrel.MuzzleLocation));
+		//UGameplayStatics::PlaySoundAtLocation(GetWorld(), /*Empty fire sound*/, MeshComp->GetSocketLocation(WeaponData.Barrel.MuzzleLocation));
 		GetWorldTimerManager().ClearTimer(ShotDelay);
 
 		WeaponState = Idle;
@@ -190,9 +197,6 @@ void ALineTraceWeapon::Recoil()
 
 bool ALineTraceWeapon::Reload()
 {
-
-	if (!bCanReload) { return false; }
-	
 	const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	AFPSCharacterController* CharacterController = Cast<AFPSCharacterController>(Character->GetController());
 
@@ -215,7 +219,7 @@ bool ALineTraceWeapon::Reload()
 		}
 		else
 		{
-			Debugs::DebugText(EDebugSeverity::Medium, 2.0f, "Tried to reload, but could not find animations, defaulting to fixed-length reload");
+			Debugs::DebugText(EDebugSeverity::Low, 2.0f, "Tried to reload, but could not find animations, defaulting to fixed-length reload");
 		}
 
 		if (bShowDebug)
@@ -284,4 +288,9 @@ void ALineTraceWeapon::HandleRecoveryProgress(float Value) const
 
 	// Update the control rotation on the character
 	CharacterController->SetControlRotation(NewControlRotation);
+}
+
+void ALineTraceWeapon::BeginPlay()
+{
+	Super::BeginPlay();
 }

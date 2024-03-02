@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WeaponCore/Weapon.h"
 #include "GameFramework/PlayerController.h"
+#include "WeaponCore/AmmoType.h"
 #include "FPSCharacterController.generated.h"
 
 class FPSCORE_API AWeaponBase; 
@@ -18,7 +18,7 @@ class AFPSCharacterController : public APlayerController
 	
 	/** Stored ammo data for the player character */
     UPROPERTY(EditDefaultsOnly, Category = "Inventory")
-    TMap<UAmmoType, int32> AmmoMap;
+    TMap<UAmmoType*, int32> AmmoMap;
 
 	/** The amount of ammunition boxes that the player has */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Inventory")

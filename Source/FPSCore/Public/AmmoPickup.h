@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractionBase.h"
-#include "WeaponCore/Weapon.h"
+#include "WeaponCore/AmmoType.h"
 #include "AmmoPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -49,11 +49,11 @@ protected:
 
 	/** Map to keep track of the name showed to the player for each ammo type */
 	UPROPERTY(EditDefaultsOnly, Category = "Pickup", meta=(DeprecatedProperty, DeprecationMessage="Please set pickup names in AmmoData instead."))
-	TMap<EAmmoType, FText> PickupName;
+	TMap<UAmmoType*, FText> PickupName;
 
 	/** Map to keep track of all values for the meshes and ammo counts */
 	UPROPERTY(EditDefaultsOnly, Category = "Meshes")
-	TMap<EAmmoType, FAmmoTypeData> AmmoData;
+	TMap<UAmmoType*, FAmmoTypeData> AmmoData;
 	
 private:
 	
@@ -78,7 +78,7 @@ private:
 
 	/** The type of ammo that this instance should have */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")
-	EAmmoType AmmoType;
+	UAmmoType* AmmoType;
 
 	/** Whether this is an infinite ammo box or not */
 	UPROPERTY(EditInstanceOnly, Category = "Properties")

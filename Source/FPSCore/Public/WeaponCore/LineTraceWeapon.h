@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	USkeletalMeshComponent* MeshComp;
 
+	UPROPERTY()
+	TArray<USkeletalMeshComponent*> Attachments;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

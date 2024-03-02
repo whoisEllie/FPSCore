@@ -11,19 +11,19 @@ void Debugs::DebugText(EDebugSeverity DebugSeverity, float DisplayTime, FString 
 	{
 		case EDebugSeverity::Log:
 			Color = FColor::Green;
-			UE_LOG(LogTemp, Log, TEXT("%s"), DebugText);
+			UE_LOG(LogTemp, Log, TEXT("%f"), *DebugText);
 			break;
 		case EDebugSeverity::Low:
 			Color = FColor::Orange;
-			UE_LOG(LogTemp, Display, TEXT("%s"), DebugText);
+			UE_LOG(LogTemp, Display, TEXT("%f"), *DebugText);
 			break;
 		case EDebugSeverity::Medium:
 			Color = FColor::Red;
-			UE_LOG(LogTemp, Warning, TEXT("%s"), DebugText);
+			UE_LOG(LogTemp, Warning, TEXT("%f"), *DebugText);
 			break;
 		case EDebugSeverity::High:
 			Color = FColor::Magenta;
-			UE_LOG(LogTemp, Error, TEXT("%s"), DebugText);
+			UE_LOG(LogTemp, Error, TEXT("%f"), *DebugText);
 			break;
 		default:
 			Color = FColor::Black;

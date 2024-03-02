@@ -2,7 +2,6 @@
 
 #include "CharacterCore/TPSCharacter.h"
 #include "DrawDebugHelpers.h"
-#include "WeaponCore/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InventoryComponent.h"
@@ -108,10 +107,10 @@ void ATPSCharacter::Tick(float DeltaTime)
         {
             if (InventoryComponent->GetCurrentWeapon())
             {
-                if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
+                /*if (bIsAiming && InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->bAimingFOV && !InventoryComponent->GetCurrentWeapon()->IsReloading())
                 {
                     TargetFOV = BaseFOV + FOVOffset - InventoryComponent->GetCurrentWeapon()->GetStaticWeaponData()->AimingFOVChange;
-                }
+                }*/
             }
         }
         
@@ -150,28 +149,4 @@ void ATPSCharacter::Tick(float DeltaTime)
 
     // Checks the floor angle to determine whether we should keep sliding or not
     CheckGroundAngle(DeltaTime);
-
-
-    if (bDrawDebug)
-    {
-        if (InventoryComponent)
-        {
-            for ( int Index = 0; Index < InventoryComponent->GetNumberOfWeaponSlots(); Index++ )
-            {
-                if (InventoryComponent->GetEquippedWeapons().Contains(Index))
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipSize));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->ClipCapacity));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::SanitizeFloat(InventoryComponent->GetEquippedWeapons()[Index]->GetRuntimeWeaponData()->WeaponHealth));
-                }
-                else
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                    GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, TEXT("No Weapon Found"));
-                }
-                GEngine->AddOnScreenDebugMessage(-1, DeltaTime, FColor::Red, FString::FromInt(Index));
-            }
-        }
-    } 
 }

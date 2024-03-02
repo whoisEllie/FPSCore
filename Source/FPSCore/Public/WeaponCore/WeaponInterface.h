@@ -37,12 +37,16 @@ public:
 
 	UFUNCTION()
 	virtual void Inspect();
+
+	UFUNCTION()
+	virtual USkeletalMeshComponent* GetMainMeshComponent();
 	
 	/** Determines the socket or bone with which the weapon will be attached to the character's hand (typically the root bone or the grip bone) */
 	FName WeaponAttachmentSocketName;
 
 	/** The Ammo Type to use for this weapon */
-	UAmmoType AmmoType;
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	UAmmoType* AmmoType;
 	
 	/** Pickup reference */
 	TSubclassOf<AWeaponPickup> PickupReference;

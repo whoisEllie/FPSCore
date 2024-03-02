@@ -3,12 +3,12 @@
 #include "Components/InventoryComponent.h"
 #include "EnhancedInputComponent.h"
 #include "FPSCharacterController.h"
-#include "WeaponCore/Weapon.h"
 #include "WeaponPickup.h"
 #include "GameFramework/Actor.h"
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "CharacterCore/CharacterCore.h"
+#include "WeaponCore/WeaponInterface.h"
 
 
 // Swapping weapons with the scroll wheel
@@ -116,7 +116,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     if (!EquippedWeapons.Contains(SlotId)) { return; }
 	if (!bPerformingWeaponSwap)
 	{
-		if (CurrentWeapon->GetStaticWeaponData()->WeaponUnequip)
+		if (Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Unequip)
 		{
 			bPerformingWeaponSwap = true;
 			TargetWeaponSlot = SlotId;
@@ -130,10 +130,7 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     {
         CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
         CurrentWeapon->SetActorHiddenInGame(true);
-		if (CurrentWeapon->GetClass()->ImplementsInterface(UWeaponInterface::StaticClass()))
-		{
-			 Cast<IWeaponInterface>(CurrentWeapon)->StopAttack();
-		}
+    	Cast<IWeaponInterface>(CurrentWeapon)->StopAttack();
     }
 
 	// Swapping to the new weapon, enabling it and playing it's equip animation
@@ -142,12 +139,12 @@ void UInventoryComponent::SwapWeapon(const int SlotId)
     {
         CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
         CurrentWeapon->SetActorHiddenInGame(false);
-        if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+        if (Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Equip)
         {
         	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
         	{
         		Character->GetMainAnimationMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-        		Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+        		Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Equip, 1.0f);
         		Character->UpdateMovementState(Character->GetMovementState());
         	}
         }
@@ -193,7 +190,6 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, co
             // Applying the current weapon data to the pickup
             NewPickup->SetStatic(bStatic);
             NewPickup->SetRuntimeSpawned(true);
-            NewPickup->SetWeaponReference(EquippedWeapons[InventoryPosition]->GetClass());
             NewPickup->SpawnAttachmentMesh();
             EquippedWeapons[InventoryPosition]->Destroy();
         }
@@ -231,12 +227,12 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AActor> WeaponActor, co
         {
             CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
             CurrentWeapon->SetActorHiddenInGame(false);
-            if (CurrentWeapon->GetStaticWeaponData()->WeaponEquip)
+            if (Cast<IWeaponInterface>(CurrentWeapon)->Animations.Weapon.Equip)
             {
             	if (ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 	            {
             		Character->GetMainAnimationMesh()->GetAnimInstance()->StopAllMontages(0.1f);
-		            Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeapon->GetStaticWeaponData()->WeaponEquip, 1.0f);
+		            Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(Cast<IWeaponInterface>(CurrentWeapon)->Animations.Weapon.Equip, 1.0f);
             		Character->UpdateMovementState(Character->GetMovementState());
 	            }
             }
@@ -253,10 +249,7 @@ FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 
 		if (CharacterController)	
 		{
-			if (CurrentWeapon != nullptr)
-			{
-				return FText::AsNumber(CharacterController->AmmoMap[CurrentWeaponInterface->AmmoType]);
-			}
+			// TODO: Add logic to return current ammo
 			UE_LOG(LogProfilingDebugging, Log, TEXT("Cannot find Current Weapon"));
 			return FText::AsNumber(0);
 		}
@@ -328,12 +321,12 @@ void UInventoryComponent::Inspect()
 	{
 		const IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
 		
-		if (CurrentWeaponInterface->Animations.Weapon.Inspect  && CurrentWeapon->Animations.Hands.Inspect)
+		if (CurrentWeaponInterface->Animations.Weapon.Inspect  && Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Inspect)
 		{
 			if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
 				Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Inspect, 1.0f);
-				CurrentWeapon->GetMainMeshComp()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Weapon.Inspect, 1.0f);
+				Cast<IWeaponInterface>(CurrentWeapon)->GetMainMeshComponent()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Weapon.Inspect, 1.0f);
 			}
 		}
 	}
@@ -343,13 +336,11 @@ void UInventoryComponent::HandleUnequip()
 {
 	if (CurrentWeapon)
 	{
-		const IWeaponInterface* CurrentWeaponInterface = Cast<IWeaponInterface>(CurrentWeapon);
-		
-		if (CurrentWeaponInterface->Animations.Hands.Unequip)
+		if (Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Unequip)
 		{
 			if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
 			{
-				const float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(CurrentWeaponInterface->Animations.Hands.Unequip, 1.0f);
+				const float AnimTime = Character->GetMainAnimationMesh()->GetAnimInstance()->Montage_Play(Cast<IWeaponInterface>(CurrentWeapon)->Animations.Hands.Unequip, 1.0f);
 				GetWorld()->GetTimerManager().SetTimer(WeaponSwapDelegate, this, &UInventoryComponent::UnequipReturn, AnimTime, false, AnimTime);
 			}	
 		}	

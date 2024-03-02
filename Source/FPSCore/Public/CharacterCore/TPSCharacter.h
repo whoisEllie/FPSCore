@@ -3,13 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputAction.h"
-#include "InputActionValue.h"
 // ReSharper disable once CppUnusedIncludeDirective
 #include "CharacterCore.h"
-#include "WeaponCore/Weapon.h"
 #include "Components/InventoryComponent.h"
-#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "TPSCharacter.generated.h"
 

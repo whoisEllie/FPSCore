@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "InteractionActor.h"
-#include "WeaponCore/Weapon.h"
 #include "WeaponPickup.generated.h"
 
 class UStaticMeshComponent;
@@ -30,10 +29,10 @@ public:
 	void SetRuntimeSpawned(const bool bNewRuntimeSpawned) { bRuntimeSpawned = bNewRuntimeSpawned; }
 
 	/** Set the weapon class that this pickup corresponds to */
-	void SetWeaponReference(const TSubclassOf<AWeapon> NewWeaponReference) { WeaponReference = NewWeaponReference; }
+	//void SetWeaponReference(const TSubclassOf<AWeapon> NewWeaponReference) { WeaponReference = NewWeaponReference; }
 
 	/** Set the cached data struct that this weapon pickup hold */
-	void SetCacheDataStruct(const FRuntimeWeaponData* NewDataStruct) { DataStruct = *NewDataStruct; }
+	//void SetCacheDataStruct(const FRuntimeWeaponData* NewDataStruct) { DataStruct = *NewDataStruct; }
 
 	/** Returns the name of the weapon that this pickup is associated with (used for HUD) */
 	FText GetWeaponName() const { return WeaponName; } 
@@ -58,11 +57,7 @@ private:
 
 	/** Weapon to spawn when picked up */
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	TSubclassOf<AWeapon> WeaponReference;
-
-	/** Local weapon data struct to keep track of ammo amounts and weapon health */
-	UPROPERTY()
-	FRuntimeWeaponData DataStruct;
+	TSubclassOf<AActor> WeaponReference;
 
 	/** Data table reference for weapon (used to see if the weapon has attachments) */
 	UPROPERTY(EditDefaultsOnly, Category = "Data Table")
