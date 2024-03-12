@@ -38,15 +38,10 @@ If you're looking for versions of FPS Core with support for alternate features, 
 - (https://github.com/TheMarcusDev/FPSCore): This fork by Marcus Henrique is fully replicated, and has modifications that bring it closer to a CS-style game, such as sprint being the default movement state.
     
 ### learning and docs
-The best way to get started with FPS Core is by following the QuickStart! series on the [documentation site](https://emmadocs.dev). You can find the first part of that [here](https://emmadocs.dev/fps-core/quickstart-part-1-creating-a-character/). Currently, there is no complete API reference. This will come with the impending 2.0 release, which should arrive in Q2 2024. In lieu of such documentation, you're welcome to ask any API-related questions in the [discord server](https://discord.gg/MzxdZd2WqR).
+The best way to get started with FPS Core is by following the QuickStart! series on the [documentation site](https://emmadocs.dev). You can find the first part of that [here](https://emmadocs.dev/fps-core/quickstart-part-1-creating-a-character/). Currently, there is no complete API reference.
 
 ### getting help
-The best place to get support is the [EMMA Discord Server](https://discord.gg/MzxdZd2WqR), which includes additional features such as a GPT-4 powered assistant and the ability to suggest features and report bugs.
-
-Alternate means of getting support are:
-- [emailing me](mailto:contact@emmadocs.dev)
-- creating a github issue
-- asking a question using the marketplace
+Unfortunately, as FPS Core is no longer in development, I am unable to provide support.
 
 ### contributing
 Contributions are welcomed! Whether you're working on bug fixes, adding new features or commenting, I'm always happy to discuss outside changes to the plugin - make a PR and let's chat!
