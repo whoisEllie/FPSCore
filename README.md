@@ -1,3 +1,5 @@
+# Please be aware that due to my current life situation, FPS Core is no longer in active development and I am unable to provide any support
+
 **FPS Core is a simple, easy-to-use plugin that makes building shooters in Unreal Engine faster and easier**
 
 It abstracts a number of core functions and behaviours (hence, FPS Core) to pre-made C++ classes while exposing their properties to Blueprints, allowing anyone to modify their functionality - even if you don't know how to code. Ready to get started? Grab it from the [marketplace](https://www.unrealengine.com/marketplace/en-US/product/fps-core) and get started with the online [documentation](https://emmadocs.dev)!
