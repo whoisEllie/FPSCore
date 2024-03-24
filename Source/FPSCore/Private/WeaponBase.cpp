@@ -261,6 +261,8 @@ void AWeaponBase::EnableFire()
 {
     // Fairly self explanatory - allows the weapon to fire again after waiting for an animation to finish or finishing a reload
     bCanFire = true;
+    bCanMelee = true;
+    bIsReadyToMelee = true;
 }
 
 void AWeaponBase::ReadyToFire()
@@ -349,6 +351,8 @@ void AWeaponBase::Fire()
                     // Preventing the player from firing the weapon until the animation finishes playing 
                     const float AnimWaitTime = WeaponData.WeaponShot->GetPlayLength();
                     bCanFire = false;
+                    bCanMelee = false;
+                    bIsReadyToMelee = false;
                     GetWorldTimerManager().SetTimer(AnimationWaitDelay, this, &AWeaponBase::EnableFire, AnimWaitTime, false, AnimWaitTime);
                 }
             }
@@ -761,4 +765,38 @@ void AWeaponBase::HandleRecoveryProgress(float Value) const
     const FRotator NewControlRotation = FMath::Lerp(CharacterController->GetControlRotation(), ControlRotation, Value);
     
     CharacterController->SetControlRotation(NewControlRotation);
+}
+
+// Melee Event
+void AWeaponBase::Melee() 
+{
+    if (bCanMelee && bIsReadyToMelee)
+    {
+        AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+        PlayerRef->SetCanAim(false);
+        bCanFire = false;
+        bCanReload = false;
+        DisableMelee();
+        if (WeaponData.WeaponMelee)
+        {
+            const AFPSCharacter* PlayerCharacter = Cast<AFPSCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+            PlayerCharacter->GetHandsMesh()->GetAnimInstance()->Montage_Play(WeaponData.WeaponMelee);
+        }
+    }
+}
+
+// Simple Reset Melee When Anim Is Done
+void AWeaponBase::EnableMelee() 
+{
+    AFPSCharacter* PlayerRef = Cast<AFPSCharacter>(GetOwner());
+    PlayerRef->SetCanAim(true);
+    bIsReadyToMelee = true;
+    bCanReload = true;
+    bCanMelee = true;
+}
+
+void AWeaponBase::DisableMelee()
+{
+    bCanMelee = false;
+    bIsReadyToMelee = false;
 }

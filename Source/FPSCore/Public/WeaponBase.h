@@ -356,63 +356,63 @@ struct FStaticWeaponData : public FTableRowBase
 	GENERATED_BODY()
 
 	/**Pickup reference */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	TSubclassOf<AWeaponPickup> PickupReference;
 	
 	/** Determines the socket or bone with which the weapon will be attached to the character's hand (typically the root bone or the grip bone) */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	FName WeaponAttachmentSocketName;
 		
 	/** The distance the shot will travel */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly,  Category = "Required")
 	float LengthMultiplier;
 		
 	/** unmodified damage values of this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	float BaseDamage;
 	
 	/** multiplier to be applied when the player hits an enemy's head bone */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	float HeadshotMultiplier;
 
 	/** The amount of health taken away from the weapon every time the trigger is pulled */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	float WeaponDegradationRate;
 
 	/** The pitch variation applied to the bullet as it leaves the barrel */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	float WeaponPitchVariation;
 	
 	/** The yaw variation applied to the bullet as it leaves the barrel */
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Required")
 	float WeaponYawVariation;
 
 	/** Attachments */
 
 	/** Whether this weapon has a unique set of attachments and is broken up into multiple meshes or is unique */
-	UPROPERTY(EditDefaultsOnly, Category = "Attachments")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attachments")
 	bool bHasAttachments = true;
 
 	/** The table which holds the attachment data */
-	UPROPERTY(EditDefaultsOnly, Category = "Attachments")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Attachments")
 	UDataTable* AttachmentsDataTable;
 
 	/** Animations */
 
 	/** The walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UBlendSpace* BS_Walk;
 
 	/** The ADS Walking BlendSpace */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UBlendSpace* BS_Ads_Walk;
 
 	/** The Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Idle;
 
 	/** The ADS Idle animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Ads_Idle;
 	
 	/** Hand animation for when the player has no weapon, is idle, and is aiming down sights */
@@ -428,221 +428,225 @@ struct FStaticWeaponData : public FTableRowBase
 	UAnimSequence* Anim_Fall;
 
 	/** The weapon's empty reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimationAsset* EmptyWeaponReload;
 
 	/** The weapon's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimationAsset* WeaponReload;
 
 	/** The player's empty reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* EmptyPlayerReload;
 
 	/** The player's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* PlayerReload;
 
 	/** The player's inspect animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsInspect;
 
 	/** The weapon's half of the inspect animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimationAsset* WeaponInspect;
 
 	/** The sprinting animation sequence */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* Anim_Sprint;
 
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* WeaponShot;
 	
 	/** The shooting animation for the weapon itself (bolt shooting back/forward) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimSequence* LastWeaponShot;
 	
 	/** The shooting animation for the player's hands */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsShot;
 	
 	/** The shooting animation for the player's hands */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* HandsADSShot;
 	
 	/** An override for the player's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponEquip;
 
 	/** An override for the player's reload animation */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UAnimMontage* WeaponUnequip;
+
+	/** Arms Montage For Weapon Melee*/
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UAnimMontage* WeaponMelee;
 
 	/** Firing Mechanisms */
 
 	/** Determines if the weapon can have a round in the chamber or not */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bCanBeChambered;
 
 	/** Whether the weapon is silenced or not */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bSilenced;
 
 	/** We wait for the animation to finish before the player is allowed to fire again (for weapons where the character has to perform an action before being able to fire again) Requires fireMontage to be set */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bWaitForAnim;
 
 	/** Whether to prevent players from spam-firing this weapon faster than the assigned Rate of Fire */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bPreventRapidManualFire;
 
 	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bAutoReload;
 	
 	/** Whether the weapon should automatically reload when the player is holding down the fire button and has run out of ammo */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bAutoFireAfterReload;
 
 	/** Whether this weapon is a shotgun or not */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bIsShotgun = false;
 
 	/** Whether the player's FOV should change when aiming with this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bAimingFOV = false;
 
 	/** The decrease in FOV of the camera to when aim down sights */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float AimingFOVChange;
 
 	/** The Magnification of the scope */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float ScopeMagnification = 1.0f;
 
 	/** The linear FOV at a magnification of 1x */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float UnmagnifiedLFoV = 200.0f;
 	
 	/** The name of the socket which denotes the end of the muzzle (used for gunfire) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	FName MuzzleLocation;
 
 	/** The name of the socket at which to spawn particles for muzzle flash */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	FName ParticleSpawnLocation;
 
 	/** The ammunition type to be used (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	EAmmoType AmmoToUse;
 
 	/** The clip capacity of the weapon (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	int ClipCapacity;
 
 	/** The clip size of the weapon (Spawned on the pickup) */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	int ClipSize;
 
 	/** The rate of fire (In rounds per minute/RPM) of the weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float RateOfFire;
 
 	/** Whether this weapon supports automatic fire */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	bool bAutomaticFire;
 		
 	/** The vertical recoil curve to be used with this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UCurveFloat* VerticalRecoilCurve;
 
 	/** The horizontal recoil curve to be used with this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	UCurveFloat* HorizontalRecoilCurve;
 
 	/** The camera shake to be applied to the recoil from this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	TSubclassOf<UCameraShakeBase> RecoilCameraShake;
 	
 	/** The range of the shotgun shells of this weapon */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float ShotgunRange;
 
 	/** The amount of pellets fired */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	int ShotgunPellets;
 
 	/** The increase in shot variation when the player is not aiming down the sights */
-	UPROPERTY(EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Unique Weapon (No Attachments)")
 	float AccuracyDebuff = 1.25f;
 
 	/** Damage surfaces */
 
 	/** surface (physical material) for areas which should spawn blood particles when hit and receive normal damage (equivalent to the baseDamage variable) */
-	UPROPERTY(EditDefaultsOnly, Category = "Damage Surfaces")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Damage Surfaces")
 	UPhysicalMaterial* NormalDamageSurface;
 	
 	/** surface (physical material) for areas which should spawn blood particles when hit and receive boosted damage (equivalent to the baseDamage variable multiplied by the headshotMultiplier) */
-	UPROPERTY(EditDefaultsOnly, Category = "Damage Surfaces")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Damage Surfaces")
 	UPhysicalMaterial* HeadshotDamageSurface;
 	
 	/** surface (physical material) for areas which should spawn ground particles when hit) */
-	UPROPERTY(EditDefaultsOnly, Category = "Damage Surfaces")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Damage Surfaces")
 	UPhysicalMaterial* GroundSurface;
 	
 	/** surface (physical material) for areas which should spawn rock particles when hit) */
-	UPROPERTY(EditDefaultsOnly, Category = "Damage Surfaces")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Damage Surfaces")
 	UPhysicalMaterial* RockSurface;
 
 	/** VFX */
 	
 	/** particle effect (Niagara system) to be spawned when an enemy is hit */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* EnemyHitEffect;
 	
 	/** particle effect (Niagara system) to be spawned when the ground is hit */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* GroundHitEffect;
 	
 	/** particle effect (Niagara system) to be spawned when a rock is hit */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* RockHitEffect;
 	
 	/** particle effect (Niagara system) to be spawned when no defined type is hit */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* DefaultHitEffect;
 
 	/** particle effect to be spawned at the muzzle when a shot is fired */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* MuzzleFlash;
 
 	/** particle effect to be spawned at the muzzle that shows the path of the bullet */
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "VFX")
 	UNiagaraSystem* BulletTrace;
 
 	/** Sound bases */
 
 	/** Firing sound */
-	UPROPERTY(EditDefaultsOnly, Category = "Sound bases	")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Sound bases	")
 	USoundBase* FireSound;
 	
 	/** Silenced firing sound */
-	UPROPERTY(EditDefaultsOnly, Category = "Sound bases	")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Sound bases	")
 	USoundBase* SilencedSound;
 	
 	/** Empty firing sound */
-	UPROPERTY(EditDefaultsOnly, Category = "Sound bases	")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Sound bases	")
 	USoundBase* EmptyFireSound;
 
 	/** Viewport Appearance */
 
 	/** The name of this weapon, to be used for UI */
-	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Viewport")
 	FName WeaponName;
 
 	/** A display image associated with this weapon which can be used for UI */
-	UPROPERTY(EditDefaultsOnly, Category = "Viewport")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Viewport")
 	UTexture2D* WeaponIcon;
 };
 
@@ -803,6 +807,15 @@ private:
 	/** Initiates the recoil function */
 	void RecoilRecovery();
 
+	UFUNCTION(BlueprintCallable,Category = "Default")
+	void Melee();
+
+	UFUNCTION(BlueprintCallable, Category = "Default")
+	void EnableMelee();
+
+	UFUNCTION(BlueprintCallable, Category = "Default")
+	void DisableMelee();
+
 	/** Interpolates the player back to their initial view vector */
 	UFUNCTION()
 	void HandleRecoveryProgress(float Value) const;
@@ -859,8 +872,15 @@ private:
 	/** Determines if the player can fire */
 	bool bCanFire = true;
 
+
 	/** Determines if the player can reload */
 	bool bCanReload = true;
+
+	/** Determines if the player can melee */
+	bool bCanMelee = true;
+	
+	/** Keeps Track Of Melee*/
+	bool bIsReadyToMelee = true;
 	
 	/** Keeps track of whether the weapon is being reloaded */
 	bool bIsReloading = false;
