@@ -2,6 +2,7 @@
 
 #include "InteractionActor.h"
 #include "InteractedActor.h"
+#include "Engine/World.h"
 
 // Implementing the function from our interface
 void AInteractionActor::Interact()

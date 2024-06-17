@@ -1,9 +1,11 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "WeaponPickup.h"
-
+#include "Engine/World.h"
 #include "FPSCharacter.h"
 #include "WeaponBase.h"
+#include "Components/InventoryComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

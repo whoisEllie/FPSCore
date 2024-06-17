@@ -6,6 +6,7 @@
 #include "InputAction.h"
 #include "InteractionBase.h"
 #include "Components/ActorComponent.h"
+#include "Engine/HitResult.h"
 #include "InteractionComponent.generated.h"
 
 class UInteractionComponent;

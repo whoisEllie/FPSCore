@@ -13,6 +13,10 @@
 #include "Camera/CameraComponent.h"
 #include "Curves/CurveFloat.h"
 #include "Components/InventoryComponent.h"
+#include "TimerManager.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimInstance.h"
+#include "Engine/World.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase()

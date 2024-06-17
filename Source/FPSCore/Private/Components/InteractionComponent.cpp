@@ -4,7 +4,9 @@
 #include "EnhancedInputComponent.h"
 #include "FPSCharacter.h"
 #include "InteractionActor.h"
-#include "WeaponBase.h"
+#include "Engine/World.h"
+#include "Engine/HitResult.h"
+#include "GameFramework/Actor.h"
 #include "Camera/CameraComponent.h"
 
 // Sets default values for this component's properties

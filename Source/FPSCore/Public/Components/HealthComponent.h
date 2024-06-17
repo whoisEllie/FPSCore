@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+
 /** Delegate that is passed through to the owner via Blueprint */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UHealthComponent*, HealthComponent, float,
                                              Health, float, HealthDelta, const class UDamageType*, DamageType,

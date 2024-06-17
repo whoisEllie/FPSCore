@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
 
 // Sets default values
 AAmmoPickup::AAmmoPickup()

@@ -11,6 +11,7 @@
 #include "Components/InteractionComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/Engine.h"
 #include "TimerManager.h"
@@ -22,7 +23,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Animation/AnimInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Engine/World.h"
 
 // Sets default values
 AFPSCharacter::AFPSCharacter()

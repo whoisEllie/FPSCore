@@ -10,7 +10,10 @@
 #include "TimerManager.h"
 #include "Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/Engine.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()

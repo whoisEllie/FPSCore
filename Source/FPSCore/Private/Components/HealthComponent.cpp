@@ -2,6 +2,7 @@
 
 
 #include "Components/HealthComponent.h"
+#include "Engine/World.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
