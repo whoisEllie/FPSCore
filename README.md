@@ -38,7 +38,7 @@ If you're looking for versions of FPS Core with support for alternate features, 
 - (https://github.com/TheMarcusDev/FPSCore): This fork by Marcus Henrique is fully replicated, and has modifications that bring it closer to a CS-style game, such as sprint being the default movement state.
     
 ### learning and docs
-The best way to get started with FPS Core is by following the QuickStart! series on the [documentation site](https://emmadocs.dev). You can find the first part of that [here](https://emmadocs.dev/fps-core/quickstart-part-1-creating-a-character/). Currently, there is no complete API reference.
+The best way to get started with FPS Core is by following the QuickStart! series on the [documentation site](https://whoisellie.github.io/OpenFPS-Quartz/). You can find the first part of that [here](https://whoisellie.github.io/OpenFPS-Quartz/FPS-Core/Quickstart/Quickstart-part-1). Currently, there is no complete API reference.
 
 ### getting help
 Unfortunately, as FPS Core is no longer in development, I am unable to provide support.
