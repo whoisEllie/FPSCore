@@ -275,7 +275,6 @@ void ALineTraceWeapon::Tick(float DeltaTime)
 	RecoilRecoveryTimeline.TickTimeline(DeltaTime);
 }
 
-
 // Resetting the player's camera to the position it was at before they began firing
 void ALineTraceWeapon::HandleRecoveryProgress(float Value) const
 {

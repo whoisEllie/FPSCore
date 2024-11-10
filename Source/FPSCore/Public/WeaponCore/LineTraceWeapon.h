@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "WeaponInterface.h"
+#include "Components/TimelineComponent.h"
 #include "WeaponCore/WeaponData.h"
 #include "LineTraceWeapon.generated.h"
 
@@ -46,6 +47,7 @@ public:
 
 	FFPSCoreAnimations Animations;
 
+	UPROPERTY(EditAnywhere)
 	FLineTraceWeaponData WeaponData;
 
 	/** The mains skeletal mesh used for the weapon model */
