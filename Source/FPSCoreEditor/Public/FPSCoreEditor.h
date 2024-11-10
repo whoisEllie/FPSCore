@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "NormalDistributionActions.h"
 #include "Modules/ModuleManager.h"
 
 class FToolBarBuilder;
@@ -21,17 +20,7 @@ public:
 	void PluginButtonClicked();
 	
 private:
-	void RegisterAssetTypeActions(IAssetTools& AssetTools, TSharedRef<IAssetTypeActions> Actions)
-	{
-		AssetTools.RegisterAssetTypeActions(Actions);
-		CreatedAssetTypeActions.Add(Actions);	
-	}
-
 	void RegisterMenus();
-
-	TArray<TSharedPtr<IAssetTypeActions>> CreatedAssetTypeActions;
-
-	TSharedPtr<FNormalDistributionActions> NormalDistributionActions;
 
 	TSharedPtr<class FSlateStyleSet> StyleSet;
 

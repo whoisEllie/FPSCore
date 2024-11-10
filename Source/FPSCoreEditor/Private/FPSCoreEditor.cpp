@@ -1,12 +1,13 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "FPSCoreEditor.h"
+
+#include "AssetTypeActions_Base.h"
 #include "FPSCoreCustomSettings.h"
 #include "FPSCoreEditorStyle.h"
 #include "FPSCoreEditorCommands.h"
 #include "ISettingsContainer.h"
 #include "ISettingsModule.h"
-#include "NormalDistributionActions.h"
 #include "Misc/MessageDialog.h"
 #include "ToolMenus.h"
 #include "Interfaces/IPluginManager.h"
@@ -15,7 +16,6 @@
 #include "WeaponCore/AmmoType.h"
 #include "WeaponCore/LineTraceTemplate.h"
 #include "WeaponCore/ProjectileTemplate.h"
-#include "WeaponCore/Editors/ProjectileTemplateEditorToolkit.h"
 
 static const FName FPSCoreEditorTabName("FPSCoreEditor");
 
@@ -37,19 +37,6 @@ public:
 	virtual FText GetName() const override { return INVTEXT("Line Trace Template"); };
 	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
 	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
-};
-
-class FProjectileBaseActions : public  FAssetTypeActions_Base
-{
-public:
-	virtual UClass* GetSupportedClass() const override { return UProjectileTemplate::StaticClass(); };
-	virtual FText GetName() const override { return INVTEXT("Projectile Template"); };
-	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
-	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
-	virtual void OpenAssetEditor(const TArray<UObject*>& InObjects, TSharedPtr<IToolkitHost> EditWithinLevelEditor) override
-	{
-		MakeShared<ProjectileTemplateEditorToolkit>()->InitEditor(InObjects);	
-	}
 };
 
 class FFPSCoreSlateStyle final : public FSlateStyleSet
@@ -101,26 +88,6 @@ void FFPSCoreEditorModule::StartupModule()
 
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FFPSCoreEditorModule::RegisterMenus));
 
-	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Character Core"),
-	FText::FromString("Character Core"));
-	
-	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Weapon Core"),
-	FText::FromString("Weapon Core"));
-	
-	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Interaction Core"),
-	FText::FromString("Interaction Core"));
-	
-	// Registering Custom Asset Types
-	NormalDistributionActions = MakeShared<FNormalDistributionActions>();
-	FAssetToolsModule::GetModule().Get().RegisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
-
-	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-	{
-		RegisterAssetTypeActions(AssetTools, MakeShareable(new FAmmoTypeActions));
-		RegisterAssetTypeActions(AssetTools, MakeShareable(new FProjectileBaseActions));
-		RegisterAssetTypeActions(AssetTools, MakeShareable(new FLineTraceBulletActions));
-	}
-
 	// Registering custom styles
 	StyleSet = MakeShared<FFPSCoreSlateStyle>();
 	FSlateStyleRegistry::RegisterSlateStyle(*StyleSet.Get());
@@ -153,19 +120,6 @@ void FFPSCoreEditorModule::ShutdownModule()
 
 	FFPSCoreEditorCommands::Unregister();
 
-	// Unregistering Custom Asset Types
-	if (!FModuleManager::Get().IsModuleLoaded("AssetTools")) return;
-	FAssetToolsModule::GetModule().Get().UnregisterAssetTypeActions(NormalDistributionActions.ToSharedRef());
-
-	if (FAssetToolsModule* AssetToolsModule = FModuleManager::GetModulePtr<FAssetToolsModule>("AssetTools"))
-	{
-		for (TSharedPtr<IAssetTypeActions>& AssetAction : CreatedAssetTypeActions)
-		{
-			AssetToolsModule->Get().UnregisterAssetTypeActions(AssetAction.ToSharedRef());
-		}
-	}
-	CreatedAssetTypeActions.Empty();
-	
 	// Unregister settings
 	ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings");
 	if (SettingsModule)
