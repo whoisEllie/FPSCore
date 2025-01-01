@@ -6,6 +6,8 @@ public class FPSCoreEditor : ModuleRules
 {
 	public FPSCoreEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
+		DefaultBuildSettings = BuildSettingsVersion.V5;
+
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
 		PublicIncludePaths.AddRange(

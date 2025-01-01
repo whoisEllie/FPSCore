@@ -2,15 +2,15 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "2.0.0",
-	"EngineVersion": "5.1",
+	"EngineVersion": "5.5",
 	"FriendlyName": "FPS Core",
 	"Description": "Kickstart your development of first person shooters!",
 	"Category": "Gameplay",
 	"CreatedBy": "Ellie Kelemen",
 	"CreatedByURL": "https://github.com/whoisEllie",
-	"DocsURL": "https://emmadocs.dev",
+	"DocsURL": "https://fpscore.dev",
 	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/1e2dd9aadb6f46db9a42a201177d4cdd",
-	"SupportURL": "https://discord.gg/MzxdZd2WqR",
+	"SupportURL": "https://fpscore.dev/support",
 	"CanContainContent": false,
 	"IsBetaVersion": true,
 	"IsExperimentalVersion": false,
@@ -38,7 +38,11 @@
 		{
 			"Name": "FPSCoreEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac"
+			]
 		}
 	]
 }
