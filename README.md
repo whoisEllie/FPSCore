@@ -24,7 +24,7 @@ It abstracts a number of core functions and behaviours (hence, FPS Core) to pre-
 
 ### installation
 
-For now, if you'd like to test v2.0, you'll have to clone this GitHub repository into either `YourUEProject/Plugins/`, and build it from C++. Binaries will be available closer to release.
+For now, if you'd like to test v2.0, you'll have to clone this GitHub repository into `YourUEProject/Plugins/`, and build it from C++. Binaries will be available closer to release.
 
 ### learning and docs
 
