@@ -28,8 +28,6 @@ For now, if you'd like to test v2.0, you'll have to clone this GitHub repository
 
 ### learning and docs
 
-The best way to get started with FPS Core is by following the QuickStart! series on the . You can find the first part of that [here](https://whoisellie.github.io/OpenFPS-Quartz/FPS-Core/Quickstart/Quickstart-part-1). Currently, there is no complete API reference.
-
 At the moment, FPS Core v2 has no documentation. You can try to extrapolate core concepts from the original [documentation site](https://whoisellie.github.io/OpenFPS-Quartz/), but as the new APIs are very different, you may struggle. Don't hesitate to ask questions in the #v2 chat in the [discord](https://discord.gg/nyjkvET4UN). Proper documentation will follow a more stable API release.
 
 ### getting help
