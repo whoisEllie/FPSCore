@@ -1,7 +1,6 @@
 // Copyright 2022 Ellie Kelemen. All Rights Reserved.
 
 #include "AmmoPickup.h"
-#include "CharacterCore/CharacterCore.h"
 #include "FPSCharacterController.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -47,6 +46,7 @@ void AAmmoPickup::BeginPlay()
 
 void AAmmoPickup::Interact()
 {
+	/*
 	if (!bIsEmpty)
 	{
 		const ACharacterCore* PlayerCharacter = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -78,7 +78,7 @@ void AAmmoPickup::Interact()
 		{
 			SetEmptyMesh();
 		}
-	}
+	}*/
 }
 
 void AAmmoPickup::OnConstruction(const FTransform& Transform)

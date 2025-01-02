@@ -2,7 +2,6 @@
 
 #include "Components/InteractionComponent.h"
 #include "EnhancedInputComponent.h"
-#include "CharacterCore/CharacterCore.h"
 #include "InteractionActor.h"
 
 // Sets default values for this component's properties
@@ -28,12 +27,14 @@ void UInteractionComponent::WorldInteract()
 
     FVector CameraLocation = FVector::ZeroVector;
     FRotator CameraRotation = FRotator::ZeroRotator;
-    
+
+    /*
     if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     {
         CameraLocation = Character->GetLookOriginComponent()->GetComponentLocation();
         CameraRotation = Character->GetLookOriginComponent()->GetComponentRotation();
     }
+    */
     
     const FVector TraceDirection = CameraRotation.Vector();
     const FVector TraceEndLocation = CameraLocation + TraceDirection * InteractDistance;
@@ -73,12 +74,14 @@ void UInteractionComponent::InteractionIndicator()
     
     FVector CameraLocation = FVector::ZeroVector;
     FRotator CameraRotation = FRotator::ZeroRotator;
-    
+
+    /*
     if (const ACharacterCore* Character = Cast<ACharacterCore>(GetOwner()))
     {
         CameraLocation = Character->GetLookOriginComponent()->GetComponentLocation();
         CameraRotation = Character->GetLookOriginComponent()->GetComponentRotation();
     }
+    */
     
     const FVector TraceDirection = CameraRotation.Vector();
     const FVector TraceEndLocation = CameraLocation + TraceDirection * InteractDistance;

@@ -2,7 +2,6 @@
 
 #include "WeaponPickup.h"
 
-#include "CharacterCore/CharacterCore.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -60,6 +59,7 @@ void AWeaponPickup::SpawnAttachmentMesh()
 
 void AWeaponPickup::Interact()
 {
+	/*
 	// Getting a reference to the Character Controller
 	const ACharacterCore* Character = Cast<ACharacterCore>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -82,4 +82,5 @@ void AWeaponPickup::Interact()
 		// Destroying the pickup
 		Destroy();
 	}
+	*/
 }

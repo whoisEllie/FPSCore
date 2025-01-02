@@ -28,8 +28,11 @@ public class FPSCore : ModuleRules
                 "PhysicsCore",
                 "Niagara",
                 "EnhancedInput",
-				"DatasmithContent"
-                // ... add other public dependencies that you statically link with here ...
+				"DatasmithContent",
+				"GameplayAbilities",
+				"GameplayTags",
+				"GameplayTasks"
+				// ... add other public dependencies that you statically link with here ...
 			}
 			);
 			
@@ -42,6 +45,9 @@ public class FPSCore : ModuleRules
 				"Slate",
 				"SlateCore",
 				"Niagara",
+				"GameplayAbilities",
+				"GameplayTags",
+				"GameplayTasks"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
