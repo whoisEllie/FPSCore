@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FPSCorePlayerState.h"
 #include "FPSCorePlayerController.generated.h"
 
 
@@ -13,11 +14,13 @@ class FPSCORE_API AFPSCorePlayerController : public APlayerController
 	AFPSCorePlayerController();
 
 	UFUNCTION(BlueprintCallable, Category = "Input System|Player Controller")
-	APlayerState* GetFPSCorePlayerState() const;
+	AFPSCorePlayerState* GetFPSCorePlayerState() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Input System|FPS Core Ability System Component")
 	UAbilitySystemComponent* GetFPSCoreAbilitySystemComponent() const;
 
 	protected:
+
+	
 	
 };
