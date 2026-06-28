@@ -254,6 +254,21 @@ void UInventoryComponent::UpdateWeapon(const TSubclassOf<AWeaponBase> NewWeapon,
     }
 }
 
+void UInventoryComponent::DisableCurrentWeapon()
+{
+	CurrentWeapon->StopFire();
+	CurrentWeapon->SetCanFire(false);
+	CurrentWeapon->PrimaryActorTick.bCanEverTick = false;
+	CurrentWeapon->SetActorHiddenInGame(true);
+}
+
+void UInventoryComponent::EnableCurrentWeapon()
+{
+	CurrentWeapon->SetCanFire(true);
+	CurrentWeapon->PrimaryActorTick.bCanEverTick = true;
+	CurrentWeapon->SetActorHiddenInGame(false);
+}
+
 FText UInventoryComponent::GetCurrentWeaponRemainingAmmo() const
 {
 	if (const AFPSCharacter* FPSCharacter = Cast<AFPSCharacter>(GetOwner()))

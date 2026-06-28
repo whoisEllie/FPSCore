@@ -86,6 +86,12 @@ public:
 	/** Returns the currently equipped weapon slot */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
 	int GetCurrentWeaponSlot() const { return CurrentWeaponSlot; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	void DisableCurrentWeapon();
+	
+	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
+	void EnableCurrentWeapon();
 
 	/** Returns the map of currently equipped weapons */
 	UFUNCTION(BlueprintCallable, Category = "Inventory Component")
