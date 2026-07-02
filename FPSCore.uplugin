@@ -2,7 +2,7 @@
 	"FileVersion": 3,
 	"Version": 1,
 	"VersionName": "2.0.0",
-	"EngineVersion": "5.5",
+	"EngineVersion": "5.7",
 	"FriendlyName": "FPS Core",
 	"Description": "Kickstart your development of first person shooters!",
 	"Category": "Gameplay",
@@ -43,14 +43,5 @@
 				"Mac"
 			]
 		},
-		{
-			"Name": "FPSCoreEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default",
-			"PlatformAllowList": [
-				"Win64",
-				"Mac"
-			]
-		}
 	]
 }

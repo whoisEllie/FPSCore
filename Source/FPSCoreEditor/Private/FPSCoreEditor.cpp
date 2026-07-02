@@ -12,28 +12,9 @@
 #include "Interfaces/IPluginManager.h"
 #include "Styling/SlateStyleMacros.h"
 #include "Styling/SlateStyleRegistry.h"
-#include "WeaponCore/AmmoType.h"
-#include "WeaponCore/LineTraceTemplate.h"
 
 #define LOCTEXT_NAMESPACE "FFPSCoreEditorModule"
 
-class FAmmoTypeActions : public FAssetTypeActions_Base
-{
-public:
-	virtual UClass* GetSupportedClass() const override { return UAmmoType::StaticClass(); };
-	virtual FText GetName() const override { return INVTEXT("Ammo Type"); };
-	virtual FColor GetTypeColor() const override { return FColor::Orange; };
-	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
-};
-
-class FLineTraceBulletActions : public FAssetTypeActions_Base
-{
-public:
-	virtual UClass* GetSupportedClass() const override { return ULineTraceTemplate::StaticClass(); };
-	virtual FText GetName() const override { return INVTEXT("Line Trace Template"); };
-	virtual FColor GetTypeColor() const override { return FColor::Cyan; };
-	virtual uint32 GetCategories() override { return FAssetToolsModule::GetModule().Get().FindAdvancedAssetCategory(FName("Weapon Core")); };
-};
 
 class FFPSCoreSlateStyle final : public FSlateStyleSet
 {
@@ -86,11 +67,6 @@ void FFPSCoreEditorModule::StartupModule()
 
 
 	FAssetToolsModule::GetModule().Get().RegisterAdvancedAssetCategory(FName("Weapon Core"), FText::FromString("Weapon Core"));
-
-	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
-	{
-		RegisterAssetTypeActions(AssetTools, MakeShareable(new FAmmoTypeActions));
-	}
 	
 	// Registering custom styles
 	StyleSet = MakeShared<FFPSCoreSlateStyle>();

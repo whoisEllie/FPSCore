@@ -1,6 +1,6 @@
 
-#include "GAS/FPSCoreAbilitySystemComponent.h"
-#include "GAS/FPSCoreGameplayAbility.h"
+#include "FPSCoreAbilitySystemComponent.h"
+#include "FPSCoreGameplayAbility.h"
 
 UFPSCoreAbilitySystemComponent::UFPSCoreAbilitySystemComponent()
 {
