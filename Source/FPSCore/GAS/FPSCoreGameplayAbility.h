@@ -7,8 +7,10 @@
 UENUM()
 enum class EFPSCoreAbilityActivationPolicy : uint8
 {
+	/** Activate once on the frame the input is pressed. */
 	OnInputTriggered,
 
+	/** Keep active while the input is held. */
 	WhileInputActive
 };
 

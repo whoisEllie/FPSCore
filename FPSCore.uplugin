@@ -27,10 +27,6 @@
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
-		},
-		{
-			"Name": "DatasmithContent",
-			"Enabled": true
 		}
 	],
 	"Modules": [
@@ -40,8 +36,9 @@
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
 				"Win64",
-				"Mac"
+				"Mac",
+				"Linux"
 			]
-		},
+		}
 	]
 }

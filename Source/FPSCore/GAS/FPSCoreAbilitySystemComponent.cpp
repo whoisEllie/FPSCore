@@ -136,7 +136,7 @@ void UFPSCoreAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpe
 	if (Spec.IsActive())
 	{
 		const UGameplayAbility* Ability = Spec.GetPrimaryInstance();
-		const FPredictionKey PredictionKey = Ability == nullptr ? Spec.ActivationInfo.GetActivationPredictionKey() : Ability->GetCurrentActivationInfo().GetActivationPredictionKey();
+		const FPredictionKey PredictionKey = Ability != nullptr ? Ability->GetCurrentActivationInfo().GetActivationPredictionKey() : FPredictionKey();
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, PredictionKey);
 	}
 }
@@ -147,7 +147,7 @@ void UFPSCoreAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySp
 	if (Spec.IsActive())
 	{
 		const UGameplayAbility* Ability = Spec.GetPrimaryInstance();
-		const FPredictionKey PredictionKey = Ability == nullptr ? Spec.ActivationInfo.GetActivationPredictionKey() : Ability->GetCurrentActivationInfo().GetActivationPredictionKey();
+		const FPredictionKey PredictionKey = Ability != nullptr ? Ability->GetCurrentActivationInfo().GetActivationPredictionKey() : FPredictionKey();
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, PredictionKey);
 	}
 }
