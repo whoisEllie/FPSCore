@@ -71,7 +71,7 @@ void UFPSCoreAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool b
 		}
 	}
 
-	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)
+	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
 		{
